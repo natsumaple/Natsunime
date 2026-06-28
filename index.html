@@ -2,45 +2,58 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Natsunime — Guild Anime System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 <style>
 :root {
-  --bg:        #0b1220;
-  --panel:     #111a2e;
-  --panel2:    #16213a;
-  --panel3:    #1c2a45;
-  --text:      #d6e4ff;
-  --muted:     #8aa4c7;
-  --primary:   #5aa9ff;
-  --primary2:  #7cc7ff;
-  --accent:    #9bd3ff;
-  --border:    rgba(140,180,255,0.15);
-  --border2:   rgba(140,180,255,0.08);
-  --maou-clr:      #c084fc;
-  --maou-glow:     rgba(192,132,252,0.25);
-  --bangsawan-clr: #fbbf24;
-  --bangsawan-glow:rgba(251,191,36,0.2);
+  --bg:        #f4f6fb;
+  --panel:     #ffffff;
+  --panel2:    #eef1f7;
+  --panel3:    #e4e8f0;
+  --text:      #1c2333;
+  --muted:     #7b859c;
+  --primary:   #4d7cfe;
+  --primary2:  #3a63e0;
+  --accent:    #4d7cfe;
+  --border:    #e3e7f0;
+  --border2:   #ebeef5;
+  --maou-clr:      #8b5cf6;
+  --maou-glow:     rgba(139,92,246,0.12);
+  --bangsawan-clr: #d99a1f;
+  --bangsawan-glow:rgba(217,154,31,0.12);
   --rakyat-clr:    var(--primary);
-  --rarity-C:   #9ca3af;
-  --rarity-R:   #60a5fa;
-  --rarity-SR:  #a78bfa;
-  --rarity-SSR: #f59e0b;
-  --rarity-UR:  #ef4444;
+  --rarity-C:   #8a93a6;
+  --rarity-R:   #3a8af0;
+  --rarity-SR:  #8b5cf6;
+  --rarity-SSR: #d99a1f;
+  --rarity-UR:  #e0473e;
   --sidebar-w: 240px;
-  --radius: 12px;
-  --transition: 0.2s ease;
+  --radius: 14px;
+  --transition: 0.15s ease;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body {
   height: 100%;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow: hidden;
+  position: fixed;
+  inset: 0;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
+input, textarea { -webkit-user-select: text; user-select: text; }
+[data-lucide] { width: 18px; height: 18px; stroke-width: 2; vertical-align: middle; }
+.icon-lg [data-lucide] { width: 26px; height: 26px; }
+.icon-xl [data-lucide] { width: 36px; height: 36px; }
 #splash {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
@@ -54,23 +67,19 @@ html, body {
   width: 100px; height: 100px;
   border-radius: 24px;
   object-fit: cover;
-  box-shadow: 0 0 40px rgba(90,169,255,0.3);
 }
 #splash-logo-fallback {
   width: 100px; height: 100px;
   border-radius: 24px;
-  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  background: var(--primary);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif;
+  font-family: 'Poppins', sans-serif; font-weight:700;
   font-size: 36px; font-weight: 700;
-  box-shadow: 0 0 40px rgba(90,169,255,0.3);
 }
 #splash h1 {
-  font-family: 'Cinzel', serif;
+  font-family: 'Poppins', sans-serif; font-weight:700;
   font-size: 28px; font-weight: 700;
-  background: linear-gradient(135deg, var(--primary2), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--primary2);
 }
 #splash p { color: var(--muted); font-size: 13px; }
 .splash-bar {
@@ -106,7 +115,7 @@ html, body {
 @keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
 .modal-overlay {
   position: fixed; inset: 0; z-index: 7777;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.7); 
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none; transition: opacity 0.25s;
 }
@@ -119,7 +128,7 @@ html, body {
 }
 .modal-overlay.active .modal-box { transform: scale(1); }
 .modal-box h3 {
-  font-family: 'Cinzel', serif; font-size: 18px;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 18px;
   margin-bottom: 6px; color: var(--primary2);
 }
 .modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
@@ -186,22 +195,20 @@ html, body {
 }
 .auth-logo-fallback {
   width: 60px; height: 60px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  background: var(--primary);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 22px; font-weight: 700;
   margin: 0 auto 12px;
 }
 .auth-logo h2 {
-  font-family: 'Cinzel', serif; font-size: 20px;
-  background: linear-gradient(135deg, var(--primary2), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 20px;
+  color: var(--primary2);
 }
 .auth-logo p { color: var(--muted); font-size: 12px; margin-top: 4px; }
 .auth-tabs { display: flex; gap: 8px; margin-bottom: 22px; }
 .auth-tab {
   flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--border);
-  background: transparent; color: var(--muted); font-family: 'Cinzel', serif;
+  background: transparent; color: var(--muted); font-family: 'Poppins', sans-serif; font-weight:700;
   font-size: 13px; cursor: pointer; transition: var(--transition);
 }
 .auth-tab.active {
@@ -211,7 +218,7 @@ html, body {
 #auth-error { color: #f87171; font-size: 12px; margin-bottom: 10px; min-height: 16px; }
 .sidebar {
   width: var(--sidebar-w); height: 100vh;
-  background: rgba(17,26,46,0.95); backdrop-filter: blur(12px);
+  background: rgba(17,26,46,0.95); 
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
   padding: 20px 14px; gap: 6px;
@@ -229,15 +236,13 @@ html, body {
 }
 .sidebar-logo-fallback {
   width: 36px; height: 36px; border-radius: 8px;
-  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  background: var(--primary);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #fff;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 14px; font-weight: 700; color: #fff;
 }
 .sidebar-logo span {
-  font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700;
-  background: linear-gradient(135deg, var(--primary2), var(--accent));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 16px; font-weight: 700;
+  color: var(--primary2);
 }
 .nav-item {
   display: flex; align-items: center; gap: 10px;
@@ -297,7 +302,7 @@ html, body {
   flex-wrap: wrap; gap: 12px;
 }
 .page-title {
-  font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text);
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 20px; font-weight: 700; color: var(--text);
 }
 .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
 .section-label {
@@ -323,7 +328,7 @@ html, body {
 .anime-source-badge {
   position: absolute; top: 8px; right: 8px;
   padding: 2px 7px; border-radius: 6px; font-size: 9px; font-weight: 700;
-  background: rgba(0,0,0,0.55); color: var(--accent); backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.55); color: var(--accent); 
 }
 .anime-source-badge.custom { color: #34d399; }
 .anime-grid {
@@ -336,7 +341,6 @@ html, body {
   cursor: pointer; transition: var(--transition);
   position: relative;
 }
-.anime-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 0 20px rgba(90,169,255,0.15); }
 .anime-card-poster {
   width: 100%; aspect-ratio: 2/3; object-fit: cover;
   background: var(--panel2);
@@ -397,12 +401,12 @@ html, body {
 }
 .gacha-banner::before {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, transparent, rgba(90,169,255,0.04));
+  background: transparent;
   pointer-events: none;
 }
 .gacha-banner:hover { border-color: var(--primary); transform: translateY(-3px); }
 .gacha-banner-icon { font-size: 36px; margin-bottom: 10px; }
-.gacha-banner-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; }
+.gacha-banner-name { font-family: 'Poppins', sans-serif; font-weight:700; font-size: 14px; font-weight: 700; }
 .gacha-banner-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .gacha-price-tag {
   display: inline-block; margin-top: 12px;
@@ -420,10 +424,6 @@ html, body {
 }
 @keyframes cardAppear { from { opacity:0; transform:scale(0.8) rotate(-3deg); } to { opacity:1; transform:scale(1) rotate(0deg); } }
 .gacha-result-card.C   { border-color: var(--rarity-C); }
-.gacha-result-card.R   { border-color: var(--rarity-R); box-shadow: 0 0 10px rgba(96,165,250,0.3); }
-.gacha-result-card.SR  { border-color: var(--rarity-SR); box-shadow: 0 0 12px rgba(167,139,250,0.35); }
-.gacha-result-card.SSR { border-color: var(--rarity-SSR); box-shadow: 0 0 16px rgba(245,158,11,0.4); }
-.gacha-result-card.UR  { border-color: var(--rarity-UR); box-shadow: 0 0 20px rgba(239,68,68,0.5); }
 .gacha-result-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
 .gacha-result-footer { padding: 6px; font-size: 11px; font-weight: 700; background: var(--panel); }
 .collection-grid {
@@ -450,14 +450,12 @@ html, body {
   background: var(--panel); border: 1px solid var(--border);
 }
 .profile-hero.maou-theme {
-  background: linear-gradient(135deg, #1a0533, #1e0d3f);
+  background: #f6f1ff;
   border-color: var(--maou-clr);
-  box-shadow: 0 0 40px var(--maou-glow);
 }
 .profile-hero.bangsawan-theme {
-  background: linear-gradient(135deg, #1a1200, #241a00);
+  background: #fdf6e8;
   border-color: var(--bangsawan-clr);
-  box-shadow: 0 0 30px var(--bangsawan-glow);
 }
 .profile-hero-bg {
   position: absolute; inset: 0; opacity: 0.06;
@@ -470,11 +468,9 @@ html, body {
   width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
   border: 3px solid var(--border);
 }
-.profile-avatar.maou-border      { border-color: var(--maou-clr); box-shadow: 0 0 16px var(--maou-glow); }
-.profile-avatar.bangsawan-border  { border-color: var(--bangsawan-clr); box-shadow: 0 0 12px var(--bangsawan-glow); }
 .profile-info { flex: 1; }
 .profile-username {
-  font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+  font-family: 'Poppins', sans-serif; font-weight:700; font-size: 22px; font-weight: 700;
 }
 .profile-username.maou-text      { color: var(--maou-clr); }
 .profile-username.bangsawan-text { color: var(--bangsawan-clr); }
@@ -508,7 +504,7 @@ html, body {
 }
 .eris-icon { font-size: 22px; }
 .eris-info { flex: 1; }
-.eris-amount { font-size: 22px; font-weight: 700; color: var(--bangsawan-clr); font-family: 'Cinzel', serif; }
+.eris-amount { font-size: 22px; font-weight: 700; color: var(--bangsawan-clr); font-family: 'Poppins', sans-serif; font-weight:700; }
 .eris-label  { font-size: 11px; color: var(--muted); }
 .profile-stats {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
@@ -517,7 +513,7 @@ html, body {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 16px; text-align: center;
 }
-.stat-value { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--primary2); }
+.stat-value { font-family: 'Poppins', sans-serif; font-weight:700; font-size: 24px; font-weight: 700; color: var(--primary2); }
 .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
 .daily-btn {
   display: flex; align-items: center; gap: 10px;
@@ -547,13 +543,12 @@ html, body {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;
 }
 .admin-card {
-  background: linear-gradient(135deg, #1a0533, #1e0d3f);
-  border: 1px solid var(--maou-clr); border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border); border-radius: 16px;
   padding: 20px; cursor: pointer; transition: var(--transition);
 }
-.admin-card:hover { box-shadow: 0 0 20px var(--maou-glow); transform: translateY(-2px); }
 .admin-card-icon { font-size: 28px; margin-bottom: 10px; }
-.admin-card-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--maou-clr); }
+.admin-card-title { font-family: 'Poppins', sans-serif; font-weight:700; font-size: 14px; font-weight: 700; color: var(--maou-clr); }
 .admin-card-desc  { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -563,7 +558,7 @@ tr:hover td { background: var(--panel2); }
 .table-img { width: 36px; height: 50px; object-fit: cover; border-radius: 6px; }
 .bottom-nav {
   display: none; position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(17,26,46,0.97); backdrop-filter: blur(12px);
+  background: rgba(17,26,46,0.97); 
   border-top: 1px solid var(--border);
   padding: 8px 0 12px; z-index: 200;
 }
@@ -589,7 +584,7 @@ tr:hover td { background: var(--panel2); }
   text-align: center; padding: 50px 20px; color: var(--muted);
 }
 .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
-.empty-state h3 { font-family: 'Cinzel', serif; font-size: 16px; margin-bottom: 6px; color: var(--text); }
+.empty-state h3 { font-family: 'Poppins', sans-serif; font-weight:700; font-size: 16px; margin-bottom: 6px; color: var(--text); }
 .empty-state p  { font-size: 13px; }
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
 .tab-btn {
@@ -602,7 +597,7 @@ tr:hover td { background: var(--panel2); }
 </head>
 <body>
 <div id="splash">
-  <div id="splash-logo-fallback">N</div>
+  <div id="splash-logo-fallback"><span data-lucide="moon" class="icon-xl"></span></div>
   <h1>Natsunime</h1>
   <p>Guild Anime System</p>
   <div class="splash-bar"><div class="splash-fill"></div></div>
@@ -618,7 +613,7 @@ tr:hover td { background: var(--panel2); }
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <div class="auth-logo-fallback" id="auth-logo-fallback">N</div>
+      <div class="auth-logo-fallback" id="auth-logo-fallback"><span data-lucide="moon"></span></div>
       <h2>Natsunime</h2>
       <p>Guild Anime System · Log in to continue</p>
     </div>
@@ -658,32 +653,32 @@ tr:hover td { background: var(--panel2); }
 <div id="app">
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-fallback" id="sidebar-logo-fallback">N</div>
+      <div class="sidebar-logo-fallback" id="sidebar-logo-fallback"><span data-lucide="moon"></span></div>
       <span>Natsunime</span>
     </div>
     <span class="nav-section-label">Utama</span>
     <div class="nav-item active" onclick="navigate('home')" id="nav-home">
-      <span class="nav-icon">🏠</span> Beranda
+      <span class="nav-icon" data-lucide="home"></span> Beranda
     </div>
     <div class="nav-item" onclick="navigate('marathon')" id="nav-marathon">
-      <span class="nav-icon">📋</span> Marathon
+      <span class="nav-icon" data-lucide="list-checks"></span> Marathon
     </div>
     <div class="nav-item" onclick="navigate('gacha')" id="nav-gacha">
-      <span class="nav-icon">🎲</span> Gacha
+      <span class="nav-icon" data-lucide="dice-5"></span> Gacha
     </div>
     <div class="nav-item" onclick="navigate('collection')" id="nav-collection">
-      <span class="nav-icon">🃏</span> Koleksi
+      <span class="nav-icon" data-lucide="layout-grid"></span> Koleksi
     </div>
     <span class="nav-section-label">Komunitas</span>
     <div class="nav-item" onclick="navigate('users')" id="nav-users">
-      <span class="nav-icon">⚔️</span> Guild Members
+      <span class="nav-icon" data-lucide="users"></span> Guild Members
     </div>
     <span class="nav-section-label">Akun</span>
     <div class="nav-item" onclick="navigate('profile')" id="nav-profile">
-      <span class="nav-icon">👤</span> Profil
+      <span class="nav-icon" data-lucide="user"></span> Profil
     </div>
     <div class="nav-item" id="nav-admin" style="display:none" onclick="navigate('admin')">
-      <span class="nav-icon">👑</span> Admin Panel
+      <span class="nav-icon" data-lucide="crown"></span> Admin Panel
     </div>
     <div class="sidebar-user">
       <div class="sidebar-user-card" onclick="navigate('profile')">
@@ -702,15 +697,10 @@ tr:hover td { background: var(--panel2); }
           <div class="page-title">Daftar Anime</div>
           <div class="page-subtitle">Pantau progress tontonanmu seperti seorang petualang sejati.</div>
         </div>
-        <button class="btn btn-primary" onclick="openAddAnimeModal()">＋ Tambah Anime</button>
+        <button class="btn btn-primary" onclick="navigate('browse')"><span data-lucide="plus"></span> Tambah Anime</button>
       </div>
       <div class="search-bar">
-        <input type="text" id="anime-search" placeholder="🔍  Cari judul anime..." oninput="filterAnimeList()"/>
-        <select id="anime-source-select" class="source-select" onchange="filterBySource(this.value)">
-          <option value="all">Semua Sumber</option>
-          <option value="jikan">🔎 Jikan API</option>
-          <option value="custom">✏️ Custom</option>
-        </select>
+        <input type="text" id="anime-search" placeholder="Cari judul anime di daftarmu..." oninput="filterAnimeList()"/>
         <div class="tabs" style="flex-shrink:0">
           <button class="tab-btn active" onclick="filterByStatus('all',this)">Semua</button>
           <button class="tab-btn" onclick="filterByStatus('watching',this)">Watching</button>
@@ -719,13 +709,27 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="anime-grid" id="anime-grid"></div>
     </section>
+    <section class="page" id="page-browse">
+      <div class="page-header">
+        <div>
+          <button class="btn btn-ghost" onclick="navigate('home')"><span data-lucide="arrow-left"></span> Kembali</button>
+          <div class="page-title" style="margin-top:10px">Cari & Tambah Anime</div>
+          <div class="page-subtitle">Jelajahi ribuan anime, klik untuk menambahkan ke daftarmu.</div>
+        </div>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="browse-search" placeholder="Cari judul anime..." onkeydown="if(event.key==='Enter'){event.preventDefault();doBrowseSearch();}"/>
+        <button class="btn btn-primary" onclick="doBrowseSearch()"><span data-lucide="search"></span> Cari</button>
+      </div>
+      <div class="anime-grid" id="browse-grid"></div>
+    </section>
     <section class="page" id="page-marathon">
       <div class="page-header">
         <div>
           <div class="page-title">Marathon Wishlist</div>
           <div class="page-subtitle">Rencanakan marathon-mu dengan tenggat waktu.</div>
         </div>
-        <button class="btn btn-primary" onclick="openAddMarathonModal()">＋ Tambah</button>
+        <button class="btn btn-primary" onclick="openAddMarathonModal()"><span data-lucide="plus"></span> Tambah</button>
       </div>
       <div class="marathon-list" id="marathon-list"></div>
     </section>
@@ -736,7 +740,7 @@ tr:hover td { background: var(--panel2); }
           <div class="page-subtitle">Gunakan Eris untuk mendapatkan Waifu & Husbu legendaris!</div>
         </div>
         <div class="eris-widget" style="min-width:180px">
-          <span class="eris-icon">💰</span>
+          <span class="eris-icon" data-lucide="coins"></span>
           <div class="eris-info">
             <div class="eris-amount" id="gacha-eris-display">0</div>
             <div class="eris-label">Eris tersedia</div>
@@ -778,7 +782,7 @@ tr:hover td { background: var(--panel2); }
         </div>
       </div>
       <div class="search-bar" style="margin-bottom:4px">
-        <input type="text" id="user-search" placeholder="🔍  Cari member..." oninput="filterUsers()"/>
+        <input type="text" id="user-search" placeholder="Cari member..." oninput="filterUsers()"/>
       </div>
       <div class="users-list" id="users-list"></div>
     </section>
@@ -788,30 +792,20 @@ tr:hover td { background: var(--panel2); }
     <section class="page" id="page-admin">
       <div class="page-header">
         <div>
-          <div class="page-title" style="color:var(--maou-clr)">👑 Admin Panel — Maou</div>
-          <div class="page-subtitle">Kekuasaan absolut atas guild.</div>
+          <div class="page-title" style="color:var(--maou-clr)"><span data-lucide="crown"></span> Admin Panel — Maou</div>
+          <div class="page-subtitle">Pengawasan dan moderasi guild.</div>
         </div>
       </div>
       <div class="admin-grid">
-        <div class="admin-card" onclick="openAdminSection('add-gacha')">
-          <div class="admin-card-icon">✨</div>
-          <div class="admin-card-title">Tambah Gacha Item</div>
-          <div class="admin-card-desc">Tambahkan Waifu/Husbu Card & PFP ke pool gacha.</div>
-        </div>
         <div class="admin-card" onclick="openAdminSection('manage-gacha')">
-          <div class="admin-card-icon">📋</div>
+          <div class="admin-card-icon" data-lucide="list"></div>
           <div class="admin-card-title">Kelola Gacha Pool</div>
           <div class="admin-card-desc">Lihat dan hapus item dari pool gacha.</div>
         </div>
         <div class="admin-card" onclick="openAdminSection('manage-users')">
-          <div class="admin-card-icon">👥</div>
+          <div class="admin-card-icon" data-lucide="users"></div>
           <div class="admin-card-title">Kelola Member</div>
-          <div class="admin-card-desc">Edit role, tambah Eris, atau hapus member.</div>
-        </div>
-        <div class="admin-card" onclick="openAdminSection('edit-anime')">
-          <div class="admin-card-icon">📝</div>
-          <div class="admin-card-title">Edit Anime Global</div>
-          <div class="admin-card-desc">Koreksi judul/gambar anime secara global.</div>
+          <div class="admin-card-desc">Edit role atau tambah Eris member.</div>
         </div>
       </div>
       <div id="admin-section-content" style="margin-top:20px"></div>
@@ -821,19 +815,19 @@ tr:hover td { background: var(--panel2); }
 <nav class="bottom-nav">
   <div class="bottom-nav-items">
     <div class="bottom-nav-item active" id="bn-home" onclick="navigate('home')">
-      <span class="bn-icon">🏠</span><span>Beranda</span>
+      <span class="bn-icon" data-lucide="home"></span><span>Beranda</span>
     </div>
     <div class="bottom-nav-item" id="bn-marathon" onclick="navigate('marathon')">
-      <span class="bn-icon">📋</span><span>Marathon</span>
+      <span class="bn-icon" data-lucide="list-checks"></span><span>Marathon</span>
     </div>
     <div class="bottom-nav-item" id="bn-gacha" onclick="navigate('gacha')">
-      <span class="bn-icon">🎲</span><span>Gacha</span>
+      <span class="bn-icon" data-lucide="dice-5"></span><span>Gacha</span>
     </div>
     <div class="bottom-nav-item" id="bn-collection" onclick="navigate('collection')">
-      <span class="bn-icon">🃏</span><span>Koleksi</span>
+      <span class="bn-icon" data-lucide="layout-grid"></span><span>Koleksi</span>
     </div>
     <div class="bottom-nav-item" id="bn-profile" onclick="navigate('profile')">
-      <span class="bn-icon">👤</span><span>Profil</span>
+      <span class="bn-icon" data-lucide="user"></span><span>Profil</span>
     </div>
   </div>
 </nav>
@@ -866,6 +860,10 @@ let animeStatusFilter = 'all';
 let animeSourceFilter = 'all';
 let addAnimeTab       = 'jikan';
 let collectionFilter  = 'all';
+function refreshIcons() {
+  try { if (window.lucide) window.lucide.createIcons(); } catch(e) {}
+}
+window.refreshIcons = refreshIcons;
 function toast(msg, type='info') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
@@ -1037,6 +1035,7 @@ function navigate(page) {
   if (bnEl)   bnEl.classList.add('active');
   switch(page) {
     case 'home':       renderAnimeGrid(); break;
+    case 'browse':      renderBrowseGrid(); break;
     case 'marathon':   renderMarathon();  break;
     case 'gacha':      renderGachaBanners(); break;
     case 'collection': renderCollection(); break;
@@ -1048,7 +1047,14 @@ function navigate(page) {
 window.navigate = navigate;
 async function loadJikanSearch(query) {
   try {
-    const res  = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=8&sfw`);
+    const res  = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=24&sfw`);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+async function loadJikanTop() {
+  try {
+    const res  = await fetch(`https://api.jikan.moe/v4/top/anime?limit=24`);
     const json = await res.json();
     return json.data || [];
   } catch { return []; }
@@ -1060,41 +1066,33 @@ function renderAnimeGrid() {
     const q = (document.getElementById('anime-search')?.value || '').toLowerCase();
     const matchQuery  = !q || a.title.toLowerCase().includes(q);
     const matchStatus = animeStatusFilter === 'all' || a.status === animeStatusFilter;
-    const src = a.source || (a.jikanId ? 'jikan' : 'custom');
-    const matchSource = animeSourceFilter === 'all' || src === animeSourceFilter;
-    return matchQuery && matchStatus && matchSource;
+    return matchQuery && matchStatus;
   });
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
-      <div class="empty-state-icon">📭</div>
+      <div class="empty-state-icon" data-lucide="inbox"></div>
       <h3>Tidak ada anime</h3>
-      <p>Coba ubah kata kunci pencarian, atau klik "+ Tambah Anime" untuk menambah dari Jikan API maupun secara manual (Custom).</p>
+      <p>Coba ubah kata kunci pencarian, atau klik "Tambah Anime" untuk menjelajah katalog.</p>
     </div>`;
+    refreshIcons();
     return;
   }
-  grid.innerHTML = list.map(a => {
-    const src = a.source || (a.jikanId ? 'jikan' : 'custom');
-    return `
+  grid.innerHTML = list.map(a => `
     <div class="anime-card" onclick="openAnimeDetail('${a.id}')">
-      <span class="anime-status-badge status-${a.status}">${a.status === 'watching' ? '▶ Watching' : a.status === 'watched' ? '✓ Watched' : a.status}</span>
-      <span class="anime-source-badge ${src}">${src === 'custom' ? '✏️ Custom' : '🔎 Jikan'}</span>
+      <span class="anime-status-badge status-${a.status}">${a.status === 'watching' ? 'Watching' : a.status === 'watched' ? 'Watched' : a.status}</span>
       ${safeImg(a.imageUrl, '') !== ''
-        ? `<img class="anime-card-poster" src="${safeImg(a.imageUrl, '')}" loading="lazy" onerror="this.parentElement.querySelector('.anime-card-poster-placeholder')?.style && (this.style.display='none')"/>`
-        : `<div class="anime-card-poster-placeholder">🎬</div>`
+        ? `<img class="anime-card-poster" src="${safeImg(a.imageUrl, '')}" loading="lazy" onerror="this.style.display='none'"/>`
+        : `<div class="anime-card-poster-placeholder" data-lucide="clapperboard"></div>`
       }
       <div class="anime-card-body">
         <div class="anime-card-title">${a.title}</div>
         <div class="anime-card-meta">${a.episodes || '?'} eps</div>
       </div>
     </div>
-  `}).join('');
+  `).join('');
+  refreshIcons();
 }
 window.filterAnimeList   = renderAnimeGrid;
-function filterBySource(val) {
-  animeSourceFilter = val;
-  renderAnimeGrid();
-}
-window.filterBySource = filterBySource;
 function filterByStatus(status, btn) {
   animeStatusFilter = status;
   document.querySelectorAll('#page-home .tab-btn').forEach(b => b.classList.remove('active'));
@@ -1105,10 +1103,10 @@ window.filterByStatus = filterByStatus;
 function openAnimeDetail(id) {
   const anime = currentUser.animeList.find(a => a.id === id);
   if (!anime) return;
-  const isOwn = true;
   showModal(
     anime.title,
-    `<img src="${safeImg(anime.imageUrl,'')}" style="width:100%;border-radius:10px;margin-bottom:12px;max-height:200px;object-fit:cover" onerror="this.style.display='none'"/>
+    `<img src="${safeImg(anime.imageUrl,'')}" style="width:100%;border-radius:10px;margin-bottom:12px;max-height:220px;object-fit:cover" onerror="this.style.display='none'"/>
+     ${anime.synopsis ? `<p style="font-size:12px;color:var(--muted);margin-bottom:10px;max-height:120px;overflow-y:auto">${anime.synopsis}</p>` : ''}
      <p>Status: <b>${anime.status}</b></p>
      <p>Episode: <b>${anime.episodes || '?'}</b></p>`,
     [
@@ -1133,64 +1131,48 @@ async function removeAnime(id) {
   renderAnimeGrid();
   toast('Anime dihapus.', 'info');
 }
-function openAddAnimeModal() {
-  addAnimeTab = 'jikan';
-  showModal(
-    'Tambah Anime',
-    `<div class="tabs" style="margin-bottom:14px">
-       <button class="tab-btn active" id="aa-tab-jikan" onclick="switchAddAnimeTab('jikan')">🔎 Jikan API</button>
-       <button class="tab-btn" id="aa-tab-custom" onclick="switchAddAnimeTab('custom')">✏️ Custom Manual</button>
-     </div>
-     <div id="aa-jikan-panel">
-       <div class="input-group"><label>Cari Judul (via Jikan API)</label>
-       <input type="text" id="jikan-search-input" placeholder="Cth: Sword Art Online" onkeydown="if(event.key==='Enter'){event.preventDefault();doJikanSearch();}"/></div>
-       <div id="jikan-results" style="max-height:250px;overflow-y:auto;margin-top:8px"></div>
-     </div>
-     <div id="aa-custom-panel" style="display:none">
-       <div class="input-group"><label>Judul Anime</label><input type="text" id="ca-title" placeholder="Cth: Anime indie/lokal yang tidak ada di Jikan"/></div>
-       <div class="input-group"><label>URL Poster (opsional)</label><input type="text" id="ca-image" placeholder="https://..."/></div>
-       <div class="input-group"><label>Jumlah Episode (opsional)</label><input type="number" id="ca-episodes" placeholder="Cth: 12"/></div>
-     </div>`,
-    [
-      { label: 'Cari', cls: 'btn-primary', fn: handleAddAnimePrimary },
-      { label: 'Tutup', cls: 'btn-ghost', fn: closeModal }
-    ]
-  );
+let browseLastResults = [];
+async function renderBrowseGrid() {
+  const grid = document.getElementById('browse-grid');
+  grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon" data-lucide="loader"></div><p>Memuat katalog anime...</p></div>`;
+  refreshIcons();
+  const data = await loadJikanTop();
+  browseLastResults = data;
+  paintBrowseGrid(data);
 }
-window.openAddAnimeModal = openAddAnimeModal;
-function switchAddAnimeTab(tab) {
-  addAnimeTab = tab;
-  document.getElementById('aa-tab-jikan').classList.toggle('active', tab === 'jikan');
-  document.getElementById('aa-tab-custom').classList.toggle('active', tab === 'custom');
-  document.getElementById('aa-jikan-panel').style.display  = tab === 'jikan'  ? '' : 'none';
-  document.getElementById('aa-custom-panel').style.display = tab === 'custom' ? '' : 'none';
-  const primaryBtn = document.querySelector('#modal-actions .btn-primary');
-  if (primaryBtn) primaryBtn.textContent = tab === 'jikan' ? 'Cari' : 'Tambahkan';
+function paintBrowseGrid(data) {
+  const grid = document.getElementById('browse-grid');
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon" data-lucide="search-x"></div><h3>Tidak ditemukan</h3></div>`;
+    refreshIcons();
+    return;
+  }
+  grid.innerHTML = data.map((a, i) => {
+    const already = currentUser.animeList?.some(x => String(x.jikanId) === String(a.mal_id));
+    return `
+    <div class="anime-card" onclick="addAnimeFromBrowse(${i})" title="${already ? 'Sudah ada di daftarmu' : 'Klik untuk tambah'}">
+      ${already ? '<span class="anime-status-badge status-watched">Di Daftarmu</span>' : ''}
+      <img class="anime-card-poster" src="${a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || ''}" loading="lazy" onerror="this.style.display='none'"/>
+      <div class="anime-card-body">
+        <div class="anime-card-title">${a.title}</div>
+        <div class="anime-card-meta">${a.episodes || '?'} eps · ${a.score || '-'} ★</div>
+      </div>
+    </div>`;
+  }).join('');
+  refreshIcons();
 }
-window.switchAddAnimeTab = switchAddAnimeTab;
-function handleAddAnimePrimary() {
-  if (addAnimeTab === 'jikan') doJikanSearch();
-  else addCustomAnime();
+async function doBrowseSearch() {
+  const q = document.getElementById('browse-search')?.value?.trim();
+  const grid = document.getElementById('browse-grid');
+  grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon" data-lucide="loader"></div><p>Mencari...</p></div>`;
+  refreshIcons();
+  const data = q ? await loadJikanSearch(q) : await loadJikanTop();
+  browseLastResults = data;
+  paintBrowseGrid(data);
 }
-window.handleAddAnimePrimary = handleAddAnimePrimary;
-async function doJikanSearch() {
-  const q = document.getElementById('jikan-search-input')?.value?.trim();
-  if (!q) return;
-  const resultsEl = document.getElementById('jikan-results');
-  resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">⏳ Mencari...</p>';
-  const results = await loadJikanSearch(q);
-  if (!results.length) { resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">Tidak ditemukan.</p>'; return; }
-  resultsEl.innerHTML = results.map((a, i) => `
-    <div onclick="addAnimeFromJikan(${i})" data-idx="${i}" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--panel2)" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
-      <img src="${a.images?.jpg?.image_url || ''}" style="width:36px;height:50px;border-radius:6px;object-fit:cover;background:var(--panel)" onerror="this.style.display='none'"/>
-      <div><div style="font-size:13px;font-weight:600">${a.title}</div><div style="font-size:11px;color:var(--muted)">${a.episodes || '?'} eps · ${a.score || '-'} ★</div></div>
-    </div>
-  `).join('');
-  window._jikanResults = results;
-}
-window.doJikanSearch = doJikanSearch;
-async function addAnimeFromJikan(idx) {
-  const a = window._jikanResults?.[idx];
+window.doBrowseSearch = doBrowseSearch;
+async function addAnimeFromBrowse(idx) {
+  const a = browseLastResults[idx];
   if (!a) return;
   const existing = currentUser.animeList.find(x => String(x.jikanId) === String(a.mal_id));
   if (existing) { toast('Anime sudah ada di daftar.', 'error'); return; }
@@ -1201,73 +1183,57 @@ async function addAnimeFromJikan(idx) {
     title:    a.title,
     imageUrl: a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '',
     episodes: a.episodes,
+    synopsis: a.synopsis || '',
     status:   'watching',
     addedAt:  Date.now()
   };
   currentUser.animeList = [...(currentUser.animeList || []), entry];
   await saveUserData();
-  closeModal();
-  renderAnimeGrid();
-  toast('Anime ditambahkan! 🎉', 'success');
+  toast(a.title + ' ditambahkan ke daftarmu!', 'success');
+  paintBrowseGrid(browseLastResults);
 }
-window.addAnimeFromJikan = addAnimeFromJikan;
-async function addCustomAnime() {
-  const title    = document.getElementById('ca-title')?.value?.trim();
-  const imageUrl = document.getElementById('ca-image')?.value?.trim() || '';
-  const episodes = parseInt(document.getElementById('ca-episodes')?.value || '') || null;
-  if (!title) { toast('Isi judul anime.', 'error'); return; }
-  const existing = currentUser.animeList.find(x => x.title.toLowerCase() === title.toLowerCase());
-  if (existing) { toast('Anime dengan judul ini sudah ada di daftar.', 'error'); return; }
-  const entry = {
-    id:       'anime_' + Date.now(),
-    jikanId:  null,
-    source:   'custom',
-    title, imageUrl, episodes,
-    status:   'watching',
-    addedAt:  Date.now()
-  };
-  currentUser.animeList = [...(currentUser.animeList || []), entry];
-  await saveUserData();
-  closeModal();
-  renderAnimeGrid();
-  toast(title + ' (custom) ditambahkan! ✨', 'success');
-}
-window.addCustomAnime = addCustomAnime;
+window.addAnimeFromBrowse = addAnimeFromBrowse;
 function renderMarathon() {
   const list = document.getElementById('marathon-list');
   const items = currentUser.marathon || [];
   if (!items.length) {
     list.innerHTML = `<div class="empty-state">
-      <div class="empty-state-icon">📅</div>
+      <div class="empty-state-icon" data-lucide="calendar"></div>
       <h3>Belum ada rencana marathon</h3>
-      <p>Tambahkan anime dengan tenggat waktu!</p>
+      <p>Cari anime dan tambahkan dengan tenggat waktu!</p>
     </div>`;
+    refreshIcons();
     return;
   }
-  list.innerHTML = items.map(m => {
+  list.innerHTML = `<div class="anime-grid">` + items.map(m => {
     const overdue = m.deadline && !m.completed && Date.now() > new Date(m.deadline).getTime();
     const deadlineStr = m.deadline ? new Date(m.deadline).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : 'Tanpa batas waktu';
     return `
-    <div class="marathon-item ${m.completed ? 'done' : ''}">
-      <div class="marathon-checkbox ${m.completed ? 'checked' : ''}" onclick="toggleMarathon('${m.id}')"></div>
-      <img class="marathon-poster" src="${safeImg(m.imageUrl,'')}" onerror="this.src=''" alt="poster"/>
-      <div class="marathon-info">
-        <div class="marathon-title">${m.title}</div>
-        <div class="marathon-deadline ${overdue ? 'overdue' : ''}">
-          ${overdue ? '⚠️ Overdue! ' : '📅 '} ${deadlineStr}
+    <div class="anime-card ${m.completed ? 'done' : ''}" style="${m.completed?'opacity:0.55':''}">
+      <span class="anime-status-badge ${overdue?'status-watching':'status-planned'}">${overdue ? 'Overdue' : (m.completed ? 'Selesai' : 'Direncanakan')}</span>
+      ${safeImg(m.imageUrl,'') !== '' ? `<img class="anime-card-poster" src="${safeImg(m.imageUrl,'')}" onerror="this.style.display='none'"/>` : `<div class="anime-card-poster-placeholder" data-lucide="clapperboard"></div>`}
+      <div class="anime-card-body">
+        <div class="anime-card-title">${m.title}</div>
+        <div class="anime-card-meta">${deadlineStr}</div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+          <button class="icon-btn" onclick="toggleMarathon('${m.id}')" title="Tandai selesai"><span data-lucide="check"></span></button>
+          <button class="icon-btn" onclick="removeMarathon('${m.id}')" title="Hapus"><span data-lucide="trash-2"></span></button>
         </div>
       </div>
-      <div class="marathon-actions">
-        <button class="icon-btn" onclick="removeMarathon('${m.id}')" title="Hapus">🗑</button>
-      </div>
     </div>`;
-  }).join('');
+  }).join('') + `</div>`;
+  refreshIcons();
 }
+let marathonPicked = null;
 function openAddMarathonModal() {
+  marathonPicked = null;
   showModal(
     'Tambah Marathon',
-    `<div class="input-group"><label>Judul Anime</label><input type="text" id="m-title" placeholder="Cth: Attack on Titan"/></div>
-     <div class="input-group"><label>URL Poster (opsional)</label><input type="text" id="m-image" placeholder="https://..."/></div>
+    `<div class="input-group"><label>Cari Anime</label>
+     <input type="text" id="mm-search" placeholder="Cth: Attack on Titan" onkeydown="if(event.key==='Enter'){event.preventDefault();doMarathonSearch();}"/></div>
+     <button class="btn btn-ghost" style="margin-bottom:10px" onclick="doMarathonSearch()"><span data-lucide="search"></span> Cari</button>
+     <div id="mm-results" style="max-height:220px;overflow-y:auto;margin-bottom:10px"></div>
+     <div id="mm-picked" style="font-size:12px;color:var(--muted);margin-bottom:8px">Belum ada anime dipilih.</div>
      <div class="input-group"><label>Tenggat Waktu (opsional)</label><input type="date" id="m-deadline"/></div>`,
     [
       { label: 'Tambahkan', cls: 'btn-primary', fn: saveMarathon },
@@ -1276,13 +1242,36 @@ function openAddMarathonModal() {
   );
 }
 window.openAddMarathonModal = openAddMarathonModal;
+async function doMarathonSearch() {
+  const q = document.getElementById('mm-search')?.value?.trim();
+  if (!q) return;
+  const resultsEl = document.getElementById('mm-results');
+  resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">Mencari...</p>';
+  const results = await loadJikanSearch(q);
+  window._marathonResults = results;
+  if (!results.length) { resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">Tidak ditemukan.</p>'; return; }
+  resultsEl.innerHTML = results.slice(0,10).map((a, i) => `
+    <div onclick="pickMarathonAnime(${i})" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--panel2)">
+      <img src="${a.images?.jpg?.image_url || ''}" style="width:36px;height:50px;border-radius:6px;object-fit:cover;background:var(--panel)" onerror="this.style.display='none'"/>
+      <div style="font-size:13px;font-weight:600">${a.title}</div>
+    </div>
+  `).join('');
+}
+window.doMarathonSearch = doMarathonSearch;
+function pickMarathonAnime(idx) {
+  marathonPicked = window._marathonResults?.[idx];
+  if (!marathonPicked) return;
+  document.getElementById('mm-picked').innerHTML = `Dipilih: <b>${marathonPicked.title}</b>`;
+}
+window.pickMarathonAnime = pickMarathonAnime;
 async function saveMarathon() {
-  const title    = document.getElementById('m-title')?.value?.trim();
-  const imageUrl = document.getElementById('m-image')?.value?.trim() || '';
+  if (!marathonPicked) { toast('Pilih anime dari hasil pencarian dulu.', 'error'); return; }
   const deadline = document.getElementById('m-deadline')?.value || '';
-  if (!title) { toast('Isi judul anime.', 'error'); return; }
   currentUser.marathon = [...(currentUser.marathon || []), {
-    id: 'mrt_' + Date.now(), title, imageUrl, deadline, completed: false, addedAt: Date.now()
+    id: 'mrt_' + Date.now(),
+    title: marathonPicked.title,
+    imageUrl: marathonPicked.images?.jpg?.large_image_url || marathonPicked.images?.jpg?.image_url || '',
+    deadline, completed: false, addedAt: Date.now()
   }];
   await saveUserData();
   closeModal();
@@ -1311,17 +1300,17 @@ function renderGachaBanners() {
   const area = document.getElementById('gacha-banners');
   const price = currentUser.role === 'bangsawan' ? GACHA_PRICE.bangsawan : GACHA_PRICE.rakyat;
   const banners = [
-    { type: 'waifu_card', icon: '🌸', name: 'Waifu Card', desc: 'Koleksi kartu waifu favoritmu.' },
-    { type: 'husbu_card', icon: '⚔️', name: 'Husbu Card', desc: 'Koleksi kartu husbu terkuat.' },
-    { type: 'waifu_pfp',  icon: '🖼️', name: 'Waifu PFP',  desc: 'Dapatkan foto profil waifu.' },
-    { type: 'husbu_pfp',  icon: '🎴', name: 'Husbu PFP',  desc: 'Dapatkan foto profil husbu.' },
+    { type: 'waifu_card', icon: 'heart', name: 'Waifu Card', desc: 'Koleksi kartu waifu favoritmu.' },
+    { type: 'husbu_card', icon: 'sword', name: 'Husbu Card', desc: 'Koleksi kartu husbu terkuat.' },
+    { type: 'waifu_pfp',  icon: 'image', name: 'Waifu PFP',  desc: 'Dapatkan foto profil waifu.' },
+    { type: 'husbu_pfp',  icon: 'image', name: 'Husbu PFP',  desc: 'Dapatkan foto profil husbu.' },
   ];
   area.innerHTML = banners.map(b => `
     <div class="gacha-banner" onclick="doGacha('${b.type}')">
-      <div class="gacha-banner-icon">${b.icon}</div>
+      <div class="gacha-banner-icon"><span data-lucide="${b.icon}" class="icon-xl"></span></div>
       <div class="gacha-banner-name">${b.name}</div>
       <div class="gacha-banner-desc">${b.desc}</div>
-      <div class="gacha-price-tag">💰 ${price} Eris / pull</div>
+      <div class="gacha-price-tag"><span data-lucide="coins"></span> ${price} Eris / pull</div>
     </div>
   `).join('');
 }
@@ -1424,6 +1413,7 @@ function renderProfile(userData, isOwnProfile = true) {
   const usernameClass = userData.role === 'maou' ? 'maou-text' : userData.role === 'bangsawan' ? 'bangsawan-text' : '';
   const content = document.getElementById('profile-content');
   content.innerHTML = `
+    ${!isOwnProfile ? `<button class="btn btn-ghost" style="margin-bottom:4px" onclick="navigate('users')"><span data-lucide="arrow-left"></span> Kembali ke Guild Members</button>` : ''}
     <div class="profile-hero ${themeClass}">
       <div class="profile-hero-bg"></div>
       <div class="profile-top">
@@ -1434,22 +1424,23 @@ function renderProfile(userData, isOwnProfile = true) {
           <div class="profile-username ${usernameClass}">${userData.username}</div>
           <div class="profile-badges">
             ${roleBadgeHtml(userData.role)}
-            <span class="badge badge-rank">🏅 ${rank.name}</span>
+            <span class="badge badge-rank"><span data-lucide="medal"></span> ${rank.name}</span>
           </div>
           <div class="rank-bar-wrap">
             <div class="rank-bar-meta">
               <span>Rank Points: ${userData.rankPoints || 0}</span>
-              <span>${nextRk ? 'Menuju ' + nextRk.name + ' ('+nextRk.minPts+' pts)' : '⭐ Rank Tertinggi!'}</span>
+              <span>${nextRk ? 'Menuju ' + nextRk.name + ' ('+nextRk.minPts+' pts)' : 'Rank Tertinggi!'}</span>
             </div>
             <div class="rank-bar"><div class="rank-bar-fill" style="width:${prog}%"></div></div>
           </div>
         </div>
+        ${isOwnProfile ? `<button class="btn btn-ghost" onclick="openEditProfileModal()"><span data-lucide="pencil"></span> Edit Profil</button>` : ''}
       </div>
     </div>
     ${isOwnProfile ? `
     <div style="display:flex;gap:12px;flex-wrap:wrap">
       <div class="eris-widget" style="flex:1;min-width:150px">
-        <span class="eris-icon">💰</span>
+        <span class="eris-icon" data-lucide="coins"></span>
         <div class="eris-info">
           <div class="eris-amount">${userData.eris || 0}</div>
           <div class="eris-label">Eris</div>
@@ -1457,7 +1448,7 @@ function renderProfile(userData, isOwnProfile = true) {
         <button class="btn btn-ghost" style="font-size:11px" onclick="openTopUpModal()">Top Up</button>
       </div>
       <div class="daily-btn ${isDailyClaimed() ? 'claimed' : ''}" onclick="claimDaily()" style="flex:1;min-width:200px">
-        <span style="font-size:24px">${isDailyClaimed() ? '✅' : '🎁'}</span>
+        <span data-lucide="${isDailyClaimed() ? 'check-circle' : 'gift'}" class="icon-lg"></span>
         <div class="daily-info">
           <h4>${isDailyClaimed() ? 'Sudah diklaim hari ini' : 'Daily Login Reward'}</h4>
           <p>${isDailyClaimed() ? 'Kembali besok!' : 'Klik untuk klaim +' + DAILY_REWARD + ' Eris'}</p>
@@ -1483,6 +1474,19 @@ function renderProfile(userData, isOwnProfile = true) {
         <div class="stat-label">SSR / UR Cards</div>
       </div>
     </div>
+    <div class="section-label">Daftar Anime yang Dicatat</div>
+    <div class="anime-grid">
+      ${(userData.animeList || []).slice(0,12).map(a => `
+        <div class="anime-card" style="cursor:default">
+          <span class="anime-status-badge status-${a.status}">${a.status === 'watching' ? 'Watching' : a.status === 'watched' ? 'Watched' : a.status}</span>
+          ${safeImg(a.imageUrl,'') !== '' ? `<img class="anime-card-poster" src="${safeImg(a.imageUrl,'')}" loading="lazy" onerror="this.style.display='none'"/>` : `<div class="anime-card-poster-placeholder" data-lucide="clapperboard"></div>`}
+          <div class="anime-card-body">
+            <div class="anime-card-title">${a.title}</div>
+            <div class="anime-card-meta">${a.episodes || '?'} eps</div>
+          </div>
+        </div>
+      `).join('') || '<div class="empty-state" style="grid-column:1/-1"><p>Belum ada anime yang dicatat.</p></div>'}
+    </div>
     <div class="section-label">Koleksi Gacha</div>
     <div class="collection-grid">
       ${(userData.gachaCollection || []).slice(0,12).map(c=>`
@@ -1497,11 +1501,43 @@ function renderProfile(userData, isOwnProfile = true) {
     </div>
     ${isOwnProfile ? `
     <div style="margin-top:10px">
-      <button class="btn btn-danger" onclick="confirmLogout()">🚪 Logout</button>
+      <button class="btn btn-danger" onclick="confirmLogout()"><span data-lucide="log-out"></span> Logout</button>
     </div>
     ` : ''}
   `;
 }
+function openEditProfileModal() {
+  showModal(
+    'Edit Profil',
+    `<div class="input-group"><label>Username Baru</label><input type="text" id="ep-username" value="${currentUser.username}" placeholder="Username baru"/></div>
+     <div class="input-group"><label>URL Foto Profil</label><input type="text" id="ep-avatar" value="${currentUser.avatarUrl || ''}" placeholder="https://..."/></div>
+     <p style="font-size:11px;color:var(--muted)">Tips: pakai link gambar dari Imgur/ImgBB, atau koleksi PFP gacha-mu (Koleksi → "Pakai sebagai PFP").</p>`,
+    [
+      { label: 'Simpan', cls: 'btn-primary', fn: saveProfileEdit },
+      { label: 'Batal', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.openEditProfileModal = openEditProfileModal;
+async function saveProfileEdit() {
+  const newUsername = document.getElementById('ep-username')?.value?.trim();
+  const newAvatar    = document.getElementById('ep-avatar')?.value?.trim();
+  if (!newUsername) { toast('Username tidak boleh kosong.', 'error'); return; }
+  if (newAvatar && !newAvatar.startsWith('http')) { toast('URL foto harus dimulai dengan http.', 'error'); return; }
+  currentUser.avatarUrl = newAvatar || DEFAULT_AVATAR;
+  if (newUsername.toLowerCase() !== currentUser.username.toLowerCase()) {
+    currentUser.username = newUsername;
+    // Catatan: ini hanya mengubah display name, ID dokumen Firestore tetap memakai username lama.
+  } else {
+    currentUser.username = newUsername;
+  }
+  await saveUserData();
+  closeModal();
+  renderSidebar();
+  renderProfile(currentUser);
+  toast('Profil berhasil diperbarui!', 'success');
+}
+window.saveProfileEdit = saveProfileEdit;
 function isDailyClaimed() {
   if (!currentUser) return false;
   const last = currentUser.lastLogin || 0;
@@ -1587,69 +1623,14 @@ function renderAdminHome() {
 window.renderAdminHome = renderAdminHome;
 function openAdminSection(section) {
   const el = document.getElementById('admin-section-content');
-  if (section === 'add-gacha') {
-    el.innerHTML = `
-      <div class="section-label">Tambah Item ke Gacha Pool</div>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:480px">
-        <div class="input-group"><label>Nama Karakter</label><input type="text" id="ag-name" placeholder="Cth: Rem - Re:Zero"/></div>
-        <div class="input-group">
-          <label>URL Gambar <small style="color:var(--muted)">(host di ImgBB/Cloudinary dll)</small></label>
-          <input type="text" id="ag-image" placeholder="https://..."/>
-        </div>
-        <div class="input-group"><label>Tipe Banner</label>
-          <select id="ag-type">
-            <option value="waifu_card">Waifu Card</option>
-            <option value="husbu_card">Husbu Card</option>
-            <option value="waifu_pfp">Waifu PFP</option>
-            <option value="husbu_pfp">Husbu PFP</option>
-          </select>
-        </div>
-        <div class="input-group"><label>Rarity</label>
-          <select id="ag-rarity">
-            <option value="C">C — Common</option>
-            <option value="R">R — Rare</option>
-            <option value="SR">SR — Super Rare</option>
-            <option value="SSR">SSR — Super Super Rare</option>
-            <option value="UR">UR — Ultra Rare</option>
-          </select>
-        </div>
-        <button class="btn btn-maou" onclick="submitAddGacha()">✨ Tambahkan ke Pool</button>
-      </div>`;
-  }
-  else if (section === 'manage-gacha') {
+  if (section === 'manage-gacha') {
     renderManageGachaPool(el);
   }
   else if (section === 'manage-users') {
     renderManageUsers(el);
   }
-  else if (section === 'edit-anime') {
-    el.innerHTML = `<div class="section-label">Edit Anime Global</div>
-      <p style="color:var(--muted);font-size:13px">Fitur ini memungkinkan Maou mengoreksi judul atau gambar anime di daftar semua user.<br/>Masukkan Jikan ID anime yang ingin dikoreksi.</p>
-      <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:480px;margin-top:12px">
-        <div class="input-group"><label>Jikan Anime ID</label><input type="number" id="ea-jikanid" placeholder="Cth: 11757"/></div>
-        <div class="input-group"><label>Judul Baru (kosongkan jika tidak diubah)</label><input type="text" id="ea-title" placeholder=""/></div>
-        <div class="input-group"><label>URL Gambar Baru (kosongkan jika tidak diubah)</label><input type="text" id="ea-image" placeholder="https://..."/></div>
-        <button class="btn btn-maou" onclick="submitEditAnimeGlobal()">✏️ Terapkan Perubahan Global</button>
-      </div>`;
-  }
 }
 window.openAdminSection = openAdminSection;
-async function submitAddGacha() {
-  const name     = document.getElementById('ag-name')?.value?.trim();
-  const imageUrl = document.getElementById('ag-image')?.value?.trim();
-  const type     = document.getElementById('ag-type')?.value;
-  const rarity   = document.getElementById('ag-rarity')?.value;
-  if (!name || !imageUrl) { toast('Isi nama dan URL gambar.', 'error'); return; }
-  if (!imageUrl.startsWith('http')) { toast('URL gambar harus dimulai dengan http.', 'error'); return; }
-  await addDoc(collection(db, 'gacha_pool'), {
-    name, imageUrl, type, rarity, addedAt: Date.now(), addedBy: currentUser.id
-  });
-  await loadGachaPool();
-  toast(`${name} [${rarity}] berhasil ditambahkan ke pool! ✨`, 'success');
-  document.getElementById('ag-name').value  = '';
-  document.getElementById('ag-image').value = '';
-}
-window.submitAddGacha = submitAddGacha;
 async function renderManageGachaPool(el) {
   await loadGachaPool();
   el.innerHTML = `
@@ -1749,30 +1730,6 @@ function adminChangeRole(uid) {
   );
 }
 window.adminChangeRole = adminChangeRole;
-async function submitEditAnimeGlobal() {
-  const jikanId  = parseInt(document.getElementById('ea-jikanid')?.value || '0');
-  const newTitle = document.getElementById('ea-title')?.value?.trim();
-  const newImage = document.getElementById('ea-image')?.value?.trim();
-  if (!jikanId) { toast('Masukkan Jikan ID.', 'error'); return; }
-  const snap = await getDocs(collection(db, 'users'));
-  let count = 0;
-  for (const d of snap.docs) {
-    const userData = d.data();
-    const list = userData.animeList || [];
-    const updated = list.map(a => {
-      if (String(a.jikanId) === String(jikanId)) {
-        count++;
-        return { ...a, ...(newTitle ? {title: newTitle} : {}), ...(newImage ? {imageUrl: newImage} : {}) };
-      }
-      return a;
-    });
-    if (JSON.stringify(updated) !== JSON.stringify(list)) {
-      await updateDoc(doc(db, 'users', d.id), { animeList: updated });
-    }
-  }
-  toast(`${count} entri diperbarui secara global!`, 'success');
-}
-window.submitEditAnimeGlobal = submitEditAnimeGlobal;
 async function saveUserData() {
   if (!currentUser) return;
   const { id, _dailyClaimed, ...data } = currentUser;
@@ -1798,6 +1755,12 @@ function applyBrandLogo() {
 }
 window.addEventListener('DOMContentLoaded', () => {
   applyBrandLogo();
+  refreshIcons();
+  const observer = new MutationObserver(() => {
+    clearTimeout(window._iconDebounce);
+    window._iconDebounce = setTimeout(refreshIcons, 30);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
   setTimeout(() => {
     document.getElementById('splash').classList.add('hidden');
   }, 2400);
