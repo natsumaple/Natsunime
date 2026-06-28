@@ -23,8 +23,8 @@ const firebaseConfig = {
   projectId: "natsunime-86e9d",
   storageBucket: "natsunime-86e9d.firebasestorage.app",
   messagingSenderId: "804368157744",
-  appId: "1:804368157744:web:333f802ee695d78cf3f1f5",
-  measurementId: "G-L0X0VZ6JPH"
+  appId: "1:804368157744:web:6c5760431f530accf3f1f5",
+  measurementId: "G-DZTTZTP027"
 };
 
 // ============================================================
