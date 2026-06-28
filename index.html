@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Natsunime — Guild Anime System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ============================================================
+   ROOT VARIABLES & BASE
+============================================================ */
+:root {
+  --bg:        #0b1220;
+  --panel:     #111a2e;
+  --panel2:    #16213a;
+  --panel3:    #1c2a45;
+  --text:      #d6e4ff;
+  --muted:     #8aa4c7;
+  --primary:   #5aa9ff;
+  --primary2:  #7cc7ff;
+  --accent:    #9bd3ff;
+  --border:    rgba(140,180,255,0.15);
+  --border2:   rgba(140,180,255,0.08);
+
+  /* Role colors */
+  --maou-clr:      #c084fc;
+  --maou-glow:     rgba(192,132,252,0.25);
+  --bangsawan-clr: #fbbf24;
+  --bangsawan-glow:rgba(251,191,36,0.2);
+  --rakyat-clr:    var(--primary);
+
+  /* Rarity colors */
+  --rarity-C:   #9ca3af;
+  --rarity-R:   #60a5fa;
+  --rarity-SR:  #a78bfa;
+  --rarity-SSR: #f59e0b;
+  --rarity-UR:  #ef4444;
+
+  --sidebar-w: 240px;
+  --radius: 12px;
+  --transition: 0.2s ease;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* ============================================================
+   SPLASH SCREEN
+============================================================ */
+#splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 20px;
+  transition: opacity 0.6s ease;
+}
+#splash.hidden { opacity: 0; pointer-events: none; }
+
+/* CLUE: Ganti src logo di splash dengan ASSETS.LOGO_URL dari firebase-config.js */
+#splash-logo {
+  width: 100px; height: 100px;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 0 40px rgba(90,169,255,0.3);
+  /* Jika logo belum diset, tampilkan placeholder teks */
+}
+#splash-logo-fallback {
+  width: 100px; height: 100px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 36px; font-weight: 700;
+  box-shadow: 0 0 40px rgba(90,169,255,0.3);
+}
+#splash h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 28px; font-weight: 700;
+  background: linear-gradient(135deg, var(--primary2), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#splash p { color: var(--muted); font-size: 13px; }
+.splash-bar {
+  width: 180px; height: 3px;
+  background: var(--panel2);
+  border-radius: 10px; overflow: hidden;
+}
+.splash-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 10px;
+  animation: splashLoad 2.2s ease forwards;
+}
+@keyframes splashLoad {
+  0% { width: 0%; }
+  60% { width: 75%; }
+  100% { width: 100%; }
+}
+
+/* ============================================================
+   TOAST NOTIFICATION
+============================================================ */
+#toast-container {
+  position: fixed; top: 20px; right: 20px;
+  z-index: 8888; display: flex; flex-direction: column; gap: 8px;
+}
+.toast {
+  padding: 12px 18px; border-radius: var(--radius);
+  background: var(--panel); border: 1px solid var(--border);
+  color: var(--text); font-size: 13px; max-width: 280px;
+  animation: toastIn 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.toast.success { border-color: #34d399; color: #34d399; }
+.toast.error   { border-color: #f87171; color: #f87171; }
+.toast.info    { border-color: var(--primary); }
+@keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+
+/* ============================================================
+   MODAL (Popup)
+============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 7777;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 18px; padding: 28px; width: 90%; max-width: 420px;
+  transform: scale(0.95); transition: transform 0.25s;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.modal-overlay.active .modal-box { transform: scale(1); }
+.modal-box h3 {
+  font-family: 'Cinzel', serif; font-size: 18px;
+  margin-bottom: 6px; color: var(--primary2);
+}
+.modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn {
+  padding: 9px 18px; border-radius: 8px; border: none;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); display: inline-flex;
+  align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+  color: #0b1220;
+}
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-ghost:hover { background: var(--panel2); color: var(--text); }
+.btn-danger {
+  background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3);
+  color: #f87171;
+}
+.btn-maou {
+  background: linear-gradient(135deg, #7c3aed, var(--maou-clr));
+  color: #fff;
+}
+
+/* ============================================================
+   INPUTS & FORMS
+============================================================ */
+.input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.input-group label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.5px; }
+.input-group input, .input-group select, .input-group textarea {
+  background: var(--panel2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 14px;
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px;
+  outline: none; transition: border-color 0.2s;
+  width: 100%;
+}
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+  border-color: var(--primary);
+}
+.input-group select option { background: var(--panel); }
+
+/* ============================================================
+   APP SHELL
+============================================================ */
+#app {
+  display: flex; height: 100vh;
+  opacity: 0; transition: opacity 0.5s;
+}
+#app.visible { opacity: 1; }
+
+/* ============================================================
+   AUTH SCREEN
+============================================================ */
+#auth-screen {
+  position: fixed; inset: 0; z-index: 5555;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+}
+#auth-screen.hidden { display: none; }
+.auth-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px; width: 90%; max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.auth-logo {
+  text-align: center; margin-bottom: 24px;
+}
+.auth-logo-img {
+  width: 60px; height: 60px; border-radius: 14px; object-fit: cover;
+  margin-bottom: 12px;
+}
+.auth-logo-fallback {
+  width: 60px; height: 60px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+  margin: 0 auto 12px;
+}
+.auth-logo h2 {
+  font-family: 'Cinzel', serif; font-size: 20px;
+  background: linear-gradient(135deg, var(--primary2), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.auth-logo p { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.auth-tabs { display: flex; gap: 8px; margin-bottom: 22px; }
+.auth-tab {
+  flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted); font-family: 'Cinzel', serif;
+  font-size: 13px; cursor: pointer; transition: var(--transition);
+}
+.auth-tab.active {
+  background: rgba(90,169,255,0.12); border-color: var(--primary);
+  color: var(--primary2);
+}
+#auth-error { color: #f87171; font-size: 12px; margin-bottom: 10px; min-height: 16px; }
+
+/* ============================================================
+   SIDEBAR
+============================================================ */
+.sidebar {
+  width: var(--sidebar-w); height: 100vh;
+  background: rgba(17,26,46,0.95); backdrop-filter: blur(12px);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 20px 14px; gap: 6px;
+  transition: transform 0.3s ease;
+  z-index: 100; flex-shrink: 0;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 6px 18px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 6px;
+}
+.sidebar-logo-img {
+  width: 36px; height: 36px; border-radius: 8px; object-fit: cover;
+}
+.sidebar-logo-fallback {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary), var(--maou-clr));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #fff;
+}
+.sidebar-logo span {
+  font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700;
+  background: linear-gradient(135deg, var(--primary2), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: var(--radius);
+  color: var(--muted); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: var(--transition);
+  border: 1px solid transparent;
+}
+.nav-item:hover { background: rgba(90,169,255,0.08); color: var(--text); }
+.nav-item.active {
+  background: rgba(90,169,255,0.12); color: var(--primary2);
+  border-color: rgba(90,169,255,0.2);
+}
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-section-label {
+  font-size: 10px; letter-spacing: 1.5px; color: var(--muted);
+  padding: 12px 12px 4px; font-weight: 600; text-transform: uppercase;
+}
+
+/* Sidebar user area */
+.sidebar-user {
+  margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border2);
+}
+.sidebar-user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: var(--radius);
+  background: var(--panel2); cursor: pointer;
+  transition: var(--transition); border: 1px solid var(--border);
+}
+.sidebar-user-card:hover { border-color: var(--primary); }
+.sidebar-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-user-info { overflow: hidden; }
+.sidebar-username {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-role-badge {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+  border-radius: 4px; padding: 1px 5px; display: inline-block; margin-top: 2px;
+}
+.role-maou      { color: var(--maou-clr); background: rgba(192,132,252,0.12); }
+.role-bangsawan { color: var(--bangsawan-clr); background: rgba(251,191,36,0.12); }
+.role-rakyat    { color: var(--primary); background: rgba(90,169,255,0.1); }
+
+/* ============================================================
+   MAIN CONTENT
+============================================================ */
+.main {
+  flex: 1; height: 100vh;
+  overflow-y: auto; padding: 28px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+.main::-webkit-scrollbar { width: 6px; }
+.main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+.page { display: none; flex-direction: column; gap: 20px; }
+.page.active { display: flex; }
+
+.page-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+}
+.page-title {
+  font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text);
+}
+.page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+/* Section heading */
+.section-label {
+  font-size: 11px; letter-spacing: 1.5px; color: var(--muted);
+  font-weight: 600; text-transform: uppercase; margin-bottom: 12px;
+}
+
+/* ============================================================
+   HOME / ANIME LIST
+============================================================ */
+.search-bar {
+  display: flex; gap: 10px; align-items: center;
+}
+.search-bar input {
+  flex: 1; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 16px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 14px; outline: none;
+  transition: border-color 0.2s;
+}
+.search-bar input:focus { border-color: var(--primary); }
+
+.anime-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+.anime-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  cursor: pointer; transition: var(--transition);
+  position: relative;
+}
+.anime-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 0 20px rgba(90,169,255,0.15); }
+.anime-card-poster {
+  width: 100%; aspect-ratio: 2/3; object-fit: cover;
+  background: var(--panel2);
+}
+.anime-card-poster-placeholder {
+  width: 100%; aspect-ratio: 2/3;
+  background: var(--panel2); display: flex; align-items: center;
+  justify-content: center; font-size: 32px;
+}
+.anime-card-body { padding: 10px; }
+.anime-card-title { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.anime-card-meta  { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.anime-status-badge {
+  position: absolute; top: 8px; left: 8px;
+  padding: 2px 7px; border-radius: 6px; font-size: 10px; font-weight: 700;
+}
+.status-watched   { background: rgba(52,211,153,0.2); color: #34d399; }
+.status-watching  { background: rgba(90,169,255,0.2); color: var(--primary2); }
+.status-planned   { background: rgba(139,92,246,0.2); color: #a78bfa; }
+
+/* ============================================================
+   MARATHON (WISHLIST)
+============================================================ */
+.marathon-list { display: flex; flex-direction: column; gap: 10px; }
+.marathon-item {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  transition: var(--transition);
+}
+.marathon-item.done { opacity: 0.5; }
+.marathon-item.done .marathon-title { text-decoration: line-through; }
+.marathon-checkbox {
+  width: 20px; height: 20px; border-radius: 6px;
+  border: 2px solid var(--border); background: transparent;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: var(--transition);
+}
+.marathon-checkbox.checked { background: var(--primary); border-color: var(--primary); }
+.marathon-checkbox.checked::after { content: '✓'; color: #0b1220; font-size: 12px; font-weight: 700; }
+.marathon-poster { width: 44px; height: 60px; border-radius: 6px; object-fit: cover; flex-shrink: 0; background: var(--panel2); }
+.marathon-info { flex: 1; }
+.marathon-title { font-size: 14px; font-weight: 600; }
+.marathon-deadline { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.marathon-deadline.overdue { color: #f87171; }
+.marathon-actions { display: flex; gap: 6px; }
+.icon-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted); cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
+  transition: var(--transition);
+}
+.icon-btn:hover { background: var(--panel2); color: var(--text); }
+
+/* ============================================================
+   GACHA
+============================================================ */
+.gacha-banners {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.gacha-banner {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; text-align: center;
+  cursor: pointer; transition: var(--transition); position: relative; overflow: hidden;
+}
+.gacha-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(90,169,255,0.04));
+  pointer-events: none;
+}
+.gacha-banner:hover { border-color: var(--primary); transform: translateY(-3px); }
+.gacha-banner-icon { font-size: 36px; margin-bottom: 10px; }
+.gacha-banner-name { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; }
+.gacha-banner-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.gacha-price-tag {
+  display: inline-block; margin-top: 12px;
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  background: rgba(90,169,255,0.1); color: var(--primary2);
+  border: 1px solid rgba(90,169,255,0.2);
+}
+
+/* Gacha result */
+.gacha-result-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;
+}
+.gacha-result-card {
+  border-radius: var(--radius); overflow: hidden; text-align: center;
+  border: 2px solid;
+  animation: cardAppear 0.4s ease both;
+}
+@keyframes cardAppear { from { opacity:0; transform:scale(0.8) rotate(-3deg); } to { opacity:1; transform:scale(1) rotate(0deg); } }
+.gacha-result-card.C   { border-color: var(--rarity-C); }
+.gacha-result-card.R   { border-color: var(--rarity-R); box-shadow: 0 0 10px rgba(96,165,250,0.3); }
+.gacha-result-card.SR  { border-color: var(--rarity-SR); box-shadow: 0 0 12px rgba(167,139,250,0.35); }
+.gacha-result-card.SSR { border-color: var(--rarity-SSR); box-shadow: 0 0 16px rgba(245,158,11,0.4); }
+.gacha-result-card.UR  { border-color: var(--rarity-UR); box-shadow: 0 0 20px rgba(239,68,68,0.5); }
+.gacha-result-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+.gacha-result-footer { padding: 6px; font-size: 11px; font-weight: 700; background: var(--panel); }
+
+/* Collection grid */
+.collection-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
+}
+.collection-card {
+  border-radius: var(--radius); overflow: hidden; border: 2px solid var(--border);
+  transition: var(--transition); position: relative;
+}
+.collection-card:hover { transform: translateY(-3px); }
+.collection-card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; background: var(--panel2); }
+.collection-card-footer {
+  padding: 6px 8px; background: var(--panel);
+  font-size: 11px; font-weight: 600;
+}
+.rarity-label { font-weight: 700; }
+.rarity-C   { color: var(--rarity-C); }
+.rarity-R   { color: var(--rarity-R); }
+.rarity-SR  { color: var(--rarity-SR); }
+.rarity-SSR { color: var(--rarity-SSR); }
+.rarity-UR  { color: var(--rarity-UR); }
+
+/* ============================================================
+   PROFILE
+============================================================ */
+.profile-hero {
+  border-radius: 18px; padding: 28px; position: relative; overflow: hidden;
+  background: var(--panel); border: 1px solid var(--border);
+}
+.profile-hero.maou-theme {
+  background: linear-gradient(135deg, #1a0533, #1e0d3f);
+  border-color: var(--maou-clr);
+  box-shadow: 0 0 40px var(--maou-glow);
+}
+.profile-hero.bangsawan-theme {
+  background: linear-gradient(135deg, #1a1200, #241a00);
+  border-color: var(--bangsawan-clr);
+  box-shadow: 0 0 30px var(--bangsawan-glow);
+}
+.profile-hero-bg {
+  position: absolute; inset: 0; opacity: 0.06;
+  background: radial-gradient(circle at 70% 50%, var(--primary), transparent);
+  pointer-events: none;
+}
+.profile-top { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; position: relative; }
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar {
+  width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--border);
+}
+.profile-avatar.maou-border      { border-color: var(--maou-clr); box-shadow: 0 0 16px var(--maou-glow); }
+.profile-avatar.bangsawan-border  { border-color: var(--bangsawan-clr); box-shadow: 0 0 12px var(--bangsawan-glow); }
+.profile-info { flex: 1; }
+.profile-username {
+  font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700;
+}
+.profile-username.maou-text      { color: var(--maou-clr); }
+.profile-username.bangsawan-text { color: var(--bangsawan-clr); }
+.profile-badges { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.badge {
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  border: 1px solid;
+}
+.badge-maou      { color: var(--maou-clr); border-color: var(--maou-clr); background: rgba(192,132,252,0.1); }
+.badge-bangsawan { color: var(--bangsawan-clr); border-color: var(--bangsawan-clr); background: rgba(251,191,36,0.1); }
+.badge-rank      { color: var(--accent); border-color: var(--accent); background: rgba(155,211,255,0.08); }
+.badge-rakyat    { color: var(--primary); border-color: var(--primary); background: rgba(90,169,255,0.1); }
+
+/* Rank progress */
+.rank-bar-wrap { margin-top: 16px; }
+.rank-bar-meta {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--muted); margin-bottom: 6px;
+}
+.rank-bar {
+  height: 8px; background: var(--panel2); border-radius: 10px;
+  overflow: hidden; border: 1px solid var(--border);
+}
+.rank-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: 10px; transition: width 0.8s ease;
+}
+
+/* Eris widget */
+.eris-widget {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--panel2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 16px;
+}
+.eris-icon { font-size: 22px; }
+.eris-info { flex: 1; }
+.eris-amount { font-size: 22px; font-weight: 700; color: var(--bangsawan-clr); font-family: 'Cinzel', serif; }
+.eris-label  { font-size: 11px; color: var(--muted); }
+
+/* Profile stats */
+.profile-stats {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
+}
+.stat-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; text-align: center;
+}
+.stat-value { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--primary2); }
+.stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* Daily login */
+.daily-btn {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(90,169,255,0.1));
+  border: 1px solid rgba(52,211,153,0.3); border-radius: var(--radius);
+  padding: 14px 20px; cursor: pointer; transition: var(--transition);
+  width: 100%;
+}
+.daily-btn:hover { border-color: #34d399; }
+.daily-btn.claimed { opacity: 0.5; cursor: not-allowed; }
+.daily-info h4 { font-size: 14px; font-weight: 700; color: #34d399; }
+.daily-info p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ============================================================
+   USERS / KOMUNITAS
+============================================================ */
+.users-list { display: flex; flex-direction: column; gap: 8px; }
+.user-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 16px;
+  cursor: pointer; transition: var(--transition);
+}
+.user-row:hover { border-color: var(--primary); background: var(--panel2); }
+.user-row-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.user-row-info { flex: 1; }
+.user-row-name  { font-size: 14px; font-weight: 600; }
+.user-row-meta  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.user-row-rank  { font-size: 12px; color: var(--accent); font-weight: 600; }
+
+/* ============================================================
+   ADMIN PANEL
+============================================================ */
+.admin-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;
+}
+.admin-card {
+  background: linear-gradient(135deg, #1a0533, #1e0d3f);
+  border: 1px solid var(--maou-clr); border-radius: 16px;
+  padding: 20px; cursor: pointer; transition: var(--transition);
+}
+.admin-card:hover { box-shadow: 0 0 20px var(--maou-glow); transform: translateY(-2px); }
+.admin-card-icon { font-size: 28px; margin-bottom: 10px; }
+.admin-card-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--maou-clr); }
+.admin-card-desc  { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* Gacha pool table */
+.table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: var(--panel2); padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.5px; }
+td { padding: 10px 14px; border-top: 1px solid var(--border2); vertical-align: middle; }
+tr:hover td { background: var(--panel2); }
+.table-img { width: 36px; height: 50px; object-fit: cover; border-radius: 6px; }
+
+/* ============================================================
+   MOBILE BOTTOM NAV
+============================================================ */
+.bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(17,26,46,0.97); backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding: 8px 0 12px; z-index: 200;
+}
+.bottom-nav-items { display: flex; justify-content: space-around; }
+.bottom-nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 4px 12px; cursor: pointer;
+  color: var(--muted); font-size: 10px; font-weight: 500;
+  transition: var(--transition);
+}
+.bottom-nav-item .bn-icon { font-size: 20px; }
+.bottom-nav-item.active { color: var(--primary2); }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .bottom-nav { display: block; }
+  .main { padding: 16px 14px 80px; }
+  .anime-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .gacha-banners { grid-template-columns: repeat(2, 1fr); }
+  .profile-stats { grid-template-columns: repeat(2, 1fr); }
+  .admin-grid { grid-template-columns: 1fr; }
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center; padding: 50px 20px; color: var(--muted);
+}
+.empty-state-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state h3 { font-family: 'Cinzel', serif; font-size: 16px; margin-bottom: 6px; color: var(--text); }
+.empty-state p  { font-size: 13px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border);
+  background: transparent; color: var(--muted); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+}
+.tab-btn.active { background: rgba(90,169,255,0.12); border-color: var(--primary); color: var(--primary2); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SPLASH SCREEN
+============================================================ -->
+<div id="splash">
+  <!--
+    CLUE: Gambar logo splash screen.
+    Ganti src dengan nilai ASSETS.LOGO_URL dari firebase-config.js
+    Contoh: <img id="splash-logo" src="https://i.ibb.co/xxxxx/logo.png" />
+    Jika URL logo belum ada, div fallback di bawah akan tampil otomatis via JS.
+  -->
+  <div id="splash-logo-fallback">N</div>
+  <h1>Natsunime</h1>
+  <p>Guild Anime System</p>
+  <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<!-- ============================================================
+     TOAST
+============================================================ -->
+<div id="toast-container"></div>
+
+<!-- ============================================================
+     MODAL
+============================================================ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Modal</h3>
+    <p id="modal-body">Content</p>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     AUTH SCREEN
+============================================================ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <!--
+        CLUE: Logo di halaman login.
+        Ganti src dengan ASSETS.LOGO_URL dari firebase-config.js
+      -->
+      <div class="auth-logo-fallback">N</div>
+      <h2>Natsunime</h2>
+      <p>Guild Anime System · Log in to continue</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+    </div>
+    <div id="auth-error"></div>
+    <div id="login-form">
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="Masukkan username" autocomplete="off"/>
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••••••"/>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Masuk ke Guild</button>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="reg-username" placeholder="Pilih username unik"/>
+      </div>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="reg-password" placeholder="Min. 6 karakter"/>
+      </div>
+      <div class="input-group">
+        <label>Konfirmasi Password</label>
+        <input type="password" id="reg-confirm" placeholder="Ulangi password"/>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doRegister()">Bergabung ke Guild</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP SHELL
+============================================================ -->
+<div id="app">
+
+  <!-- SIDEBAR (Desktop) -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <!--
+        CLUE: Logo mini di sidebar.
+        Ganti fallback "N" dengan tag <img> jika URL sudah tersedia.
+        Contoh: <img class="sidebar-logo-img" src="ASSETS.LOGO_URL" />
+      -->
+      <div class="sidebar-logo-fallback">N</div>
+      <span>Natsunime</span>
+    </div>
+
+    <span class="nav-section-label">Utama</span>
+    <div class="nav-item active" onclick="navigate('home')" id="nav-home">
+      <span class="nav-icon">🏠</span> Beranda
+    </div>
+    <div class="nav-item" onclick="navigate('marathon')" id="nav-marathon">
+      <span class="nav-icon">📋</span> Marathon
+    </div>
+    <div class="nav-item" onclick="navigate('gacha')" id="nav-gacha">
+      <span class="nav-icon">🎲</span> Gacha
+    </div>
+    <div class="nav-item" onclick="navigate('collection')" id="nav-collection">
+      <span class="nav-icon">🃏</span> Koleksi
+    </div>
+
+    <span class="nav-section-label">Komunitas</span>
+    <div class="nav-item" onclick="navigate('users')" id="nav-users">
+      <span class="nav-icon">⚔️</span> Guild Members
+    </div>
+
+    <span class="nav-section-label">Akun</span>
+    <div class="nav-item" onclick="navigate('profile')" id="nav-profile">
+      <span class="nav-icon">👤</span> Profil
+    </div>
+    <div class="nav-item" id="nav-admin" style="display:none" onclick="navigate('admin')">
+      <span class="nav-icon">👑</span> Admin Panel
+    </div>
+
+    <div class="sidebar-user">
+      <div class="sidebar-user-card" onclick="navigate('profile')">
+        <!--
+          CLUE: Avatar sidebar user yang sedang login.
+          src diisi secara dinamis via JS dari data Firestore.
+          Fallback: ASSETS.DEFAULT_AVATAR_URL dari firebase-config.js
+        -->
+        <img class="sidebar-avatar" id="sidebar-avatar" src="" alt="avatar"/>
+        <div class="sidebar-user-info">
+          <div class="sidebar-username" id="sidebar-username">—</div>
+          <div id="sidebar-role-badge" class="sidebar-role-badge">—</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="main" id="main-content">
+
+    <!-- ====== HOME: Daftar Anime ====== -->
+    <section class="page active" id="page-home">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Daftar Anime</div>
+          <div class="page-subtitle">Pantau progress tontonanmu seperti seorang petualang sejati.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddAnimeModal()">＋ Tambah Anime</button>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="anime-search" placeholder="🔍  Cari judul anime..." oninput="filterAnimeList()"/>
+        <div class="tabs" style="flex-shrink:0">
+          <button class="tab-btn active" onclick="filterByStatus('all',this)">Semua</button>
+          <button class="tab-btn" onclick="filterByStatus('watching',this)">Watching</button>
+          <button class="tab-btn" onclick="filterByStatus('watched',this)">Watched</button>
+        </div>
+      </div>
+      <div class="anime-grid" id="anime-grid"></div>
+    </section>
+
+    <!-- ====== MARATHON ====== -->
+    <section class="page" id="page-marathon">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Marathon Wishlist</div>
+          <div class="page-subtitle">Rencanakan marathon-mu dengan tenggat waktu.</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddMarathonModal()">＋ Tambah</button>
+      </div>
+      <div class="marathon-list" id="marathon-list"></div>
+    </section>
+
+    <!-- ====== GACHA ====== -->
+    <section class="page" id="page-gacha">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Gacha Banner</div>
+          <div class="page-subtitle">Gunakan Eris untuk mendapatkan Waifu & Husbu legendaris!</div>
+        </div>
+        <div class="eris-widget" style="min-width:180px">
+          <span class="eris-icon">💰</span>
+          <div class="eris-info">
+            <div class="eris-amount" id="gacha-eris-display">0</div>
+            <div class="eris-label">Eris tersedia</div>
+          </div>
+        </div>
+      </div>
+      <div id="gacha-result-area" style="display:none">
+        <div class="section-label">Hasil Gacha</div>
+        <div class="gacha-result-grid" id="gacha-result-grid"></div>
+        <div style="margin-top:14px">
+          <button class="btn btn-ghost" onclick="closeGachaResult()">← Kembali ke Banner</button>
+        </div>
+      </div>
+      <div id="gacha-banners-area">
+        <div class="gacha-banners" id="gacha-banners"></div>
+      </div>
+    </section>
+
+    <!-- ====== KOLEKSI ====== -->
+    <section class="page" id="page-collection">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Koleksiku</div>
+          <div class="page-subtitle">Semua kartu Waifu & Husbu yang kamu miliki.</div>
+        </div>
+      </div>
+      <div class="tabs" id="collection-tabs">
+        <button class="tab-btn active" onclick="filterCollection('all',this)">Semua</button>
+        <button class="tab-btn" onclick="filterCollection('waifu_card',this)">Waifu Card</button>
+        <button class="tab-btn" onclick="filterCollection('husbu_card',this)">Husbu Card</button>
+        <button class="tab-btn" onclick="filterCollection('waifu_pfp',this)">Waifu PFP</button>
+        <button class="tab-btn" onclick="filterCollection('husbu_pfp',this)">Husbu PFP</button>
+      </div>
+      <div class="collection-grid" id="collection-grid"></div>
+    </section>
+
+    <!-- ====== USERS / GUILD MEMBERS ====== -->
+    <section class="page" id="page-users">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Guild Members</div>
+          <div class="page-subtitle">Seluruh anggota guild Natsunime.</div>
+        </div>
+      </div>
+      <div class="search-bar" style="margin-bottom:4px">
+        <input type="text" id="user-search" placeholder="🔍  Cari member..." oninput="filterUsers()"/>
+      </div>
+      <div class="users-list" id="users-list"></div>
+    </section>
+
+    <!-- ====== PROFILE ====== -->
+    <section class="page" id="page-profile">
+      <div id="profile-content"></div>
+    </section>
+
+    <!-- ====== ADMIN PANEL ====== -->
+    <section class="page" id="page-admin">
+      <div class="page-header">
+        <div>
+          <div class="page-title" style="color:var(--maou-clr)">👑 Admin Panel — Maou</div>
+          <div class="page-subtitle">Kekuasaan absolut atas guild.</div>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <div class="admin-card" onclick="openAdminSection('add-gacha')">
+          <div class="admin-card-icon">✨</div>
+          <div class="admin-card-title">Tambah Gacha Item</div>
+          <div class="admin-card-desc">Tambahkan Waifu/Husbu Card & PFP ke pool gacha.</div>
+        </div>
+        <div class="admin-card" onclick="openAdminSection('manage-gacha')">
+          <div class="admin-card-icon">📋</div>
+          <div class="admin-card-title">Kelola Gacha Pool</div>
+          <div class="admin-card-desc">Lihat dan hapus item dari pool gacha.</div>
+        </div>
+        <div class="admin-card" onclick="openAdminSection('manage-users')">
+          <div class="admin-card-icon">👥</div>
+          <div class="admin-card-title">Kelola Member</div>
+          <div class="admin-card-desc">Edit role, tambah Eris, atau hapus member.</div>
+        </div>
+        <div class="admin-card" onclick="openAdminSection('edit-anime')">
+          <div class="admin-card-icon">📝</div>
+          <div class="admin-card-title">Edit Anime Global</div>
+          <div class="admin-card-desc">Koreksi judul/gambar anime secara global.</div>
+        </div>
+      </div>
+      <div id="admin-section-content" style="margin-top:20px"></div>
+    </section>
+
+  </main><!-- /main -->
+</div><!-- /app -->
+
+<!-- ============================================================
+     BOTTOM NAV (Mobile)
+============================================================ -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-items">
+    <div class="bottom-nav-item active" id="bn-home" onclick="navigate('home')">
+      <span class="bn-icon">🏠</span><span>Beranda</span>
+    </div>
+    <div class="bottom-nav-item" id="bn-marathon" onclick="navigate('marathon')">
+      <span class="bn-icon">📋</span><span>Marathon</span>
+    </div>
+    <div class="bottom-nav-item" id="bn-gacha" onclick="navigate('gacha')">
+      <span class="bn-icon">🎲</span><span>Gacha</span>
+    </div>
+    <div class="bottom-nav-item" id="bn-collection" onclick="navigate('collection')">
+      <span class="bn-icon">🃏</span><span>Koleksi</span>
+    </div>
+    <div class="bottom-nav-item" id="bn-profile" onclick="navigate('profile')">
+      <span class="bn-icon">👤</span><span>Profil</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     FIREBASE SDK
+============================================================ -->
+<script type="module">
+import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc,
+  getDoc, getDocs, setDoc, addDoc,
+  updateDoc, deleteDoc, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { FIREBASE_CONFIG, ASSETS } from "./firebase-config.js";
+
+/* ============================================================
+   FIREBASE INIT
+============================================================ */
+const app = initializeApp(FIREBASE_CONFIG);
+const db  = getFirestore(app);
+
+/* ============================================================
+   RANK SYSTEM CONFIG
+   Urutan: Villager → Adventurer → Knight → Hero → MC
+   rankPoints dihitung dari total rarity point koleksi gacha
+============================================================ */
+const RANKS = [
+  { name: "Villager",    minPts: 0   },
+  { name: "Adventurer",  minPts: 20  },
+  { name: "Knight",      minPts: 60  },
+  { name: "Hero",        minPts: 150 },
+  { name: "MC",          minPts: 350 },
+];
+const RARITY_PTS = { C:1, R:3, SR:7, SSR:15, UR:30 };
+
+const GACHA_PRICE    = { rakyat: 5, bangsawan: 3 };
+const DAILY_REWARD   = 10;
+const DEFAULT_AVATAR = ASSETS.DEFAULT_AVATAR_URL || "https://i.pravatar.cc/150?u=default_natsunime";
+
+/* ============================================================
+   STATE
+============================================================ */
+let currentUser     = null; // { username, role, rank, eris, avatarUrl, ... }
+let allUsers        = [];
+let gachaPool       = [];
+let currentPage     = 'home';
+let animeStatusFilter = 'all';
+let collectionFilter  = 'all';
+
+/* ============================================================
+   UTILS
+============================================================ */
+function toast(msg, type='info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function showModal(title, body, actions=[]) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  const actEl = document.getElementById('modal-actions');
+  actEl.innerHTML = '';
+  actions.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = `btn ${a.cls || 'btn-ghost'}`;
+    btn.textContent = a.label;
+    btn.onclick = a.fn;
+    actEl.appendChild(btn);
+  });
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+function getRank(pts) {
+  let r = RANKS[0];
+  for (const rank of RANKS) { if (pts >= rank.minPts) r = rank; }
+  return r;
+}
+function getNextRank(pts) {
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    if (pts >= RANKS[i].minPts) {
+      return RANKS[i + 1] || null;
+    }
+  }
+  return RANKS[1];
+}
+function getRankProgress(pts) {
+  const cur  = getRank(pts);
+  const next = getNextRank(pts);
+  if (!next) return 100;
+  return Math.min(100, Math.round(((pts - cur.minPts) / (next.minPts - cur.minPts)) * 100));
+}
+
+function roleBadgeHtml(role) {
+  if (role === 'maou')      return '<span class="badge badge-maou">👑 Maou</span>';
+  if (role === 'bangsawan') return '<span class="badge badge-bangsawan">💎 Bangsawan</span>';
+  return '<span class="badge badge-rakyat">⚔️ Rakyat</span>';
+}
+function roleClass(role) {
+  if (role === 'maou') return 'role-maou';
+  if (role === 'bangsawan') return 'role-bangsawan';
+  return 'role-rakyat';
+}
+function roleLabel(role) {
+  if (role === 'maou') return '👑 Maou';
+  if (role === 'bangsawan') return '💎 Bangsawan';
+  return '⚔️ Rakyat';
+}
+function safeImg(url, fallback) {
+  return (url && url.startsWith('http')) ? url : (fallback || DEFAULT_AVATAR);
+}
+
+/* ============================================================
+   AUTH
+============================================================ */
+function switchAuthTab(tab) {
+  document.getElementById('login-form').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',    tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+  document.getElementById('auth-error').textContent = '';
+}
+window.switchAuthTab = switchAuthTab;
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+  const errEl    = document.getElementById('auth-error');
+  if (!username || !password) { errEl.textContent = 'Isi semua field.'; return; }
+
+  try {
+    const snap = await getDoc(doc(db, 'users', username));
+    if (!snap.exists()) { errEl.textContent = 'Username tidak ditemukan.'; return; }
+    const data = snap.data();
+    if (data.password !== password) { errEl.textContent = 'Password salah.'; return; }
+
+    currentUser = { id: username, ...data };
+    await updateDoc(doc(db, 'users', username), { lastLogin: Date.now() });
+    onLoginSuccess();
+  } catch (e) {
+    errEl.textContent = 'Gagal terhubung ke server. Cek koneksi dan Firebase config.';
+    console.error(e);
+  }
+}
+window.doLogin = doLogin;
+
+async function doRegister() {
+  const username = document.getElementById('reg-username').value.trim().toLowerCase();
+  const password = document.getElementById('reg-password').value;
+  const confirm  = document.getElementById('reg-confirm').value;
+  const errEl    = document.getElementById('auth-error');
+
+  if (!username || !password) { errEl.textContent = 'Isi semua field.'; return; }
+  if (password !== confirm)    { errEl.textContent = 'Password tidak cocok.'; return; }
+  if (password.length < 6)    { errEl.textContent = 'Password minimal 6 karakter.'; return; }
+  if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+    errEl.textContent = 'Username: 3-20 karakter, huruf kecil/angka/underscore.'; return;
+  }
+
+  try {
+    const snap = await getDoc(doc(db, 'users', username));
+    if (snap.exists()) { errEl.textContent = 'Username sudah dipakai.'; return; }
+
+    // Cek apakah ini user pertama → jadikan Maou
+    const allSnap = await getDocs(collection(db, 'users'));
+    const isFirst = allSnap.empty;
+
+    const newUser = {
+      username, password,
+      role:           isFirst ? 'maou' : 'rakyat',
+      rankPoints:     0,
+      eris:           0,
+      /*
+        CLUE: Avatar default user baru.
+        Diambil dari ASSETS.DEFAULT_AVATAR_URL di firebase-config.js
+        Ganti nilai DEFAULT_AVATAR di bagian CONFIG di atas.
+      */
+      avatarUrl:      DEFAULT_AVATAR,
+      animeList:      [],
+      marathon:       [],
+      gachaCollection:[],
+      lastLogin:      0,
+      createdAt:      Date.now(),
+    };
+
+    await setDoc(doc(db, 'users', username), newUser);
+    currentUser = { id: username, ...newUser };
+    toast('Selamat bergabung ke Guild, ' + username + '! 🎉', 'success');
+    onLoginSuccess();
+  } catch(e) {
+    errEl.textContent = 'Registrasi gagal. Cek Firebase config.';
+    console.error(e);
+  }
+}
+window.doRegister = doRegister;
+
+function onLoginSuccess() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  renderSidebar();
+  navigate('home');
+  loadAllUsers();
+  loadGachaPool();
+  updateGachaErisDisplay();
+}
+
+function logout() {
+  closeModal();
+  currentUser = null;
+  document.getElementById('auth-screen').classList.remove('hidden');
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+}
+
+/* ============================================================
+   SIDEBAR RENDER
+============================================================ */
+function renderSidebar() {
+  if (!currentUser) return;
+  const avatarEl  = document.getElementById('sidebar-avatar');
+  const nameEl    = document.getElementById('sidebar-username');
+  const badgeEl   = document.getElementById('sidebar-role-badge');
+  const adminNav  = document.getElementById('nav-admin');
+
+  /*
+    CLUE: Avatar di sidebar.
+    Diisi dari currentUser.avatarUrl yang tersimpan di Firestore.
+    Jika kosong, fallback ke ASSETS.DEFAULT_AVATAR_URL
+  */
+  avatarEl.src    = safeImg(currentUser.avatarUrl, DEFAULT_AVATAR);
+  nameEl.textContent = currentUser.username;
+  badgeEl.textContent = roleLabel(currentUser.role);
+  badgeEl.className  = `sidebar-role-badge ${roleClass(currentUser.role)}`;
+
+  adminNav.style.display = currentUser.role === 'maou' ? '' : 'none';
+}
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function navigate(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
+
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  const navEl  = document.getElementById('nav-' + page);
+  if (navEl)  navEl.classList.add('active');
+  const bnEl   = document.getElementById('bn-' + page);
+  if (bnEl)   bnEl.classList.add('active');
+
+  switch(page) {
+    case 'home':       renderAnimeGrid(); break;
+    case 'marathon':   renderMarathon();  break;
+    case 'gacha':      renderGachaBanners(); break;
+    case 'collection': renderCollection(); break;
+    case 'users':      renderUsers();     break;
+    case 'profile':    renderProfile(currentUser); break;
+    case 'admin':      renderAdminHome(); break;
+  }
+}
+window.navigate = navigate;
+
+/* ============================================================
+   HOME: ANIME LIST
+============================================================ */
+async function loadJikanSearch(query) {
+  try {
+    const res  = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=8&sfw`);
+    const json = await res.json();
+    return json.data || [];
+  } catch { return []; }
+}
+
+function renderAnimeGrid() {
+  if (!currentUser) return;
+  const grid = document.getElementById('anime-grid');
+  const list = (currentUser.animeList || []).filter(a => {
+    const q = (document.getElementById('anime-search')?.value || '').toLowerCase();
+    const matchQuery  = !q || a.title.toLowerCase().includes(q);
+    const matchStatus = animeStatusFilter === 'all' || a.status === animeStatusFilter;
+    return matchQuery && matchStatus;
+  });
+
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-state-icon">📭</div>
+      <h3>Belum ada anime</h3>
+      <p>Klik "+ Tambah Anime" untuk memulai pelacakan.</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(a => `
+    <div class="anime-card" onclick="openAnimeDetail('${a.id}')">
+      <span class="anime-status-badge status-${a.status}">${a.status === 'watching' ? '▶ Watching' : a.status === 'watched' ? '✓ Watched' : a.status}</span>
+      ${safeImg(a.imageUrl, '') !== ''
+        ? `<img class="anime-card-poster" src="${safeImg(a.imageUrl, '')}" loading="lazy" onerror="this.parentElement.querySelector('.anime-card-poster-placeholder')?.style && (this.style.display='none')"/>`
+        : `<div class="anime-card-poster-placeholder">🎬</div>`
+      }
+      <div class="anime-card-body">
+        <div class="anime-card-title">${a.title}</div>
+        <div class="anime-card-meta">${a.episodes || '?'} eps</div>
+      </div>
+    </div>
+  `).join('');
+}
+window.filterAnimeList   = renderAnimeGrid;
+
+function filterByStatus(status, btn) {
+  animeStatusFilter = status;
+  document.querySelectorAll('#page-home .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAnimeGrid();
+}
+window.filterByStatus = filterByStatus;
+
+function openAnimeDetail(id) {
+  const anime = currentUser.animeList.find(a => a.id === id);
+  if (!anime) return;
+  const isOwn = true; // viewing own list
+  showModal(
+    anime.title,
+    `<img src="${safeImg(anime.imageUrl,'')}" style="width:100%;border-radius:10px;margin-bottom:12px;max-height:200px;object-fit:cover" onerror="this.style.display='none'"/>
+     <p>Status: <b>${anime.status}</b></p>
+     <p>Episode: <b>${anime.episodes || '?'}</b></p>`,
+    [
+      { label: 'Tandai Watched', cls: 'btn-primary', fn: () => setAnimeStatus(id, 'watched') },
+      { label: 'Hapus', cls: 'btn-danger', fn: () => removeAnime(id) },
+      { label: 'Tutup', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.openAnimeDetail = openAnimeDetail;
+
+async function setAnimeStatus(id, status) {
+  currentUser.animeList = currentUser.animeList.map(a => a.id === id ? { ...a, status } : a);
+  await saveUserData();
+  closeModal();
+  renderAnimeGrid();
+  toast('Status diperbarui!', 'success');
+}
+
+async function removeAnime(id) {
+  currentUser.animeList = currentUser.animeList.filter(a => a.id !== id);
+  await saveUserData();
+  closeModal();
+  renderAnimeGrid();
+  toast('Anime dihapus.', 'info');
+}
+
+function openAddAnimeModal() {
+  showModal(
+    'Tambah Anime',
+    `<div class="input-group"><label>Cari Judul (via Jikan API)</label>
+     <input type="text" id="jikan-search-input" placeholder="Cth: Sword Art Online" /></div>
+     <div id="jikan-results" style="max-height:250px;overflow-y:auto;margin-top:8px"></div>`,
+    [
+      { label: 'Cari', cls: 'btn-primary', fn: doJikanSearch },
+      { label: 'Tutup', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.openAddAnimeModal = openAddAnimeModal;
+
+async function doJikanSearch() {
+  const q = document.getElementById('jikan-search-input')?.value?.trim();
+  if (!q) return;
+  const resultsEl = document.getElementById('jikan-results');
+  resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">⏳ Mencari...</p>';
+  const results = await loadJikanSearch(q);
+  if (!results.length) { resultsEl.innerHTML = '<p style="color:var(--muted);font-size:13px">Tidak ditemukan.</p>'; return; }
+  resultsEl.innerHTML = results.map((a, i) => `
+    <div onclick="addAnimeFromJikan(${i})" data-idx="${i}" style="display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;cursor:pointer;border:1px solid var(--border);margin-bottom:6px;background:var(--panel2)" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+      <img src="${a.images?.jpg?.image_url || ''}" style="width:36px;height:50px;border-radius:6px;object-fit:cover;background:var(--panel)" onerror="this.style.display='none'"/>
+      <div><div style="font-size:13px;font-weight:600">${a.title}</div><div style="font-size:11px;color:var(--muted)">${a.episodes || '?'} eps · ${a.score || '-'} ★</div></div>
+    </div>
+  `).join('');
+  // store results temporarily
+  window._jikanResults = results;
+}
+window.doJikanSearch = doJikanSearch;
+
+async function addAnimeFromJikan(idx) {
+  const a = window._jikanResults?.[idx];
+  if (!a) return;
+  const existing = currentUser.animeList.find(x => String(x.jikanId) === String(a.mal_id));
+  if (existing) { toast('Anime sudah ada di daftar.', 'error'); return; }
+
+  const entry = {
+    id:       'anime_' + Date.now(),
+    jikanId:  a.mal_id,
+    title:    a.title,
+    imageUrl: a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '',
+    episodes: a.episodes,
+    status:   'watching',
+    addedAt:  Date.now()
+  };
+  currentUser.animeList = [...(currentUser.animeList || []), entry];
+  await saveUserData();
+  closeModal();
+  renderAnimeGrid();
+  toast('Anime ditambahkan! 🎉', 'success');
+}
+window.addAnimeFromJikan = addAnimeFromJikan;
+
+/* ============================================================
+   MARATHON
+============================================================ */
+function renderMarathon() {
+  const list = document.getElementById('marathon-list');
+  const items = currentUser.marathon || [];
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <h3>Belum ada rencana marathon</h3>
+      <p>Tambahkan anime dengan tenggat waktu!</p>
+    </div>`;
+    return;
+  }
+  list.innerHTML = items.map(m => {
+    const overdue = m.deadline && !m.completed && Date.now() > new Date(m.deadline).getTime();
+    const deadlineStr = m.deadline ? new Date(m.deadline).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' }) : 'Tanpa batas waktu';
+    return `
+    <div class="marathon-item ${m.completed ? 'done' : ''}">
+      <div class="marathon-checkbox ${m.completed ? 'checked' : ''}" onclick="toggleMarathon('${m.id}')"></div>
+      <img class="marathon-poster" src="${safeImg(m.imageUrl,'')}" onerror="this.src=''" alt="poster"/>
+      <div class="marathon-info">
+        <div class="marathon-title">${m.title}</div>
+        <div class="marathon-deadline ${overdue ? 'overdue' : ''}">
+          ${overdue ? '⚠️ Overdue! ' : '📅 '} ${deadlineStr}
+        </div>
+      </div>
+      <div class="marathon-actions">
+        <button class="icon-btn" onclick="removeMarathon('${m.id}')" title="Hapus">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openAddMarathonModal() {
+  showModal(
+    'Tambah Marathon',
+    `<div class="input-group"><label>Judul Anime</label><input type="text" id="m-title" placeholder="Cth: Attack on Titan"/></div>
+     <div class="input-group"><label>URL Poster (opsional)</label><input type="text" id="m-image" placeholder="https://..."/></div>
+     <div class="input-group"><label>Tenggat Waktu (opsional)</label><input type="date" id="m-deadline"/></div>`,
+    [
+      { label: 'Tambahkan', cls: 'btn-primary', fn: saveMarathon },
+      { label: 'Tutup', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.openAddMarathonModal = openAddMarathonModal;
+
+async function saveMarathon() {
+  const title    = document.getElementById('m-title')?.value?.trim();
+  const imageUrl = document.getElementById('m-image')?.value?.trim() || '';
+  const deadline = document.getElementById('m-deadline')?.value || '';
+  if (!title) { toast('Isi judul anime.', 'error'); return; }
+  currentUser.marathon = [...(currentUser.marathon || []), {
+    id: 'mrt_' + Date.now(), title, imageUrl, deadline, completed: false, addedAt: Date.now()
+  }];
+  await saveUserData();
+  closeModal();
+  renderMarathon();
+  toast('Marathon ditambahkan!', 'success');
+}
+
+async function toggleMarathon(id) {
+  currentUser.marathon = currentUser.marathon.map(m => m.id === id ? { ...m, completed: !m.completed } : m);
+  await saveUserData();
+  renderMarathon();
+}
+window.toggleMarathon = toggleMarathon;
+
+async function removeMarathon(id) {
+  currentUser.marathon = currentUser.marathon.filter(m => m.id !== id);
+  await saveUserData();
+  renderMarathon();
+  toast('Dihapus.', 'info');
+}
+window.removeMarathon = removeMarathon;
+
+/* ============================================================
+   GACHA
+============================================================ */
+async function loadGachaPool() {
+  const snap = await getDocs(collection(db, 'gacha_pool'));
+  gachaPool  = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+function renderGachaBanners() {
+  updateGachaErisDisplay();
+  const area = document.getElementById('gacha-banners');
+  const price = currentUser.role === 'bangsawan' ? GACHA_PRICE.bangsawan : GACHA_PRICE.rakyat;
+  const banners = [
+    { type: 'waifu_card', icon: '🌸', name: 'Waifu Card', desc: 'Koleksi kartu waifu favoritmu.' },
+    { type: 'husbu_card', icon: '⚔️', name: 'Husbu Card', desc: 'Koleksi kartu husbu terkuat.' },
+    { type: 'waifu_pfp',  icon: '🖼️', name: 'Waifu PFP',  desc: 'Dapatkan foto profil waifu.' },
+    { type: 'husbu_pfp',  icon: '🎴', name: 'Husbu PFP',  desc: 'Dapatkan foto profil husbu.' },
+  ];
+  area.innerHTML = banners.map(b => `
+    <div class="gacha-banner" onclick="doGacha('${b.type}')">
+      <div class="gacha-banner-icon">${b.icon}</div>
+      <div class="gacha-banner-name">${b.name}</div>
+      <div class="gacha-banner-desc">${b.desc}</div>
+      <div class="gacha-price-tag">💰 ${price} Eris / pull</div>
+    </div>
+  `).join('');
+}
+
+function updateGachaErisDisplay() {
+  const el = document.getElementById('gacha-eris-display');
+  if (el) el.textContent = currentUser?.eris || 0;
+}
+
+async function doGacha(type) {
+  const price = currentUser.role === 'bangsawan' ? GACHA_PRICE.bangsawan : GACHA_PRICE.rakyat;
+  if (currentUser.eris < price) {
+    toast(`Eris tidak cukup! Butuh ${price} Eris.`, 'error');
+    return;
+  }
+  const pool = gachaPool.filter(g => g.type === type);
+  if (!pool.length) {
+    toast('Pool gacha untuk banner ini masih kosong. Hubungi Maou!', 'error');
+    return;
+  }
+
+  // Weighted random by rarity
+  const weights = { C:50, R:30, SR:15, SSR:4, UR:1 };
+  const weighted = [];
+  pool.forEach(item => {
+    const w = weights[item.rarity] || 10;
+    for (let i=0; i<w; i++) weighted.push(item);
+  });
+  const result = weighted[Math.floor(Math.random() * weighted.length)];
+
+  // Deduct Eris, add to collection, update rankPoints
+  currentUser.eris -= price;
+  const pts = RARITY_PTS[result.rarity] || 1;
+  currentUser.rankPoints = (currentUser.rankPoints || 0) + pts;
+  currentUser.gachaCollection = [...(currentUser.gachaCollection || []), {
+    id: 'col_' + Date.now(), name: result.name, imageUrl: result.imageUrl, type, rarity: result.rarity
+  }];
+
+  await saveUserData();
+  updateGachaErisDisplay();
+  showGachaResult([result]);
+}
+window.doGacha = doGacha;
+
+function showGachaResult(items) {
+  document.getElementById('gacha-banners-area').style.display = 'none';
+  document.getElementById('gacha-result-area').style.display  = '';
+  const grid = document.getElementById('gacha-result-grid');
+  grid.innerHTML = items.map(item => `
+    <div class="gacha-result-card ${item.rarity}" style="animation-delay:0.1s">
+      <img class="gacha-result-img" src="${safeImg(item.imageUrl,'')}" onerror="this.style.background='var(--panel2)'"/>
+      <div class="gacha-result-footer">
+        <span class="rarity-${item.rarity}">[${item.rarity}]</span> ${item.name}
+      </div>
+    </div>
+  `).join('');
+}
+
+function closeGachaResult() {
+  document.getElementById('gacha-banners-area').style.display = '';
+  document.getElementById('gacha-result-area').style.display  = 'none';
+  renderGachaBanners();
+}
+window.closeGachaResult = closeGachaResult;
+
+/* ============================================================
+   COLLECTION
+============================================================ */
+function renderCollection() {
+  const grid  = document.getElementById('collection-grid');
+  const items = (currentUser.gachaCollection || []).filter(c => collectionFilter === 'all' || c.type === collectionFilter);
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-state-icon">🃏</div><h3>Koleksi Kosong</h3><p>Lakukan gacha untuk mengisi koleksimu!</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = items.map(c => `
+    <div class="collection-card" style="border-color:var(--rarity-${c.rarity})">
+      <img src="${safeImg(c.imageUrl,'')}" alt="${c.name}" onerror="this.style.background='var(--panel2)'"/>
+      <div class="collection-card-footer">
+        <div class="rarity-label rarity-${c.rarity}">[${c.rarity}]</div>
+        <div style="font-size:11px;color:var(--text);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+        ${(c.type === 'waifu_pfp' || c.type === 'husbu_pfp')
+          ? `<button class="btn btn-ghost" style="font-size:10px;padding:3px 8px;margin-top:5px" onclick="usePfp('${c.imageUrl}')">Pakai sebagai PFP</button>`
+          : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function usePfp(url) {
+  currentUser.avatarUrl = url;
+  await saveUserData();
+  renderSidebar();
+  renderCollection();
+  toast('Foto profil berhasil diubah! ✨', 'success');
+}
+window.usePfp = usePfp;
+
+function filterCollection(type, btn) {
+  collectionFilter = type;
+  document.querySelectorAll('#collection-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCollection();
+}
+window.filterCollection = filterCollection;
+
+/* ============================================================
+   PROFILE
+============================================================ */
+function renderProfile(userData, isOwnProfile = true) {
+  if (!userData) return;
+  const rank    = getRank(userData.rankPoints || 0);
+  const nextRk  = getNextRank(userData.rankPoints || 0);
+  const prog    = getRankProgress(userData.rankPoints || 0);
+  const themeClass  = userData.role === 'maou' ? 'maou-theme' : userData.role === 'bangsawan' ? 'bangsawan-theme' : '';
+  const avatarBorder = userData.role === 'maou' ? 'maou-border' : userData.role === 'bangsawan' ? 'bangsawan-border' : '';
+  const usernameClass = userData.role === 'maou' ? 'maou-text' : userData.role === 'bangsawan' ? 'bangsawan-text' : '';
+
+  const content = document.getElementById('profile-content');
+  content.innerHTML = `
+    <div class="profile-hero ${themeClass}">
+      <div class="profile-hero-bg"></div>
+      <div class="profile-top">
+        <div class="profile-avatar-wrap">
+          <!--
+            CLUE: Foto profil user di halaman profil.
+            Diambil dari userData.avatarUrl (Firestore).
+            Fallback: DEFAULT_AVATAR / ASSETS.DEFAULT_AVATAR_URL
+          -->
+          <img class="profile-avatar ${avatarBorder}" src="${safeImg(userData.avatarUrl, DEFAULT_AVATAR)}" onerror="this.src='${DEFAULT_AVATAR}'" alt="avatar"/>
+        </div>
+        <div class="profile-info">
+          <div class="profile-username ${usernameClass}">${userData.username}</div>
+          <div class="profile-badges">
+            ${roleBadgeHtml(userData.role)}
+            <span class="badge badge-rank">🏅 ${rank.name}</span>
+          </div>
+          <div class="rank-bar-wrap">
+            <div class="rank-bar-meta">
+              <span>Rank Points: ${userData.rankPoints || 0}</span>
+              <span>${nextRk ? 'Menuju ' + nextRk.name + ' ('+nextRk.minPts+' pts)' : '⭐ Rank Tertinggi!'}</span>
+            </div>
+            <div class="rank-bar"><div class="rank-bar-fill" style="width:${prog}%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${isOwnProfile ? `
+    <!-- Daily Login & Eris -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div class="eris-widget" style="flex:1;min-width:150px">
+        <span class="eris-icon">💰</span>
+        <div class="eris-info">
+          <div class="eris-amount">${userData.eris || 0}</div>
+          <div class="eris-label">Eris</div>
+        </div>
+        <button class="btn btn-ghost" style="font-size:11px" onclick="openTopUpModal()">Top Up</button>
+      </div>
+      <div class="daily-btn ${isDailyClaimed() ? 'claimed' : ''}" onclick="claimDaily()" style="flex:1;min-width:200px">
+        <span style="font-size:24px">${isDailyClaimed() ? '✅' : '🎁'}</span>
+        <div class="daily-info">
+          <h4>${isDailyClaimed() ? 'Sudah diklaim hari ini' : 'Daily Login Reward'}</h4>
+          <p>${isDailyClaimed() ? 'Kembali besok!' : 'Klik untuk klaim +' + DAILY_REWARD + ' Eris'}</p>
+        </div>
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- Stats -->
+    <div class="profile-stats">
+      <div class="stat-card">
+        <div class="stat-value">${(userData.animeList || []).filter(a=>a.status==='watched').length}</div>
+        <div class="stat-label">Anime Ditonton</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${(userData.marathon || []).length}</div>
+        <div class="stat-label">Marathon Plan</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${(userData.gachaCollection || []).length}</div>
+        <div class="stat-label">Total Koleksi</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${(userData.gachaCollection || []).filter(c=>c.rarity==='SSR'||c.rarity==='UR').length}</div>
+        <div class="stat-label">SSR / UR Cards</div>
+      </div>
+    </div>
+
+    <!-- Koleksi preview -->
+    <div class="section-label">Koleksi Gacha</div>
+    <div class="collection-grid">
+      ${(userData.gachaCollection || []).slice(0,12).map(c=>`
+        <div class="collection-card" style="border-color:var(--rarity-${c.rarity})">
+          <img src="${safeImg(c.imageUrl,'')}" alt="${c.name}" onerror="this.style.background='var(--panel2)'"/>
+          <div class="collection-card-footer">
+            <div class="rarity-label rarity-${c.rarity}">[${c.rarity}]</div>
+            <div style="font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div>
+          </div>
+        </div>
+      `).join('') || '<div class="empty-state" style="grid-column:1/-1"><p>Belum ada koleksi.</p></div>'}
+    </div>
+
+    ${isOwnProfile ? `
+    <div style="margin-top:10px">
+      <button class="btn btn-danger" onclick="confirmLogout()">🚪 Logout</button>
+    </div>
+    ` : ''}
+  `;
+}
+
+function isDailyClaimed() {
+  if (!currentUser) return false;
+  const last = currentUser.lastLogin || 0;
+  const now  = new Date(); const lastDate = new Date(last);
+  return now.toDateString() === lastDate.toDateString() && (currentUser._dailyClaimed);
+}
+
+async function claimDaily() {
+  if (isDailyClaimed()) return;
+  currentUser.eris = (currentUser.eris || 0) + DAILY_REWARD;
+  currentUser._dailyClaimed = true;
+  currentUser.lastLogin = Date.now();
+  await saveUserData();
+  renderProfile(currentUser);
+  toast(`+${DAILY_REWARD} Eris dari Daily Login! 🎁`, 'success');
+}
+window.claimDaily = claimDaily;
+
+function openTopUpModal() {
+  showModal(
+    '💰 Top Up Eris',
+    `<p>Ups, tidak ada apa-apa di sini.<br/><br/>Silahkan hubungi Admin (Maou) untuk mengisi Eris kamu. Sampaikan username dan jumlah Eris yang ingin ditambahkan. ✨</p>`,
+    [{ label: 'Mengerti', cls: 'btn-primary', fn: closeModal }]
+  );
+}
+window.openTopUpModal = openTopUpModal;
+
+function confirmLogout() {
+  showModal(
+    'Logout',
+    'Yakin ingin keluar dari guild?',
+    [
+      { label: 'Logout', cls: 'btn-danger', fn: logout },
+      { label: 'Batal',  cls: 'btn-ghost',  fn: closeModal }
+    ]
+  );
+}
+window.confirmLogout = confirmLogout;
+
+/* ============================================================
+   USERS / GUILD MEMBERS
+============================================================ */
+async function loadAllUsers() {
+  const snap = await getDocs(collection(db, 'users'));
+  allUsers   = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  // Sort: Maou > Bangsawan > Rakyat > rank > alphabet
+  const roleOrder = { maou:0, bangsawan:1, rakyat:2 };
+  allUsers.sort((a,b) => {
+    const ro = (roleOrder[a.role]||2) - (roleOrder[b.role]||2);
+    if (ro !== 0) return ro;
+    const rpo = (b.rankPoints||0) - (a.rankPoints||0);
+    if (rpo !== 0) return rpo;
+    return a.username.localeCompare(b.username);
+  });
+}
+
+function renderUsers() {
+  const q    = (document.getElementById('user-search')?.value || '').toLowerCase();
+  const list = document.getElementById('users-list');
+  const filtered = allUsers.filter(u => !q || u.username.toLowerCase().includes(q));
+  if (!filtered.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><h3>Tidak ada member</h3></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(u => {
+    const rank = getRank(u.rankPoints || 0);
+    return `
+    <div class="user-row" onclick="viewUserProfile('${u.id}')">
+      <img class="user-row-avatar" src="${safeImg(u.avatarUrl, DEFAULT_AVATAR)}" onerror="this.src='${DEFAULT_AVATAR}'" alt="${u.username}"/>
+      <div class="user-row-info">
+        <div class="user-row-name ${u.role === 'maou' ? 'maou-text' : u.role === 'bangsawan' ? '' : ''}"
+          style="${u.role==='maou'?'color:var(--maou-clr)':u.role==='bangsawan'?'color:var(--bangsawan-clr)':''}"
+        >${u.username}</div>
+        <div class="user-row-meta">${roleLabel(u.role)} · Eris: ${u.eris||0}</div>
+      </div>
+      <div class="user-row-rank">🏅 ${rank.name}</div>
+    </div>`;
+  }).join('');
+}
+window.filterUsers = renderUsers;
+
+async function viewUserProfile(username) {
+  const snap = await getDoc(doc(db, 'users', username));
+  if (!snap.exists()) return;
+  const userData = snap.data();
+  // Navigate to profile page and render that user
+  navigate('profile');
+  renderProfile({ id: username, ...userData }, username === currentUser.id);
+}
+window.viewUserProfile = viewUserProfile;
+
+/* ============================================================
+   ADMIN PANEL
+============================================================ */
+function renderAdminHome() {
+  document.getElementById('admin-section-content').innerHTML = '';
+}
+window.renderAdminHome = renderAdminHome;
+
+function openAdminSection(section) {
+  const el = document.getElementById('admin-section-content');
+  if (section === 'add-gacha') {
+    el.innerHTML = `
+      <div class="section-label">Tambah Item ke Gacha Pool</div>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:480px">
+        <div class="input-group"><label>Nama Karakter</label><input type="text" id="ag-name" placeholder="Cth: Rem - Re:Zero"/></div>
+        <div class="input-group">
+          <label>URL Gambar <small style="color:var(--muted)">(host di ImgBB/Cloudinary dll)</small></label>
+          <input type="text" id="ag-image" placeholder="https://..."/>
+        </div>
+        <div class="input-group"><label>Tipe Banner</label>
+          <select id="ag-type">
+            <option value="waifu_card">Waifu Card</option>
+            <option value="husbu_card">Husbu Card</option>
+            <option value="waifu_pfp">Waifu PFP</option>
+            <option value="husbu_pfp">Husbu PFP</option>
+          </select>
+        </div>
+        <div class="input-group"><label>Rarity</label>
+          <select id="ag-rarity">
+            <option value="C">C — Common</option>
+            <option value="R">R — Rare</option>
+            <option value="SR">SR — Super Rare</option>
+            <option value="SSR">SSR — Super Super Rare</option>
+            <option value="UR">UR — Ultra Rare</option>
+          </select>
+        </div>
+        <button class="btn btn-maou" onclick="submitAddGacha()">✨ Tambahkan ke Pool</button>
+      </div>`;
+  }
+  else if (section === 'manage-gacha') {
+    renderManageGachaPool(el);
+  }
+  else if (section === 'manage-users') {
+    renderManageUsers(el);
+  }
+  else if (section === 'edit-anime') {
+    el.innerHTML = `<div class="section-label">Edit Anime Global</div>
+      <p style="color:var(--muted);font-size:13px">Fitur ini memungkinkan Maou mengoreksi judul atau gambar anime di daftar semua user.<br/>Masukkan Jikan ID anime yang ingin dikoreksi.</p>
+      <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:480px;margin-top:12px">
+        <div class="input-group"><label>Jikan Anime ID</label><input type="number" id="ea-jikanid" placeholder="Cth: 11757"/></div>
+        <div class="input-group"><label>Judul Baru (kosongkan jika tidak diubah)</label><input type="text" id="ea-title" placeholder=""/></div>
+        <div class="input-group"><label>URL Gambar Baru (kosongkan jika tidak diubah)</label><input type="text" id="ea-image" placeholder="https://..."/></div>
+        <button class="btn btn-maou" onclick="submitEditAnimeGlobal()">✏️ Terapkan Perubahan Global</button>
+      </div>`;
+  }
+}
+window.openAdminSection = openAdminSection;
+
+async function submitAddGacha() {
+  const name     = document.getElementById('ag-name')?.value?.trim();
+  const imageUrl = document.getElementById('ag-image')?.value?.trim();
+  const type     = document.getElementById('ag-type')?.value;
+  const rarity   = document.getElementById('ag-rarity')?.value;
+  if (!name || !imageUrl) { toast('Isi nama dan URL gambar.', 'error'); return; }
+  if (!imageUrl.startsWith('http')) { toast('URL gambar harus dimulai dengan http.', 'error'); return; }
+
+  await addDoc(collection(db, 'gacha_pool'), {
+    name, imageUrl, type, rarity, addedAt: Date.now(), addedBy: currentUser.id
+  });
+  await loadGachaPool();
+  toast(`${name} [${rarity}] berhasil ditambahkan ke pool! ✨`, 'success');
+  document.getElementById('ag-name').value  = '';
+  document.getElementById('ag-image').value = '';
+}
+window.submitAddGacha = submitAddGacha;
+
+async function renderManageGachaPool(el) {
+  await loadGachaPool();
+  el.innerHTML = `
+    <div class="section-label">Gacha Pool (${gachaPool.length} item)</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Gambar</th><th>Nama</th><th>Tipe</th><th>Rarity</th><th>Aksi</th></tr></thead>
+        <tbody>
+          ${gachaPool.map(g=>`
+            <tr>
+              <td><img class="table-img" src="${safeImg(g.imageUrl,'')}" onerror="this.style.background='var(--panel2)'"/></td>
+              <td>${g.name}</td>
+              <td style="color:var(--muted);font-size:12px">${g.type}</td>
+              <td><span class="rarity-label rarity-${g.rarity}">${g.rarity}</span></td>
+              <td><button class="icon-btn" onclick="deleteGachaItem('${g.id}')">🗑</button></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function deleteGachaItem(id) {
+  await deleteDoc(doc(db, 'gacha_pool', id));
+  await loadGachaPool();
+  openAdminSection('manage-gacha');
+  toast('Item dihapus dari pool.', 'info');
+}
+window.deleteGachaItem = deleteGachaItem;
+
+async function renderManageUsers(el) {
+  await loadAllUsers();
+  el.innerHTML = `
+    <div class="section-label">Kelola Member (${allUsers.length} user)</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Username</th><th>Role</th><th>Eris</th><th>Rank Pts</th><th>Aksi</th></tr></thead>
+        <tbody>
+          ${allUsers.map(u=>`
+            <tr>
+              <td style="font-weight:600">${u.username}</td>
+              <td><span class="sidebar-role-badge ${roleClass(u.role)}">${roleLabel(u.role)}</span></td>
+              <td>${u.eris||0}</td>
+              <td>${u.rankPoints||0}</td>
+              <td style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="adminAddEris('${u.id}')">+Eris</button>
+                <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px" onclick="adminChangeRole('${u.id}')">Role</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function adminAddEris(uid) {
+  showModal(
+    'Tambah Eris untuk ' + uid,
+    `<div class="input-group"><label>Jumlah Eris</label><input type="number" id="admin-eris-amt" min="1" value="100"/></div>`,
+    [
+      { label: 'Tambahkan', cls: 'btn-maou', fn: async () => {
+        const amt = parseInt(document.getElementById('admin-eris-amt')?.value || '0');
+        if (!amt || amt <= 0) return;
+        const snap = await getDoc(doc(db, 'users', uid));
+        if (!snap.exists()) return;
+        const cur = snap.data().eris || 0;
+        await updateDoc(doc(db, 'users', uid), { eris: cur + amt });
+        if (uid === currentUser.id) { currentUser.eris = cur + amt; renderSidebar(); }
+        closeModal();
+        toast(`+${amt} Eris ditambahkan ke ${uid}!`, 'success');
+        await loadAllUsers();
+        openAdminSection('manage-users');
+      }},
+      { label: 'Batal', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.adminAddEris = adminAddEris;
+
+function adminChangeRole(uid) {
+  showModal(
+    'Ubah Role: ' + uid,
+    `<div class="input-group"><label>Role Baru</label>
+     <select id="admin-role-sel">
+       <option value="rakyat">⚔️ Rakyat</option>
+       <option value="bangsawan">💎 Bangsawan</option>
+       <option value="maou">👑 Maou</option>
+     </select></div>`,
+    [
+      { label: 'Simpan', cls: 'btn-maou', fn: async () => {
+        const newRole = document.getElementById('admin-role-sel')?.value;
+        await updateDoc(doc(db, 'users', uid), { role: newRole });
+        if (uid === currentUser.id) { currentUser.role = newRole; renderSidebar(); }
+        closeModal();
+        toast(`Role ${uid} diubah ke ${roleLabel(newRole)}!`, 'success');
+        await loadAllUsers();
+        openAdminSection('manage-users');
+      }},
+      { label: 'Batal', cls: 'btn-ghost', fn: closeModal }
+    ]
+  );
+}
+window.adminChangeRole = adminChangeRole;
+
+async function submitEditAnimeGlobal() {
+  const jikanId  = parseInt(document.getElementById('ea-jikanid')?.value || '0');
+  const newTitle = document.getElementById('ea-title')?.value?.trim();
+  const newImage = document.getElementById('ea-image')?.value?.trim();
+  if (!jikanId) { toast('Masukkan Jikan ID.', 'error'); return; }
+
+  const snap = await getDocs(collection(db, 'users'));
+  let count = 0;
+  for (const d of snap.docs) {
+    const userData = d.data();
+    const list = userData.animeList || [];
+    const updated = list.map(a => {
+      if (String(a.jikanId) === String(jikanId)) {
+        count++;
+        return { ...a, ...(newTitle ? {title: newTitle} : {}), ...(newImage ? {imageUrl: newImage} : {}) };
+      }
+      return a;
+    });
+    if (JSON.stringify(updated) !== JSON.stringify(list)) {
+      await updateDoc(doc(db, 'users', d.id), { animeList: updated });
+    }
+  }
+  toast(`${count} entri diperbarui secara global!`, 'success');
+}
+window.submitEditAnimeGlobal = submitEditAnimeGlobal;
+
+/* ============================================================
+   SAVE USER DATA TO FIRESTORE
+============================================================ */
+async function saveUserData() {
+  if (!currentUser) return;
+  const { id, _dailyClaimed, ...data } = currentUser;
+  await updateDoc(doc(db, 'users', id), data);
+}
+
+/* ============================================================
+   SPLASH → APP INIT
+============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  // Logo fallback logic
+  // CLUE: Jika ASSETS.LOGO_URL sudah diisi di firebase-config.js,
+  // ubah bagian ini untuk menampilkan <img> sungguhan:
+  // document.getElementById('splash-logo-fallback').innerHTML =
+  //   `<img id="splash-logo" src="${ASSETS.LOGO_URL}" onerror="..."/>`;
+
+  setTimeout(() => {
+    document.getElementById('splash').classList.add('hidden');
+    // Tampilkan auth screen, app tersembunyi sampai login
+  }, 2400);
+});
+</script>
+</body>
+</html>
