@@ -6,11 +6,7 @@
 <title>Natsunime — Guild Anime System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-
 <style>
-/* ============================================================
-   ROOT VARIABLES & BASE
-============================================================ */
 :root {
   --bg:        #0b1220;
   --panel:     #111a2e;
@@ -23,28 +19,21 @@
   --accent:    #9bd3ff;
   --border:    rgba(140,180,255,0.15);
   --border2:   rgba(140,180,255,0.08);
-
-  /* Role colors */
   --maou-clr:      #c084fc;
   --maou-glow:     rgba(192,132,252,0.25);
   --bangsawan-clr: #fbbf24;
   --bangsawan-glow:rgba(251,191,36,0.2);
   --rakyat-clr:    var(--primary);
-
-  /* Rarity colors */
   --rarity-C:   #9ca3af;
   --rarity-R:   #60a5fa;
   --rarity-SR:  #a78bfa;
   --rarity-SSR: #f59e0b;
   --rarity-UR:  #ef4444;
-
   --sidebar-w: 240px;
   --radius: 12px;
   --transition: 0.2s ease;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body {
   height: 100%;
   font-family: 'Inter', sans-serif;
@@ -52,10 +41,6 @@ html, body {
   color: var(--text);
   overflow: hidden;
 }
-
-/* ============================================================
-   SPLASH SCREEN
-============================================================ */
 #splash {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
@@ -65,14 +50,11 @@ html, body {
   transition: opacity 0.6s ease;
 }
 #splash.hidden { opacity: 0; pointer-events: none; }
-
-/* CLUE: Ganti src logo di splash dengan ASSETS.LOGO_URL dari firebase-config.js */
 #splash-logo {
   width: 100px; height: 100px;
   border-radius: 24px;
   object-fit: cover;
   box-shadow: 0 0 40px rgba(90,169,255,0.3);
-  /* Jika logo belum diset, tampilkan placeholder teks */
 }
 #splash-logo-fallback {
   width: 100px; height: 100px;
@@ -107,10 +89,6 @@ html, body {
   60% { width: 75%; }
   100% { width: 100%; }
 }
-
-/* ============================================================
-   TOAST NOTIFICATION
-============================================================ */
 #toast-container {
   position: fixed; top: 20px; right: 20px;
   z-index: 8888; display: flex; flex-direction: column; gap: 8px;
@@ -126,10 +104,6 @@ html, body {
 .toast.error   { border-color: #f87171; color: #f87171; }
 .toast.info    { border-color: var(--primary); }
 @keyframes toastIn { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
-
-/* ============================================================
-   MODAL (Popup)
-============================================================ */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 7777;
   background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
@@ -150,10 +124,6 @@ html, body {
 }
 .modal-box p { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
 .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-
-/* ============================================================
-   BUTTONS
-============================================================ */
 .btn {
   padding: 9px 18px; border-radius: 8px; border: none;
   font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600;
@@ -178,10 +148,6 @@ html, body {
   background: linear-gradient(135deg, #7c3aed, var(--maou-clr));
   color: #fff;
 }
-
-/* ============================================================
-   INPUTS & FORMS
-============================================================ */
 .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
 .input-group label { font-size: 12px; color: var(--muted); font-weight: 500; letter-spacing: 0.5px; }
 .input-group input, .input-group select, .input-group textarea {
@@ -195,19 +161,11 @@ html, body {
   border-color: var(--primary);
 }
 .input-group select option { background: var(--panel); }
-
-/* ============================================================
-   APP SHELL
-============================================================ */
 #app {
   display: flex; height: 100vh;
   opacity: 0; transition: opacity 0.5s;
 }
 #app.visible { opacity: 1; }
-
-/* ============================================================
-   AUTH SCREEN
-============================================================ */
 #auth-screen {
   position: fixed; inset: 0; z-index: 5555;
   display: flex; align-items: center; justify-content: center;
@@ -251,10 +209,6 @@ html, body {
   color: var(--primary2);
 }
 #auth-error { color: #f87171; font-size: 12px; margin-bottom: 10px; min-height: 16px; }
-
-/* ============================================================
-   SIDEBAR
-============================================================ */
 .sidebar {
   width: var(--sidebar-w); height: 100vh;
   background: rgba(17,26,46,0.95); backdrop-filter: blur(12px);
@@ -285,7 +239,6 @@ html, body {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 10px 12px; border-radius: var(--radius);
@@ -303,8 +256,6 @@ html, body {
   font-size: 10px; letter-spacing: 1.5px; color: var(--muted);
   padding: 12px 12px 4px; font-weight: 600; text-transform: uppercase;
 }
-
-/* Sidebar user area */
 .sidebar-user {
   margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border2);
 }
@@ -332,10 +283,6 @@ html, body {
 .role-maou      { color: var(--maou-clr); background: rgba(192,132,252,0.12); }
 .role-bangsawan { color: var(--bangsawan-clr); background: rgba(251,191,36,0.12); }
 .role-rakyat    { color: var(--primary); background: rgba(90,169,255,0.1); }
-
-/* ============================================================
-   MAIN CONTENT
-============================================================ */
 .main {
   flex: 1; height: 100vh;
   overflow-y: auto; padding: 28px;
@@ -343,10 +290,8 @@ html, body {
 }
 .main::-webkit-scrollbar { width: 6px; }
 .main::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
 .page { display: none; flex-direction: column; gap: 20px; }
 .page.active { display: flex; }
-
 .page-header {
   display: flex; align-items: flex-start; justify-content: space-between;
   flex-wrap: wrap; gap: 12px;
@@ -355,16 +300,10 @@ html, body {
   font-family: 'Cinzel', serif; font-size: 20px; font-weight: 700; color: var(--text);
 }
 .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
-
-/* Section heading */
 .section-label {
   font-size: 11px; letter-spacing: 1.5px; color: var(--muted);
   font-weight: 600; text-transform: uppercase; margin-bottom: 12px;
 }
-
-/* ============================================================
-   HOME / ANIME LIST
-============================================================ */
 .search-bar {
   display: flex; gap: 10px; align-items: center;
 }
@@ -375,7 +314,18 @@ html, body {
   transition: border-color 0.2s;
 }
 .search-bar input:focus { border-color: var(--primary); }
-
+.source-select {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px; color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 13px; outline: none;
+  flex-shrink: 0; cursor: pointer;
+}
+.anime-source-badge {
+  position: absolute; top: 8px; right: 8px;
+  padding: 2px 7px; border-radius: 6px; font-size: 9px; font-weight: 700;
+  background: rgba(0,0,0,0.55); color: var(--accent); backdrop-filter: blur(4px);
+}
+.anime-source-badge.custom { color: #34d399; }
 .anime-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
@@ -406,10 +356,6 @@ html, body {
 .status-watched   { background: rgba(52,211,153,0.2); color: #34d399; }
 .status-watching  { background: rgba(90,169,255,0.2); color: var(--primary2); }
 .status-planned   { background: rgba(139,92,246,0.2); color: #a78bfa; }
-
-/* ============================================================
-   MARATHON (WISHLIST)
-============================================================ */
 .marathon-list { display: flex; flex-direction: column; gap: 10px; }
 .marathon-item {
   background: var(--panel); border: 1px solid var(--border);
@@ -440,10 +386,6 @@ html, body {
   transition: var(--transition);
 }
 .icon-btn:hover { background: var(--panel2); color: var(--text); }
-
-/* ============================================================
-   GACHA
-============================================================ */
 .gacha-banners {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
@@ -468,8 +410,6 @@ html, body {
   background: rgba(90,169,255,0.1); color: var(--primary2);
   border: 1px solid rgba(90,169,255,0.2);
 }
-
-/* Gacha result */
 .gacha-result-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;
 }
@@ -486,8 +426,6 @@ html, body {
 .gacha-result-card.UR  { border-color: var(--rarity-UR); box-shadow: 0 0 20px rgba(239,68,68,0.5); }
 .gacha-result-img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
 .gacha-result-footer { padding: 6px; font-size: 11px; font-weight: 700; background: var(--panel); }
-
-/* Collection grid */
 .collection-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
 }
@@ -507,10 +445,6 @@ html, body {
 .rarity-SR  { color: var(--rarity-SR); }
 .rarity-SSR { color: var(--rarity-SSR); }
 .rarity-UR  { color: var(--rarity-UR); }
-
-/* ============================================================
-   PROFILE
-============================================================ */
 .profile-hero {
   border-radius: 18px; padding: 28px; position: relative; overflow: hidden;
   background: var(--panel); border: 1px solid var(--border);
@@ -553,8 +487,6 @@ html, body {
 .badge-bangsawan { color: var(--bangsawan-clr); border-color: var(--bangsawan-clr); background: rgba(251,191,36,0.1); }
 .badge-rank      { color: var(--accent); border-color: var(--accent); background: rgba(155,211,255,0.08); }
 .badge-rakyat    { color: var(--primary); border-color: var(--primary); background: rgba(90,169,255,0.1); }
-
-/* Rank progress */
 .rank-bar-wrap { margin-top: 16px; }
 .rank-bar-meta {
   display: flex; justify-content: space-between;
@@ -569,8 +501,6 @@ html, body {
   background: linear-gradient(90deg, var(--primary), var(--accent));
   border-radius: 10px; transition: width 0.8s ease;
 }
-
-/* Eris widget */
 .eris-widget {
   display: flex; align-items: center; gap: 10px;
   background: var(--panel2); border: 1px solid var(--border);
@@ -580,8 +510,6 @@ html, body {
 .eris-info { flex: 1; }
 .eris-amount { font-size: 22px; font-weight: 700; color: var(--bangsawan-clr); font-family: 'Cinzel', serif; }
 .eris-label  { font-size: 11px; color: var(--muted); }
-
-/* Profile stats */
 .profile-stats {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px;
 }
@@ -591,8 +519,6 @@ html, body {
 }
 .stat-value { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 700; color: var(--primary2); }
 .stat-label { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-/* Daily login */
 .daily-btn {
   display: flex; align-items: center; gap: 10px;
   background: linear-gradient(135deg, rgba(52,211,153,0.1), rgba(90,169,255,0.1));
@@ -604,10 +530,6 @@ html, body {
 .daily-btn.claimed { opacity: 0.5; cursor: not-allowed; }
 .daily-info h4 { font-size: 14px; font-weight: 700; color: #34d399; }
 .daily-info p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-/* ============================================================
-   USERS / KOMUNITAS
-============================================================ */
 .users-list { display: flex; flex-direction: column; gap: 8px; }
 .user-row {
   display: flex; align-items: center; gap: 12px;
@@ -621,10 +543,6 @@ html, body {
 .user-row-name  { font-size: 14px; font-weight: 600; }
 .user-row-meta  { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .user-row-rank  { font-size: 12px; color: var(--accent); font-weight: 600; }
-
-/* ============================================================
-   ADMIN PANEL
-============================================================ */
 .admin-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;
 }
@@ -637,18 +555,12 @@ html, body {
 .admin-card-icon { font-size: 28px; margin-bottom: 10px; }
 .admin-card-title { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--maou-clr); }
 .admin-card-desc  { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-/* Gacha pool table */
 .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th { background: var(--panel2); padding: 10px 14px; text-align: left; color: var(--muted); font-weight: 600; font-size: 11px; letter-spacing: 0.5px; }
 td { padding: 10px 14px; border-top: 1px solid var(--border2); vertical-align: middle; }
 tr:hover td { background: var(--panel2); }
 .table-img { width: 36px; height: 50px; object-fit: cover; border-radius: 6px; }
-
-/* ============================================================
-   MOBILE BOTTOM NAV
-============================================================ */
 .bottom-nav {
   display: none; position: fixed; bottom: 0; left: 0; right: 0;
   background: rgba(17,26,46,0.97); backdrop-filter: blur(12px);
@@ -664,10 +576,6 @@ tr:hover td { background: var(--panel2); }
 }
 .bottom-nav-item .bn-icon { font-size: 20px; }
 .bottom-nav-item.active { color: var(--primary2); }
-
-/* ============================================================
-   RESPONSIVE
-============================================================ */
 @media (max-width: 768px) {
   .sidebar { display: none; }
   .bottom-nav { display: block; }
@@ -677,16 +585,12 @@ tr:hover td { background: var(--panel2); }
   .profile-stats { grid-template-columns: repeat(2, 1fr); }
   .admin-grid { grid-template-columns: 1fr; }
 }
-
-/* Empty state */
 .empty-state {
   text-align: center; padding: 50px 20px; color: var(--muted);
 }
 .empty-state-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state h3 { font-family: 'Cinzel', serif; font-size: 16px; margin-bottom: 6px; color: var(--text); }
 .empty-state p  { font-size: 13px; }
-
-/* Tabs */
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
 .tab-btn {
   padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border);
@@ -697,31 +601,13 @@ tr:hover td { background: var(--panel2); }
 </style>
 </head>
 <body>
-
-<!-- ============================================================
-     SPLASH SCREEN
-============================================================ -->
 <div id="splash">
-  <!--
-    CLUE: Gambar logo splash screen.
-    Ganti src dengan nilai ASSETS.LOGO_URL dari firebase-config.js
-    Contoh: <img id="splash-logo" src="https://i.ibb.co/xxxxx/logo.png" />
-    Jika URL logo belum ada, div fallback di bawah akan tampil otomatis via JS.
-  -->
   <div id="splash-logo-fallback">N</div>
   <h1>Natsunime</h1>
   <p>Guild Anime System</p>
   <div class="splash-bar"><div class="splash-fill"></div></div>
 </div>
-
-<!-- ============================================================
-     TOAST
-============================================================ -->
 <div id="toast-container"></div>
-
-<!-- ============================================================
-     MODAL
-============================================================ -->
 <div class="modal-overlay" id="modal">
   <div class="modal-box">
     <h3 id="modal-title">Modal</h3>
@@ -729,18 +615,10 @@ tr:hover td { background: var(--panel2); }
     <div class="modal-actions" id="modal-actions"></div>
   </div>
 </div>
-
-<!-- ============================================================
-     AUTH SCREEN
-============================================================ -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">
-      <!--
-        CLUE: Logo di halaman login.
-        Ganti src dengan ASSETS.LOGO_URL dari firebase-config.js
-      -->
-      <div class="auth-logo-fallback">N</div>
+      <div class="auth-logo-fallback" id="auth-logo-fallback">N</div>
       <h2>Natsunime</h2>
       <p>Guild Anime System · Log in to continue</p>
     </div>
@@ -777,24 +655,12 @@ tr:hover td { background: var(--panel2); }
     </div>
   </div>
 </div>
-
-<!-- ============================================================
-     APP SHELL
-============================================================ -->
 <div id="app">
-
-  <!-- SIDEBAR (Desktop) -->
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <!--
-        CLUE: Logo mini di sidebar.
-        Ganti fallback "N" dengan tag <img> jika URL sudah tersedia.
-        Contoh: <img class="sidebar-logo-img" src="ASSETS.LOGO_URL" />
-      -->
-      <div class="sidebar-logo-fallback">N</div>
+      <div class="sidebar-logo-fallback" id="sidebar-logo-fallback">N</div>
       <span>Natsunime</span>
     </div>
-
     <span class="nav-section-label">Utama</span>
     <div class="nav-item active" onclick="navigate('home')" id="nav-home">
       <span class="nav-icon">🏠</span> Beranda
@@ -808,12 +674,10 @@ tr:hover td { background: var(--panel2); }
     <div class="nav-item" onclick="navigate('collection')" id="nav-collection">
       <span class="nav-icon">🃏</span> Koleksi
     </div>
-
     <span class="nav-section-label">Komunitas</span>
     <div class="nav-item" onclick="navigate('users')" id="nav-users">
       <span class="nav-icon">⚔️</span> Guild Members
     </div>
-
     <span class="nav-section-label">Akun</span>
     <div class="nav-item" onclick="navigate('profile')" id="nav-profile">
       <span class="nav-icon">👤</span> Profil
@@ -821,14 +685,8 @@ tr:hover td { background: var(--panel2); }
     <div class="nav-item" id="nav-admin" style="display:none" onclick="navigate('admin')">
       <span class="nav-icon">👑</span> Admin Panel
     </div>
-
     <div class="sidebar-user">
       <div class="sidebar-user-card" onclick="navigate('profile')">
-        <!--
-          CLUE: Avatar sidebar user yang sedang login.
-          src diisi secara dinamis via JS dari data Firestore.
-          Fallback: ASSETS.DEFAULT_AVATAR_URL dari firebase-config.js
-        -->
         <img class="sidebar-avatar" id="sidebar-avatar" src="" alt="avatar"/>
         <div class="sidebar-user-info">
           <div class="sidebar-username" id="sidebar-username">—</div>
@@ -837,11 +695,7 @@ tr:hover td { background: var(--panel2); }
       </div>
     </div>
   </nav>
-
-  <!-- MAIN CONTENT AREA -->
   <main class="main" id="main-content">
-
-    <!-- ====== HOME: Daftar Anime ====== -->
     <section class="page active" id="page-home">
       <div class="page-header">
         <div>
@@ -852,6 +706,11 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="search-bar">
         <input type="text" id="anime-search" placeholder="🔍  Cari judul anime..." oninput="filterAnimeList()"/>
+        <select id="anime-source-select" class="source-select" onchange="filterBySource(this.value)">
+          <option value="all">Semua Sumber</option>
+          <option value="jikan">🔎 Jikan API</option>
+          <option value="custom">✏️ Custom</option>
+        </select>
         <div class="tabs" style="flex-shrink:0">
           <button class="tab-btn active" onclick="filterByStatus('all',this)">Semua</button>
           <button class="tab-btn" onclick="filterByStatus('watching',this)">Watching</button>
@@ -860,8 +719,6 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="anime-grid" id="anime-grid"></div>
     </section>
-
-    <!-- ====== MARATHON ====== -->
     <section class="page" id="page-marathon">
       <div class="page-header">
         <div>
@@ -872,8 +729,6 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="marathon-list" id="marathon-list"></div>
     </section>
-
-    <!-- ====== GACHA ====== -->
     <section class="page" id="page-gacha">
       <div class="page-header">
         <div>
@@ -899,8 +754,6 @@ tr:hover td { background: var(--panel2); }
         <div class="gacha-banners" id="gacha-banners"></div>
       </div>
     </section>
-
-    <!-- ====== KOLEKSI ====== -->
     <section class="page" id="page-collection">
       <div class="page-header">
         <div>
@@ -917,8 +770,6 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="collection-grid" id="collection-grid"></div>
     </section>
-
-    <!-- ====== USERS / GUILD MEMBERS ====== -->
     <section class="page" id="page-users">
       <div class="page-header">
         <div>
@@ -931,13 +782,9 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div class="users-list" id="users-list"></div>
     </section>
-
-    <!-- ====== PROFILE ====== -->
     <section class="page" id="page-profile">
       <div id="profile-content"></div>
     </section>
-
-    <!-- ====== ADMIN PANEL ====== -->
     <section class="page" id="page-admin">
       <div class="page-header">
         <div>
@@ -969,13 +816,8 @@ tr:hover td { background: var(--panel2); }
       </div>
       <div id="admin-section-content" style="margin-top:20px"></div>
     </section>
-
-  </main><!-- /main -->
-</div><!-- /app -->
-
-<!-- ============================================================
-     BOTTOM NAV (Mobile)
-============================================================ -->
+  </main>
+</div>
 <nav class="bottom-nav">
   <div class="bottom-nav-items">
     <div class="bottom-nav-item active" id="bn-home" onclick="navigate('home')">
@@ -995,10 +837,6 @@ tr:hover td { background: var(--panel2); }
     </div>
   </div>
 </nav>
-
-<!-- ============================================================
-     FIREBASE SDK
-============================================================ -->
 <script type="module">
 import { initializeApp }       from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
@@ -1006,20 +844,9 @@ import {
   getDoc, getDocs, setDoc, addDoc,
   updateDoc, deleteDoc, query, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 import { FIREBASE_CONFIG, ASSETS } from "./firebase-config.js";
-
-/* ============================================================
-   FIREBASE INIT
-============================================================ */
 const app = initializeApp(FIREBASE_CONFIG);
 const db  = getFirestore(app);
-
-/* ============================================================
-   RANK SYSTEM CONFIG
-   Urutan: Villager → Adventurer → Knight → Hero → MC
-   rankPoints dihitung dari total rarity point koleksi gacha
-============================================================ */
 const RANKS = [
   { name: "Villager",    minPts: 0   },
   { name: "Adventurer",  minPts: 20  },
@@ -1028,24 +855,17 @@ const RANKS = [
   { name: "MC",          minPts: 350 },
 ];
 const RARITY_PTS = { C:1, R:3, SR:7, SSR:15, UR:30 };
-
 const GACHA_PRICE    = { rakyat: 5, bangsawan: 3 };
 const DAILY_REWARD   = 10;
 const DEFAULT_AVATAR = ASSETS.DEFAULT_AVATAR_URL || "https://i.pravatar.cc/150?u=default_natsunime";
-
-/* ============================================================
-   STATE
-============================================================ */
-let currentUser     = null; // { username, role, rank, eris, avatarUrl, ... }
+let currentUser     = null;
 let allUsers        = [];
 let gachaPool       = [];
 let currentPage     = 'home';
 let animeStatusFilter = 'all';
+let animeSourceFilter = 'all';
+let addAnimeTab       = 'jikan';
 let collectionFilter  = 'all';
-
-/* ============================================================
-   UTILS
-============================================================ */
 function toast(msg, type='info') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
@@ -1053,7 +873,6 @@ function toast(msg, type='info') {
   document.getElementById('toast-container').appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
-
 function showModal(title, body, actions=[]) {
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').innerHTML = body;
@@ -1074,7 +893,6 @@ function closeModal() {
 document.getElementById('modal').addEventListener('click', e => {
   if (e.target === document.getElementById('modal')) closeModal();
 });
-
 function getRank(pts) {
   let r = RANKS[0];
   for (const rank of RANKS) { if (pts >= rank.minPts) r = rank; }
@@ -1094,7 +912,6 @@ function getRankProgress(pts) {
   if (!next) return 100;
   return Math.min(100, Math.round(((pts - cur.minPts) / (next.minPts - cur.minPts)) * 100));
 }
-
 function roleBadgeHtml(role) {
   if (role === 'maou')      return '<span class="badge badge-maou">👑 Maou</span>';
   if (role === 'bangsawan') return '<span class="badge badge-bangsawan">💎 Bangsawan</span>';
@@ -1113,10 +930,6 @@ function roleLabel(role) {
 function safeImg(url, fallback) {
   return (url && url.startsWith('http')) ? url : (fallback || DEFAULT_AVATAR);
 }
-
-/* ============================================================
-   AUTH
-============================================================ */
 function switchAuthTab(tab) {
   document.getElementById('login-form').style.display    = tab === 'login'    ? '' : 'none';
   document.getElementById('register-form').style.display = tab === 'register' ? '' : 'none';
@@ -1125,19 +938,16 @@ function switchAuthTab(tab) {
   document.getElementById('auth-error').textContent = '';
 }
 window.switchAuthTab = switchAuthTab;
-
 async function doLogin() {
   const username = document.getElementById('login-username').value.trim().toLowerCase();
   const password = document.getElementById('login-password').value;
   const errEl    = document.getElementById('auth-error');
   if (!username || !password) { errEl.textContent = 'Isi semua field.'; return; }
-
   try {
     const snap = await getDoc(doc(db, 'users', username));
     if (!snap.exists()) { errEl.textContent = 'Username tidak ditemukan.'; return; }
     const data = snap.data();
     if (data.password !== password) { errEl.textContent = 'Password salah.'; return; }
-
     currentUser = { id: username, ...data };
     await updateDoc(doc(db, 'users', username), { lastLogin: Date.now() });
     onLoginSuccess();
@@ -1147,38 +957,27 @@ async function doLogin() {
   }
 }
 window.doLogin = doLogin;
-
 async function doRegister() {
   const username = document.getElementById('reg-username').value.trim().toLowerCase();
   const password = document.getElementById('reg-password').value;
   const confirm  = document.getElementById('reg-confirm').value;
   const errEl    = document.getElementById('auth-error');
-
   if (!username || !password) { errEl.textContent = 'Isi semua field.'; return; }
   if (password !== confirm)    { errEl.textContent = 'Password tidak cocok.'; return; }
   if (password.length < 6)    { errEl.textContent = 'Password minimal 6 karakter.'; return; }
   if (!/^[a-z0-9_]{3,20}$/.test(username)) {
     errEl.textContent = 'Username: 3-20 karakter, huruf kecil/angka/underscore.'; return;
   }
-
   try {
     const snap = await getDoc(doc(db, 'users', username));
     if (snap.exists()) { errEl.textContent = 'Username sudah dipakai.'; return; }
-
-    // Cek apakah ini user pertama → jadikan Maou
     const allSnap = await getDocs(collection(db, 'users'));
     const isFirst = allSnap.empty;
-
     const newUser = {
       username, password,
       role:           isFirst ? 'maou' : 'rakyat',
       rankPoints:     0,
       eris:           0,
-      /*
-        CLUE: Avatar default user baru.
-        Diambil dari ASSETS.DEFAULT_AVATAR_URL di firebase-config.js
-        Ganti nilai DEFAULT_AVATAR di bagian CONFIG di atas.
-      */
       avatarUrl:      DEFAULT_AVATAR,
       animeList:      [],
       marathon:       [],
@@ -1186,7 +985,6 @@ async function doRegister() {
       lastLogin:      0,
       createdAt:      Date.now(),
     };
-
     await setDoc(doc(db, 'users', username), newUser);
     currentUser = { id: username, ...newUser };
     toast('Selamat bergabung ke Guild, ' + username + '! 🎉', 'success');
@@ -1197,7 +995,6 @@ async function doRegister() {
   }
 }
 window.doRegister = doRegister;
-
 function onLoginSuccess() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
@@ -1207,7 +1004,6 @@ function onLoginSuccess() {
   loadGachaPool();
   updateGachaErisDisplay();
 }
-
 function logout() {
   closeModal();
   currentUser = null;
@@ -1216,46 +1012,29 @@ function logout() {
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
 }
-
-/* ============================================================
-   SIDEBAR RENDER
-============================================================ */
 function renderSidebar() {
   if (!currentUser) return;
   const avatarEl  = document.getElementById('sidebar-avatar');
   const nameEl    = document.getElementById('sidebar-username');
   const badgeEl   = document.getElementById('sidebar-role-badge');
   const adminNav  = document.getElementById('nav-admin');
-
-  /*
-    CLUE: Avatar di sidebar.
-    Diisi dari currentUser.avatarUrl yang tersimpan di Firestore.
-    Jika kosong, fallback ke ASSETS.DEFAULT_AVATAR_URL
-  */
   avatarEl.src    = safeImg(currentUser.avatarUrl, DEFAULT_AVATAR);
   nameEl.textContent = currentUser.username;
   badgeEl.textContent = roleLabel(currentUser.role);
   badgeEl.className  = `sidebar-role-badge ${roleClass(currentUser.role)}`;
-
   adminNav.style.display = currentUser.role === 'maou' ? '' : 'none';
 }
-
-/* ============================================================
-   NAVIGATION
-============================================================ */
 function navigate(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelectorAll('.bottom-nav-item').forEach(n => n.classList.remove('active'));
-
   const pageEl = document.getElementById('page-' + page);
   if (pageEl) pageEl.classList.add('active');
   const navEl  = document.getElementById('nav-' + page);
   if (navEl)  navEl.classList.add('active');
   const bnEl   = document.getElementById('bn-' + page);
   if (bnEl)   bnEl.classList.add('active');
-
   switch(page) {
     case 'home':       renderAnimeGrid(); break;
     case 'marathon':   renderMarathon();  break;
@@ -1267,10 +1046,6 @@ function navigate(page) {
   }
 }
 window.navigate = navigate;
-
-/* ============================================================
-   HOME: ANIME LIST
-============================================================ */
 async function loadJikanSearch(query) {
   try {
     const res  = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(query)}&limit=8&sfw`);
@@ -1278,7 +1053,6 @@ async function loadJikanSearch(query) {
     return json.data || [];
   } catch { return []; }
 }
-
 function renderAnimeGrid() {
   if (!currentUser) return;
   const grid = document.getElementById('anime-grid');
@@ -1286,21 +1060,24 @@ function renderAnimeGrid() {
     const q = (document.getElementById('anime-search')?.value || '').toLowerCase();
     const matchQuery  = !q || a.title.toLowerCase().includes(q);
     const matchStatus = animeStatusFilter === 'all' || a.status === animeStatusFilter;
-    return matchQuery && matchStatus;
+    const src = a.source || (a.jikanId ? 'jikan' : 'custom');
+    const matchSource = animeSourceFilter === 'all' || src === animeSourceFilter;
+    return matchQuery && matchStatus && matchSource;
   });
-
   if (!list.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
       <div class="empty-state-icon">📭</div>
-      <h3>Belum ada anime</h3>
-      <p>Klik "+ Tambah Anime" untuk memulai pelacakan.</p>
+      <h3>Tidak ada anime</h3>
+      <p>Coba ubah kata kunci pencarian, atau klik "+ Tambah Anime" untuk menambah dari Jikan API maupun secara manual (Custom).</p>
     </div>`;
     return;
   }
-
-  grid.innerHTML = list.map(a => `
+  grid.innerHTML = list.map(a => {
+    const src = a.source || (a.jikanId ? 'jikan' : 'custom');
+    return `
     <div class="anime-card" onclick="openAnimeDetail('${a.id}')">
       <span class="anime-status-badge status-${a.status}">${a.status === 'watching' ? '▶ Watching' : a.status === 'watched' ? '✓ Watched' : a.status}</span>
+      <span class="anime-source-badge ${src}">${src === 'custom' ? '✏️ Custom' : '🔎 Jikan'}</span>
       ${safeImg(a.imageUrl, '') !== ''
         ? `<img class="anime-card-poster" src="${safeImg(a.imageUrl, '')}" loading="lazy" onerror="this.parentElement.querySelector('.anime-card-poster-placeholder')?.style && (this.style.display='none')"/>`
         : `<div class="anime-card-poster-placeholder">🎬</div>`
@@ -1310,10 +1087,14 @@ function renderAnimeGrid() {
         <div class="anime-card-meta">${a.episodes || '?'} eps</div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 }
 window.filterAnimeList   = renderAnimeGrid;
-
+function filterBySource(val) {
+  animeSourceFilter = val;
+  renderAnimeGrid();
+}
+window.filterBySource = filterBySource;
 function filterByStatus(status, btn) {
   animeStatusFilter = status;
   document.querySelectorAll('#page-home .tab-btn').forEach(b => b.classList.remove('active'));
@@ -1321,11 +1102,10 @@ function filterByStatus(status, btn) {
   renderAnimeGrid();
 }
 window.filterByStatus = filterByStatus;
-
 function openAnimeDetail(id) {
   const anime = currentUser.animeList.find(a => a.id === id);
   if (!anime) return;
-  const isOwn = true; // viewing own list
+  const isOwn = true;
   showModal(
     anime.title,
     `<img src="${safeImg(anime.imageUrl,'')}" style="width:100%;border-radius:10px;margin-bottom:12px;max-height:200px;object-fit:cover" onerror="this.style.display='none'"/>
@@ -1339,7 +1119,6 @@ function openAnimeDetail(id) {
   );
 }
 window.openAnimeDetail = openAnimeDetail;
-
 async function setAnimeStatus(id, status) {
   currentUser.animeList = currentUser.animeList.map(a => a.id === id ? { ...a, status } : a);
   await saveUserData();
@@ -1347,7 +1126,6 @@ async function setAnimeStatus(id, status) {
   renderAnimeGrid();
   toast('Status diperbarui!', 'success');
 }
-
 async function removeAnime(id) {
   currentUser.animeList = currentUser.animeList.filter(a => a.id !== id);
   await saveUserData();
@@ -1355,21 +1133,46 @@ async function removeAnime(id) {
   renderAnimeGrid();
   toast('Anime dihapus.', 'info');
 }
-
 function openAddAnimeModal() {
+  addAnimeTab = 'jikan';
   showModal(
     'Tambah Anime',
-    `<div class="input-group"><label>Cari Judul (via Jikan API)</label>
-     <input type="text" id="jikan-search-input" placeholder="Cth: Sword Art Online" /></div>
-     <div id="jikan-results" style="max-height:250px;overflow-y:auto;margin-top:8px"></div>`,
+    `<div class="tabs" style="margin-bottom:14px">
+       <button class="tab-btn active" id="aa-tab-jikan" onclick="switchAddAnimeTab('jikan')">🔎 Jikan API</button>
+       <button class="tab-btn" id="aa-tab-custom" onclick="switchAddAnimeTab('custom')">✏️ Custom Manual</button>
+     </div>
+     <div id="aa-jikan-panel">
+       <div class="input-group"><label>Cari Judul (via Jikan API)</label>
+       <input type="text" id="jikan-search-input" placeholder="Cth: Sword Art Online" onkeydown="if(event.key==='Enter'){event.preventDefault();doJikanSearch();}"/></div>
+       <div id="jikan-results" style="max-height:250px;overflow-y:auto;margin-top:8px"></div>
+     </div>
+     <div id="aa-custom-panel" style="display:none">
+       <div class="input-group"><label>Judul Anime</label><input type="text" id="ca-title" placeholder="Cth: Anime indie/lokal yang tidak ada di Jikan"/></div>
+       <div class="input-group"><label>URL Poster (opsional)</label><input type="text" id="ca-image" placeholder="https://..."/></div>
+       <div class="input-group"><label>Jumlah Episode (opsional)</label><input type="number" id="ca-episodes" placeholder="Cth: 12"/></div>
+     </div>`,
     [
-      { label: 'Cari', cls: 'btn-primary', fn: doJikanSearch },
+      { label: 'Cari', cls: 'btn-primary', fn: handleAddAnimePrimary },
       { label: 'Tutup', cls: 'btn-ghost', fn: closeModal }
     ]
   );
 }
 window.openAddAnimeModal = openAddAnimeModal;
-
+function switchAddAnimeTab(tab) {
+  addAnimeTab = tab;
+  document.getElementById('aa-tab-jikan').classList.toggle('active', tab === 'jikan');
+  document.getElementById('aa-tab-custom').classList.toggle('active', tab === 'custom');
+  document.getElementById('aa-jikan-panel').style.display  = tab === 'jikan'  ? '' : 'none';
+  document.getElementById('aa-custom-panel').style.display = tab === 'custom' ? '' : 'none';
+  const primaryBtn = document.querySelector('#modal-actions .btn-primary');
+  if (primaryBtn) primaryBtn.textContent = tab === 'jikan' ? 'Cari' : 'Tambahkan';
+}
+window.switchAddAnimeTab = switchAddAnimeTab;
+function handleAddAnimePrimary() {
+  if (addAnimeTab === 'jikan') doJikanSearch();
+  else addCustomAnime();
+}
+window.handleAddAnimePrimary = handleAddAnimePrimary;
 async function doJikanSearch() {
   const q = document.getElementById('jikan-search-input')?.value?.trim();
   if (!q) return;
@@ -1383,20 +1186,18 @@ async function doJikanSearch() {
       <div><div style="font-size:13px;font-weight:600">${a.title}</div><div style="font-size:11px;color:var(--muted)">${a.episodes || '?'} eps · ${a.score || '-'} ★</div></div>
     </div>
   `).join('');
-  // store results temporarily
   window._jikanResults = results;
 }
 window.doJikanSearch = doJikanSearch;
-
 async function addAnimeFromJikan(idx) {
   const a = window._jikanResults?.[idx];
   if (!a) return;
   const existing = currentUser.animeList.find(x => String(x.jikanId) === String(a.mal_id));
   if (existing) { toast('Anime sudah ada di daftar.', 'error'); return; }
-
   const entry = {
     id:       'anime_' + Date.now(),
     jikanId:  a.mal_id,
+    source:   'jikan',
     title:    a.title,
     imageUrl: a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '',
     episodes: a.episodes,
@@ -1410,10 +1211,28 @@ async function addAnimeFromJikan(idx) {
   toast('Anime ditambahkan! 🎉', 'success');
 }
 window.addAnimeFromJikan = addAnimeFromJikan;
-
-/* ============================================================
-   MARATHON
-============================================================ */
+async function addCustomAnime() {
+  const title    = document.getElementById('ca-title')?.value?.trim();
+  const imageUrl = document.getElementById('ca-image')?.value?.trim() || '';
+  const episodes = parseInt(document.getElementById('ca-episodes')?.value || '') || null;
+  if (!title) { toast('Isi judul anime.', 'error'); return; }
+  const existing = currentUser.animeList.find(x => x.title.toLowerCase() === title.toLowerCase());
+  if (existing) { toast('Anime dengan judul ini sudah ada di daftar.', 'error'); return; }
+  const entry = {
+    id:       'anime_' + Date.now(),
+    jikanId:  null,
+    source:   'custom',
+    title, imageUrl, episodes,
+    status:   'watching',
+    addedAt:  Date.now()
+  };
+  currentUser.animeList = [...(currentUser.animeList || []), entry];
+  await saveUserData();
+  closeModal();
+  renderAnimeGrid();
+  toast(title + ' (custom) ditambahkan! ✨', 'success');
+}
+window.addCustomAnime = addCustomAnime;
 function renderMarathon() {
   const list = document.getElementById('marathon-list');
   const items = currentUser.marathon || [];
@@ -1444,7 +1263,6 @@ function renderMarathon() {
     </div>`;
   }).join('');
 }
-
 function openAddMarathonModal() {
   showModal(
     'Tambah Marathon',
@@ -1458,7 +1276,6 @@ function openAddMarathonModal() {
   );
 }
 window.openAddMarathonModal = openAddMarathonModal;
-
 async function saveMarathon() {
   const title    = document.getElementById('m-title')?.value?.trim();
   const imageUrl = document.getElementById('m-image')?.value?.trim() || '';
@@ -1472,14 +1289,12 @@ async function saveMarathon() {
   renderMarathon();
   toast('Marathon ditambahkan!', 'success');
 }
-
 async function toggleMarathon(id) {
   currentUser.marathon = currentUser.marathon.map(m => m.id === id ? { ...m, completed: !m.completed } : m);
   await saveUserData();
   renderMarathon();
 }
 window.toggleMarathon = toggleMarathon;
-
 async function removeMarathon(id) {
   currentUser.marathon = currentUser.marathon.filter(m => m.id !== id);
   await saveUserData();
@@ -1487,15 +1302,10 @@ async function removeMarathon(id) {
   toast('Dihapus.', 'info');
 }
 window.removeMarathon = removeMarathon;
-
-/* ============================================================
-   GACHA
-============================================================ */
 async function loadGachaPool() {
   const snap = await getDocs(collection(db, 'gacha_pool'));
   gachaPool  = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
-
 function renderGachaBanners() {
   updateGachaErisDisplay();
   const area = document.getElementById('gacha-banners');
@@ -1515,12 +1325,10 @@ function renderGachaBanners() {
     </div>
   `).join('');
 }
-
 function updateGachaErisDisplay() {
   const el = document.getElementById('gacha-eris-display');
   if (el) el.textContent = currentUser?.eris || 0;
 }
-
 async function doGacha(type) {
   const price = currentUser.role === 'bangsawan' ? GACHA_PRICE.bangsawan : GACHA_PRICE.rakyat;
   if (currentUser.eris < price) {
@@ -1532,8 +1340,6 @@ async function doGacha(type) {
     toast('Pool gacha untuk banner ini masih kosong. Hubungi Maou!', 'error');
     return;
   }
-
-  // Weighted random by rarity
   const weights = { C:50, R:30, SR:15, SSR:4, UR:1 };
   const weighted = [];
   pool.forEach(item => {
@@ -1541,21 +1347,17 @@ async function doGacha(type) {
     for (let i=0; i<w; i++) weighted.push(item);
   });
   const result = weighted[Math.floor(Math.random() * weighted.length)];
-
-  // Deduct Eris, add to collection, update rankPoints
   currentUser.eris -= price;
   const pts = RARITY_PTS[result.rarity] || 1;
   currentUser.rankPoints = (currentUser.rankPoints || 0) + pts;
   currentUser.gachaCollection = [...(currentUser.gachaCollection || []), {
     id: 'col_' + Date.now(), name: result.name, imageUrl: result.imageUrl, type, rarity: result.rarity
   }];
-
   await saveUserData();
   updateGachaErisDisplay();
   showGachaResult([result]);
 }
 window.doGacha = doGacha;
-
 function showGachaResult(items) {
   document.getElementById('gacha-banners-area').style.display = 'none';
   document.getElementById('gacha-result-area').style.display  = '';
@@ -1569,17 +1371,12 @@ function showGachaResult(items) {
     </div>
   `).join('');
 }
-
 function closeGachaResult() {
   document.getElementById('gacha-banners-area').style.display = '';
   document.getElementById('gacha-result-area').style.display  = 'none';
   renderGachaBanners();
 }
 window.closeGachaResult = closeGachaResult;
-
-/* ============================================================
-   COLLECTION
-============================================================ */
 function renderCollection() {
   const grid  = document.getElementById('collection-grid');
   const items = (currentUser.gachaCollection || []).filter(c => collectionFilter === 'all' || c.type === collectionFilter);
@@ -1602,7 +1399,6 @@ function renderCollection() {
     </div>
   `).join('');
 }
-
 async function usePfp(url) {
   currentUser.avatarUrl = url;
   await saveUserData();
@@ -1611,7 +1407,6 @@ async function usePfp(url) {
   toast('Foto profil berhasil diubah! ✨', 'success');
 }
 window.usePfp = usePfp;
-
 function filterCollection(type, btn) {
   collectionFilter = type;
   document.querySelectorAll('#collection-tabs .tab-btn').forEach(b => b.classList.remove('active'));
@@ -1619,10 +1414,6 @@ function filterCollection(type, btn) {
   renderCollection();
 }
 window.filterCollection = filterCollection;
-
-/* ============================================================
-   PROFILE
-============================================================ */
 function renderProfile(userData, isOwnProfile = true) {
   if (!userData) return;
   const rank    = getRank(userData.rankPoints || 0);
@@ -1631,18 +1422,12 @@ function renderProfile(userData, isOwnProfile = true) {
   const themeClass  = userData.role === 'maou' ? 'maou-theme' : userData.role === 'bangsawan' ? 'bangsawan-theme' : '';
   const avatarBorder = userData.role === 'maou' ? 'maou-border' : userData.role === 'bangsawan' ? 'bangsawan-border' : '';
   const usernameClass = userData.role === 'maou' ? 'maou-text' : userData.role === 'bangsawan' ? 'bangsawan-text' : '';
-
   const content = document.getElementById('profile-content');
   content.innerHTML = `
     <div class="profile-hero ${themeClass}">
       <div class="profile-hero-bg"></div>
       <div class="profile-top">
         <div class="profile-avatar-wrap">
-          <!--
-            CLUE: Foto profil user di halaman profil.
-            Diambil dari userData.avatarUrl (Firestore).
-            Fallback: DEFAULT_AVATAR / ASSETS.DEFAULT_AVATAR_URL
-          -->
           <img class="profile-avatar ${avatarBorder}" src="${safeImg(userData.avatarUrl, DEFAULT_AVATAR)}" onerror="this.src='${DEFAULT_AVATAR}'" alt="avatar"/>
         </div>
         <div class="profile-info">
@@ -1661,9 +1446,7 @@ function renderProfile(userData, isOwnProfile = true) {
         </div>
       </div>
     </div>
-
     ${isOwnProfile ? `
-    <!-- Daily Login & Eris -->
     <div style="display:flex;gap:12px;flex-wrap:wrap">
       <div class="eris-widget" style="flex:1;min-width:150px">
         <span class="eris-icon">💰</span>
@@ -1682,8 +1465,6 @@ function renderProfile(userData, isOwnProfile = true) {
       </div>
     </div>
     ` : ''}
-
-    <!-- Stats -->
     <div class="profile-stats">
       <div class="stat-card">
         <div class="stat-value">${(userData.animeList || []).filter(a=>a.status==='watched').length}</div>
@@ -1702,8 +1483,6 @@ function renderProfile(userData, isOwnProfile = true) {
         <div class="stat-label">SSR / UR Cards</div>
       </div>
     </div>
-
-    <!-- Koleksi preview -->
     <div class="section-label">Koleksi Gacha</div>
     <div class="collection-grid">
       ${(userData.gachaCollection || []).slice(0,12).map(c=>`
@@ -1716,7 +1495,6 @@ function renderProfile(userData, isOwnProfile = true) {
         </div>
       `).join('') || '<div class="empty-state" style="grid-column:1/-1"><p>Belum ada koleksi.</p></div>'}
     </div>
-
     ${isOwnProfile ? `
     <div style="margin-top:10px">
       <button class="btn btn-danger" onclick="confirmLogout()">🚪 Logout</button>
@@ -1724,14 +1502,12 @@ function renderProfile(userData, isOwnProfile = true) {
     ` : ''}
   `;
 }
-
 function isDailyClaimed() {
   if (!currentUser) return false;
   const last = currentUser.lastLogin || 0;
   const now  = new Date(); const lastDate = new Date(last);
   return now.toDateString() === lastDate.toDateString() && (currentUser._dailyClaimed);
 }
-
 async function claimDaily() {
   if (isDailyClaimed()) return;
   currentUser.eris = (currentUser.eris || 0) + DAILY_REWARD;
@@ -1742,7 +1518,6 @@ async function claimDaily() {
   toast(`+${DAILY_REWARD} Eris dari Daily Login! 🎁`, 'success');
 }
 window.claimDaily = claimDaily;
-
 function openTopUpModal() {
   showModal(
     '💰 Top Up Eris',
@@ -1751,7 +1526,6 @@ function openTopUpModal() {
   );
 }
 window.openTopUpModal = openTopUpModal;
-
 function confirmLogout() {
   showModal(
     'Logout',
@@ -1763,14 +1537,9 @@ function confirmLogout() {
   );
 }
 window.confirmLogout = confirmLogout;
-
-/* ============================================================
-   USERS / GUILD MEMBERS
-============================================================ */
 async function loadAllUsers() {
   const snap = await getDocs(collection(db, 'users'));
   allUsers   = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  // Sort: Maou > Bangsawan > Rakyat > rank > alphabet
   const roleOrder = { maou:0, bangsawan:1, rakyat:2 };
   allUsers.sort((a,b) => {
     const ro = (roleOrder[a.role]||2) - (roleOrder[b.role]||2);
@@ -1780,7 +1549,6 @@ async function loadAllUsers() {
     return a.username.localeCompare(b.username);
   });
 }
-
 function renderUsers() {
   const q    = (document.getElementById('user-search')?.value || '').toLowerCase();
   const list = document.getElementById('users-list');
@@ -1805,25 +1573,18 @@ function renderUsers() {
   }).join('');
 }
 window.filterUsers = renderUsers;
-
 async function viewUserProfile(username) {
   const snap = await getDoc(doc(db, 'users', username));
   if (!snap.exists()) return;
   const userData = snap.data();
-  // Navigate to profile page and render that user
   navigate('profile');
   renderProfile({ id: username, ...userData }, username === currentUser.id);
 }
 window.viewUserProfile = viewUserProfile;
-
-/* ============================================================
-   ADMIN PANEL
-============================================================ */
 function renderAdminHome() {
   document.getElementById('admin-section-content').innerHTML = '';
 }
 window.renderAdminHome = renderAdminHome;
-
 function openAdminSection(section) {
   const el = document.getElementById('admin-section-content');
   if (section === 'add-gacha') {
@@ -1873,7 +1634,6 @@ function openAdminSection(section) {
   }
 }
 window.openAdminSection = openAdminSection;
-
 async function submitAddGacha() {
   const name     = document.getElementById('ag-name')?.value?.trim();
   const imageUrl = document.getElementById('ag-image')?.value?.trim();
@@ -1881,7 +1641,6 @@ async function submitAddGacha() {
   const rarity   = document.getElementById('ag-rarity')?.value;
   if (!name || !imageUrl) { toast('Isi nama dan URL gambar.', 'error'); return; }
   if (!imageUrl.startsWith('http')) { toast('URL gambar harus dimulai dengan http.', 'error'); return; }
-
   await addDoc(collection(db, 'gacha_pool'), {
     name, imageUrl, type, rarity, addedAt: Date.now(), addedBy: currentUser.id
   });
@@ -1891,7 +1650,6 @@ async function submitAddGacha() {
   document.getElementById('ag-image').value = '';
 }
 window.submitAddGacha = submitAddGacha;
-
 async function renderManageGachaPool(el) {
   await loadGachaPool();
   el.innerHTML = `
@@ -1913,7 +1671,6 @@ async function renderManageGachaPool(el) {
       </table>
     </div>`;
 }
-
 async function deleteGachaItem(id) {
   await deleteDoc(doc(db, 'gacha_pool', id));
   await loadGachaPool();
@@ -1921,7 +1678,6 @@ async function deleteGachaItem(id) {
   toast('Item dihapus dari pool.', 'info');
 }
 window.deleteGachaItem = deleteGachaItem;
-
 async function renderManageUsers(el) {
   await loadAllUsers();
   el.innerHTML = `
@@ -1946,7 +1702,6 @@ async function renderManageUsers(el) {
       </table>
     </div>`;
 }
-
 function adminAddEris(uid) {
   showModal(
     'Tambah Eris untuk ' + uid,
@@ -1970,7 +1725,6 @@ function adminAddEris(uid) {
   );
 }
 window.adminAddEris = adminAddEris;
-
 function adminChangeRole(uid) {
   showModal(
     'Ubah Role: ' + uid,
@@ -1995,13 +1749,11 @@ function adminChangeRole(uid) {
   );
 }
 window.adminChangeRole = adminChangeRole;
-
 async function submitEditAnimeGlobal() {
   const jikanId  = parseInt(document.getElementById('ea-jikanid')?.value || '0');
   const newTitle = document.getElementById('ea-title')?.value?.trim();
   const newImage = document.getElementById('ea-image')?.value?.trim();
   if (!jikanId) { toast('Masukkan Jikan ID.', 'error'); return; }
-
   const snap = await getDocs(collection(db, 'users'));
   let count = 0;
   for (const d of snap.docs) {
@@ -2021,29 +1773,33 @@ async function submitEditAnimeGlobal() {
   toast(`${count} entri diperbarui secara global!`, 'success');
 }
 window.submitEditAnimeGlobal = submitEditAnimeGlobal;
-
-/* ============================================================
-   SAVE USER DATA TO FIRESTORE
-============================================================ */
 async function saveUserData() {
   if (!currentUser) return;
   const { id, _dailyClaimed, ...data } = currentUser;
   await updateDoc(doc(db, 'users', id), data);
 }
-
-/* ============================================================
-   SPLASH → APP INIT
-============================================================ */
+function swapLogo(fallbackId, realId, realClass) {
+  const el = document.getElementById(fallbackId);
+  if (!el || !ASSETS.LOGO_URL) return;
+  const probe = new Image();
+  probe.onload = () => {
+    const img = document.createElement('img');
+    img.src = ASSETS.LOGO_URL;
+    if (realId)    img.id = realId;
+    if (realClass) img.className = realClass;
+    el.replaceWith(img);
+  };
+  probe.src = ASSETS.LOGO_URL;
+}
+function applyBrandLogo() {
+  swapLogo('splash-logo-fallback',  'splash-logo', null);
+  swapLogo('auth-logo-fallback',    null, 'auth-logo-img');
+  swapLogo('sidebar-logo-fallback', null, 'sidebar-logo-img');
+}
 window.addEventListener('DOMContentLoaded', () => {
-  // Logo fallback logic
-  // CLUE: Jika ASSETS.LOGO_URL sudah diisi di firebase-config.js,
-  // ubah bagian ini untuk menampilkan <img> sungguhan:
-  // document.getElementById('splash-logo-fallback').innerHTML =
-  //   `<img id="splash-logo" src="${ASSETS.LOGO_URL}" onerror="..."/>`;
-
+  applyBrandLogo();
   setTimeout(() => {
     document.getElementById('splash').classList.add('hidden');
-    // Tampilkan auth screen, app tersembunyi sampai login
   }, 2400);
 });
 </script>
