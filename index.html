@@ -7,59 +7,65 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
 /* ============================================================
-   RESET & GLOBAL
+   RESET & GLOBAL VARIABLES
    ============================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg-deep:#0b1220;
-  --bg-card:#111a2e;
-  --bg-elevated:#16213a;
-  --accent:#5aa9ff;
-  --accent2:#7cc7ff;
-  --accent-dim:#3a7acc;
-  --purple-maou:#9b59f5;
-  --purple-dark:#6a2fc4;
-  --gold:#5aa9ff;
-  --gold-light:#9bd3ff;
-  --text-primary:#d6e4ff;
-  --text-secondary:#8aa4c7;
-  --text-muted:#4a6080;
-  --border:rgba(140,180,255,0.12);
-  --rank-f:#888;
-  --rank-e:#5fb8ff;
-  --rank-d:#5ff07d;
-  --rank-c:#f5e050;
-  --rank-b:#ff8c42;
-  --rank-a:#ff4d6d;
-  --rank-s:#c77dff;
-  --rank-ss:#f8b500;
-  --rank-mc:#ff006e;
-  --radius:14px;
-  --radius-sm:8px;
-  --radius-pill:999px;
-  --shadow:0 4px 24px rgba(0,0,0,.45);
-  --nav-h:64px;
-  --font-display:'Poppins',sans-serif;
-  --font-body:'Poppins',sans-serif;
-  --font-ui:'Poppins',sans-serif;
-  --transition:all .22s cubic-bezier(.4,0,.2,1);
+  --bg-deep: #080c16;
+  --bg-card: #101625;
+  --bg-elevated: #1a2235;
+  --accent: #5aa9ff;
+  --accent2: #7cc7ff;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --border: rgba(255,255,255,0.06);
+  
+  /* Role Colors */
+  --role-kaisar: #ef4444; /* Red */
+  --role-raja: #fbbf24; /* Gold */
+  --role-bangsawan: #f97316; /* Orange */
+  --role-rakyat: #94a3b8; /* Gray */
+
+  /* Rarity Colors */
+  --rarity-ur: #ef4444;
+  --rarity-ssr: #fbbf24;
+  --rarity-sr: #a855f7;
+  --rarity-r: #3b82f6;
+  --rarity-c: #94a3b8;
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --nav-h: 70px;
+  --font-main: 'Poppins', sans-serif;
+  
+  --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  --shadow-soft: 0 10px 30px -5px rgba(0,0,0,0.5);
+  --shadow-glow: 0 0 20px rgba(90, 169, 255, 0.2);
 }
 html,body{
-  height:100%;width:100%;
-  font-family:var(--font-body);
-  background:var(--bg-deep);
-  color:var(--text-primary);
-  overflow:hidden;
-  -webkit-tap-highlight-color:transparent;
-  user-select:none;
+  height:100%; width:100%;
+  font-family:var(--font-main);
+  background:var(--bg-deep); color:var(--text-primary);
+  overflow:hidden; -webkit-tap-highlight-color:transparent; user-select:none;
 }
 body{display:flex;flex-direction:column;}
 ::-webkit-scrollbar{display:none;}
 button{cursor:pointer;border:none;background:none;color:inherit;font-family:inherit;}
-input,textarea{font-family:inherit;outline:none;}
+input,textarea,select{font-family:inherit;outline:none;}
 img{display:block;}
+i{display:inline-flex; align-items:center; justify-content:center;}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
 /* ============================================================
    SPLASH SCREEN
@@ -67,1158 +73,659 @@ img{display:block;}
 #splash{
   position:fixed;inset:0;z-index:9999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--bg-deep);
-  gap:20px;
-  transition:opacity .5s ease, transform .5s ease;
+  background:var(--bg-deep); gap:24px;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.25,1,0.5,1);
 }
-#splash.hide{opacity:0;transform:scale(1.04);pointer-events:none;}
+#splash.hide{opacity:0; transform:scale(1.05); pointer-events:none;}
 .splash-logo{
-  width:90px;height:90px;border-radius:22px;
-  border:1px solid var(--border);
+  width:100px; height:100px; border-radius:24px;
+  border:1px solid var(--border); box-shadow: var(--shadow-glow);
+  animation: slideUp 0.8s ease backwards;
 }
 .splash-title{
-  font-family:var(--font-display);font-size:28px;font-weight:700;
-  letter-spacing:3px;color:var(--accent2);
+  font-size:32px; font-weight:800; letter-spacing:4px; 
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  animation: slideUp 0.8s ease 0.1s backwards;
 }
-.splash-sub{font-family:var(--font-ui);font-size:12px;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;}
 .splash-loader{
-  width:120px;height:2px;background:var(--bg-elevated);border-radius:var(--radius-pill);overflow:hidden;margin-top:12px;
-  border:1px solid var(--border);
+  width:140px; height:3px; background:var(--bg-elevated); border-radius:var(--radius-pill); overflow:hidden;
+  animation: slideUp 0.8s ease 0.2s backwards;
 }
 .splash-loader-bar{
-  height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));
-  border-radius:var(--radius-pill);
-  animation:loadBar 2.2s ease forwards;
+  height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:var(--radius-pill); animation:loadBar 2s cubic-bezier(0.25,1,0.5,1) forwards;
 }
-@keyframes loadBar{0%{width:0%;}60%{width:80%;}100%{width:100%;}}
+@keyframes loadBar{0%{width:0%;}50%{width:70%;}100%{width:100%;}}
 
 /* ============================================================
-   AUTH SCREEN — Split layout
+   AUTH SCREEN
    ============================================================ */
 #auth-screen{
-  position:fixed;inset:0;z-index:999;
-  display:flex;flex-direction:column;
-  background:var(--bg-deep);
-  overflow-y:auto;
+  position:fixed; inset:0; z-index:999;
+  display:flex; flex-direction:column; background:var(--bg-deep);
+  overflow-y:auto; transition: opacity 0.4s ease;
 }
-#auth-screen.hidden{display:none;}
+#auth-screen.hidden{opacity: 0; pointer-events: none;}
+.auth-hero{
+  padding: 60px 24px 30px; display:flex; flex-direction:column; align-items:center; text-align:center;
+  background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-deep) 100%);
+}
+.auth-hero img{ width: 72px; height: 72px; border-radius: 18px; margin-bottom: 16px; box-shadow: var(--shadow-glow); }
+.auth-hero h1{ font-size: 24px; font-weight: 700; color: var(--text-primary); }
+.auth-hero p{ font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
 
-/* Top brand band */
-.auth-brand-band{
-  background:linear-gradient(135deg,var(--bg-elevated) 0%,#0d1830 100%);
-  border-bottom:1px solid var(--border);
-  padding:36px 28px 28px;
-  display:flex;flex-direction:column;gap:8px;
+.auth-body{ flex:1; padding: 20px 24px 40px; }
+.auth-tabs{ display:flex; gap:8px; margin-bottom: 30px; background: var(--bg-card); padding: 4px; border-radius: var(--radius-pill); border: 1px solid var(--border); }
+.auth-tab{ flex:1; padding:12px; font-size:13px; font-weight:600; color:var(--text-muted); border-radius:var(--radius-pill); transition:var(--transition); }
+.auth-tab.active{ background: var(--bg-elevated); color:var(--accent2); box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.auth-panel{ display:none; animation: fadeIn 0.4s ease; }
+.auth-panel.active{ display:flex; flex-direction:column; gap:16px; }
+.auth-field label{ display:block; font-size:12px; font-weight:500; color:var(--text-secondary); margin-bottom:8px; margin-left: 4px; }
+.auth-field input{ 
+  width:100%; padding:14px 16px; background:var(--bg-card); border:1px solid var(--border);
+  border-radius:var(--radius-sm); color:var(--text-primary); font-size:14px; transition:var(--transition);
 }
-.auth-brand-row{display:flex;align-items:center;gap:14px;}
-.auth-logo{
-  width:48px;height:48px;border-radius:12px;
-  border:1px solid var(--border);
-  flex-shrink:0;
-}
-.auth-app-name{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  color:var(--accent2);letter-spacing:1px;
-}
-.auth-tagline{font-size:12px;color:var(--text-secondary);letter-spacing:.5px;margin-top:4px;}
-
-/* Auth body */
-.auth-body{
-  flex:1;padding:24px 24px 40px;
-  display:flex;flex-direction:column;gap:0;
-}
-
-/* Tab switcher — underline style, not pill */
-.auth-tabs{
-  display:flex;gap:0;margin-bottom:28px;
-  border-bottom:1px solid var(--border);
-}
-.auth-tab{
-  padding:10px 20px 11px;font-size:14px;font-weight:600;
-  font-family:var(--font-ui);
-  color:var(--text-muted);
-  border-bottom:2px solid transparent;margin-bottom:-1px;
-  transition:var(--transition);letter-spacing:.2px;
-}
-.auth-tab.active{color:var(--accent2);border-bottom-color:var(--accent2);}
-
-.auth-panel{display:none;}
-.auth-panel.active{display:flex;flex-direction:column;gap:0;}
-
-/* Field rows */
-.auth-field{margin-bottom:16px;}
-.auth-field label{
-  display:block;font-size:12px;font-weight:500;
-  color:var(--text-secondary);margin-bottom:7px;
-}
-.auth-field input{
-  width:100%;padding:12px 14px;
-  background:var(--bg-elevated);
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  color:var(--text-primary);font-size:14px;font-family:var(--font-body);
-  transition:var(--transition);
-}
-.auth-field input:focus{border-color:var(--accent);}
-.auth-field input::placeholder{color:var(--text-muted);}
-
-/* Submit button */
+.auth-field input:focus{ border-color:var(--accent); box-shadow: 0 0 0 3px rgba(90, 169, 255, 0.1); }
 .btn-primary{
-  width:100%;padding:13px;border-radius:var(--radius-sm);
+  width:100%; padding:14px; border-radius:var(--radius-sm);
   background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#0b1220;font-weight:700;font-size:14px;font-family:var(--font-ui);
-  letter-spacing:.3px;margin-top:6px;
-  transition:var(--transition);
+  color:#000; font-weight:700; font-size:14px; margin-top:10px; transition:var(--transition);
+  box-shadow: 0 4px 15px rgba(90,169,255,0.3);
 }
-.btn-primary:active{opacity:.85;transform:scale(.98);}
-
-/* Error */
-.auth-error{
-  margin-top:12px;padding:10px 14px;
-  background:rgba(255,77,109,.08);
-  border:1px solid rgba(255,77,109,.2);border-radius:var(--radius-sm);
-  color:#ff6b80;font-size:12px;text-align:center;display:none;
-}
-.auth-error.show{display:block;}
+.btn-primary:active{ transform:scale(0.98); box-shadow: 0 2px 5px rgba(90,169,255,0.2); }
+.auth-error{ padding:12px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); border-radius:var(--radius-sm); color:#ef4444; font-size:12px; text-align:center; display:none; }
+.auth-error.show{ display:block; animation: slideUp 0.3s ease; }
 
 /* ============================================================
-   APP SHELL
+   APP SHELL & NAVIGATION
    ============================================================ */
-#app{
-  display:none;flex-direction:column;height:100%;
-}
-#app.visible{display:flex;}
+#app{ display:none; flex-direction:column; height:100%; opacity: 0; transition: opacity 0.5s ease; }
+#app.visible{ display:flex; opacity: 1; }
+#pages{ flex:1; overflow:hidden; position:relative; }
+.page{ position:absolute; inset:0; overflow-y:auto; padding-bottom:calc(var(--nav-h) + 20px); opacity:0; pointer-events:none; transform:scale(0.98); transition:var(--transition); }
+.page.active{ opacity:1; pointer-events:all; transform:scale(1); }
 
-/* Pages */
-#pages{
-  flex:1;overflow:hidden;position:relative;
-}
-.page{
-  position:absolute;inset:0;overflow-y:auto;
-  padding-bottom:calc(var(--nav-h) + 12px);
-  transition:opacity .22s ease, transform .22s ease;
-  opacity:0;pointer-events:none;transform:translateY(8px);
-}
-.page.active{opacity:1;pointer-events:all;transform:translateY(0);}
-
-/* ============================================================
-   BOTTOM NAVIGATION
-   ============================================================ */
 #bottom-nav{
-  height:var(--nav-h);flex-shrink:0;
-  background:var(--bg-card);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 8px;z-index:100;
+  height:var(--nav-h); flex-shrink:0; background:rgba(16, 22, 37, 0.9); backdrop-filter: blur(10px);
+  border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;
+  padding:0 12px; z-index:100; position: fixed; bottom: 0; width: 100%;
 }
 .nav-btn{
-  display:flex;flex-direction:column;align-items:center;gap:3px;
-  padding:6px 12px;border-radius:var(--radius-sm);
-  color:var(--text-muted);transition:var(--transition);
-  position:relative;
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:8px 0; color:var(--text-muted); transition:var(--transition);
 }
-.nav-btn.active{color:var(--accent);}
-.nav-btn svg{width:22px;height:22px;}
-.nav-btn span{font-size:10px;font-family:var(--font-ui);font-weight:600;letter-spacing:.4px;}
-.nav-btn.active::after{
-  content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
-  width:24px;height:2px;background:var(--accent);border-radius:var(--radius-pill);
-}
+.nav-btn i{ font-size:24px; transition:var(--transition); }
+.nav-btn span{ font-size:10px; font-weight:600; }
+.nav-btn.active{ color:var(--accent); }
+.nav-btn.active i{ transform: translateY(-3px); }
 
 /* ============================================================
-   PAGE HEADER
+   HEADERS & COMPONENTS
    ============================================================ */
-.page-header{
-  padding:16px 18px 12px;
-  display:flex;align-items:center;gap:12px;
-  position:sticky;top:0;z-index:50;
-  background:var(--bg-deep);
-}
-.page-header-title{font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:1px;}
-.page-header-back{
-  width:34px;height:34px;border-radius:50%;
-  background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;
-  color:var(--text-secondary);flex-shrink:0;
-}
-.page-header-back svg{width:18px;height:18px;}
-.ml-auto{margin-left:auto;}
+.page-header{ padding:20px 20px 10px; display:flex; align-items:center; gap:14px; position:sticky; top:0; z-index:50; background:rgba(8, 12, 22, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: var(--transition); }
+.page-header.scrolled { border-bottom-color: var(--border); }
+.page-header-title{ font-size:20px; font-weight:700; display:flex; align-items:center; gap:10px; }
+.dash-logo-small { width: 28px; height: 28px; border-radius: 8px; }
+.page-header-back{ width:36px; height:36px; border-radius:50%; background:var(--bg-elevated); display:flex; align-items:center; justify-content:center; color:var(--text-secondary); transition: var(--transition); }
+.page-header-back:active{ transform: scale(0.9); }
+.ml-auto{ margin-left:auto; }
+.empty-state{ display:flex; flex-direction:column; align-items:center; gap:12px; padding:40px 24px; color:var(--text-muted); text-align:center; animation: fadeIn 0.5s ease; grid-column: 1/-1; }
+.empty-state i{ font-size:48px; opacity:0.6; }
+.empty-state p{ font-size:14px; }
+.section-title{ font-size: 14px; font-weight: 700; color: var(--text-primary); margin: 24px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
 
 /* ============================================================
-   DASHBOARD PAGE
+   ROLES STYLING
    ============================================================ */
-.dash-hero{
-  margin:12px 16px 0;
-  background:var(--bg-elevated);
-  border:1px solid var(--border);border-radius:20px;
-  padding:22px 20px;position:relative;overflow:hidden;
-}
-.dash-hero-top{display:flex;align-items:center;gap:14px;}
-.dash-avatar{
-  width:58px;height:58px;border-radius:50%;
-  border:2.5px solid var(--accent);
-  object-fit:cover;flex-shrink:0;
-}
-.dash-user-info{flex:1;min-width:0;}
-.dash-greeting{font-size:11px;color:var(--text-secondary);font-family:var(--font-ui);letter-spacing:.5px;}
-.dash-username{font-family:var(--font-display);font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.dash-role-badge{
-  display:inline-flex;align-items:center;gap:4px;
-  padding:2px 10px;border-radius:var(--radius-pill);font-size:10px;font-weight:700;
-  font-family:var(--font-ui);letter-spacing:.5px;margin-top:3px;
-}
-.dash-role-badge.maou{background:rgba(155,89,245,.15);color:var(--purple-maou);border:1px solid rgba(155,89,245,.3);}
-.dash-role-badge.bangsawan{background:rgba(90,169,255,.12);color:var(--accent2);border:1px solid rgba(90,169,255,.25);}
-.dash-role-badge.rakyat{background:rgba(255,255,255,.06);color:var(--text-secondary);border:1px solid var(--border);}
-.dash-eris{text-align:right;flex-shrink:0;}
-.dash-eris-amount{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--accent);}
-.dash-eris-label{font-size:10px;color:var(--text-secondary);font-family:var(--font-ui);}
-.dash-rank-section{margin-top:18px;}
-.dash-rank-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.dash-rank-badge{
-  font-family:var(--font-display);font-size:13px;font-weight:700;
-  padding:3px 12px;border-radius:var(--radius-pill);
-}
-.dash-rank-pts{font-size:11px;color:var(--text-secondary);}
-.dash-rank-bar{height:6px;background:rgba(255,255,255,.08);border-radius:var(--radius-pill);overflow:hidden;}
-.dash-rank-fill{height:100%;border-radius:var(--radius-pill);background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s cubic-bezier(.4,0,.2,1);}
-.dash-rank-labels{display:flex;justify-content:space-between;margin-top:4px;}
-.dash-rank-labels span{font-size:10px;color:var(--text-muted);font-family:var(--font-ui);}
+.role-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:var(--radius-pill); font-size:11px; font-weight:700; letter-spacing:0.5px; }
+.role-badge i { font-size: 14px; }
+.theme-kaisar { background: rgba(239, 68, 68, 0.1); color: var(--role-kaisar); border: 1px solid rgba(239, 68, 68, 0.3); box-shadow: 0 0 10px rgba(239, 68, 68, 0.1); }
+.theme-raja { background: rgba(251, 191, 36, 0.1); color: var(--role-raja); border: 1px solid rgba(251, 191, 36, 0.3); }
+.theme-bangsawan { background: rgba(249, 115, 22, 0.1); color: var(--role-bangsawan); border: 1px solid rgba(249, 115, 22, 0.3); }
+.theme-rakyat { background: rgba(148, 163, 184, 0.1); color: var(--role-rakyat); border: 1px solid rgba(148, 163, 184, 0.2); }
 
-/* Dashboard quick stats */
-.dash-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 16px 0;}
-.stat-card{
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);padding:16px 14px;
-}
-.stat-card-icon{font-size:22px;margin-bottom:6px;}
-.stat-card-value{font-family:var(--font-display);font-size:22px;font-weight:700;}
-.stat-card-label{font-size:11px;color:var(--text-secondary);font-family:var(--font-ui);margin-top:2px;}
-
-/* Quick actions */
-.section-label{
-  padding:16px 18px 10px;
-  font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--text-secondary);font-family:var(--font-ui);
-}
-.quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 16px 8px;}
-.qa-btn{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  padding:14px 6px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);
-  font-size:10px;color:var(--text-secondary);font-family:var(--font-ui);font-weight:600;letter-spacing:.3px;
-  transition:var(--transition);
-}
-.qa-btn:active{transform:scale(.95);background:var(--bg-elevated);}
-.qa-icon{
-  width:36px;height:36px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:18px;
-}
-.qa-icon.yellow{background:rgba(232,160,32,.15);}
-.qa-icon.purple{background:rgba(155,89,245,.15);}
-.qa-icon.blue{background:rgba(95,184,255,.15);}
-.qa-icon.pink{background:rgba(255,77,109,.15);}
-
-/* Recent anime */
-.anime-mini-list{display:flex;flex-direction:column;gap:8px;margin:0 16px;}
-.anime-mini-item{
-  display:flex;align-items:center;gap:12px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius-sm);padding:10px 12px;
-}
-.anime-mini-cover{
-  width:38px;height:52px;border-radius:6px;object-fit:cover;flex-shrink:0;
-  background:var(--bg-elevated);
-}
-.anime-mini-info{flex:1;min-width:0;}
-.anime-mini-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.anime-mini-status{font-size:10px;color:var(--text-secondary);margin-top:2px;font-family:var(--font-ui);}
-.anime-mini-tag{
-  font-size:9px;font-weight:700;padding:2px 8px;border-radius:var(--radius-pill);
-  font-family:var(--font-ui);letter-spacing:.4px;flex-shrink:0;
-}
-.tag-watched{background:rgba(95,240,125,.12);color:#5ff07d;}
-.tag-marathon{background:rgba(95,184,255,.12);color:#5fb8ff;}
-.empty-state{
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:32px 24px;color:var(--text-muted);text-align:center;
-}
-.empty-state .icon{font-size:40px;opacity:.5;}
-.empty-state p{font-size:13px;}
+.avatar-wrapper { position: relative; display: inline-block; }
+.avatar-img { border-radius: 50%; object-fit: cover; background: var(--bg-elevated); transition: var(--transition); }
+.av-kaisar { border: 2px solid var(--role-kaisar); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+.av-raja { border: 2px solid var(--role-raja); box-shadow: 0 0 10px rgba(251, 191, 36, 0.2); }
+.av-bangsawan { border: 2px solid var(--role-bangsawan); }
+.av-rakyat { border: 2px solid var(--border); }
 
 /* ============================================================
-   ADD ANIME PAGE
+   DASHBOARD
    ============================================================ */
-.search-bar-wrap{
-  padding:12px 16px;position:sticky;top:0;z-index:10;
-  background:var(--bg-deep);
-}
-.search-bar{
-  display:flex;align-items:center;gap:10px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.08);
-  border-radius:var(--radius-pill);padding:10px 16px;
-}
-.search-bar input{
-  flex:1;background:none;color:var(--text-primary);font-size:14px;
-}
-.search-bar input::placeholder{color:var(--text-muted);}
-.search-bar svg{color:var(--text-muted);flex-shrink:0;}
-.filter-chips{
-  display:flex;gap:8px;padding:0 16px 12px;overflow-x:auto;
-}
-.chip{
-  flex-shrink:0;padding:5px 14px;border-radius:var(--radius-pill);
-  font-size:12px;font-weight:600;font-family:var(--font-ui);
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.08);
-  color:var(--text-secondary);transition:var(--transition);
-}
-.chip.active{background:var(--accent);color:#000;border-color:var(--accent);}
-.anime-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-  padding:0 14px 16px;
-}
-.anime-card{
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius-sm);overflow:hidden;
-  transition:var(--transition);
-}
-.anime-card:active{transform:scale(.96);}
-.anime-card-img{
-  width:100%;aspect-ratio:2/3;object-fit:cover;
-  background:var(--bg-elevated);display:block;
-}
-.anime-card-body{padding:7px 8px;}
-.anime-card-title{font-size:11px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.anime-card-score{font-size:10px;color:var(--accent);font-family:var(--font-ui);margin-top:3px;}
-.anime-card-btn{
-  width:100%;padding:6px;font-size:10px;font-weight:700;font-family:var(--font-ui);
-  background:rgba(232,160,32,.12);color:var(--accent);
-  transition:var(--transition);
-}
-.anime-card-btn:active{background:rgba(232,160,32,.25);}
-.loading-spin{
-  display:flex;justify-content:center;padding:40px;
-}
-.spinner{
-  width:32px;height:32px;border:3px solid rgba(255,255,255,.1);
-  border-top-color:var(--accent);border-radius:50%;
-  animation:spin .8s linear infinite;
-}
+.dash-hero{ margin:10px 20px 0; background:var(--bg-card); border:1px solid var(--border); border-radius:24px; padding:24px; position:relative; overflow:hidden; box-shadow: var(--shadow-soft); }
+.dash-hero-top{ display:flex; align-items:center; gap:16px; }
+.dash-avatar{ width:64px; height:64px; flex-shrink:0; }
+.dash-user-info{ flex:1; min-width:0; }
+.dash-greeting{ font-size:12px; color:var(--text-secondary); }
+.dash-username{ font-size:20px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom: 6px; }
+.dash-eris{ text-align:right; flex-shrink:0; }
+.dash-eris-amount{ font-size:22px; font-weight:800; color:var(--accent); }
+.dash-eris-label{ font-size:11px; color:var(--text-secondary); display: flex; align-items: center; justify-content: flex-end; gap: 4px;}
+.dash-rank-section{ margin-top:24px; }
+.dash-rank-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.dash-rank-badge{ font-size:13px; font-weight:700; padding:4px 12px; border-radius:var(--radius-pill); }
+.dash-rank-pts{ font-size:12px; color:var(--text-secondary); font-weight: 600; }
+.dash-rank-bar{ height:8px; background:var(--bg-elevated); border-radius:var(--radius-pill); overflow:hidden; border: 1px solid var(--border); }
+.dash-rank-fill{ height:100%; border-radius:var(--radius-pill); background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width 1s cubic-bezier(0.25,1,0.5,1); }
+.dash-rank-labels{ display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--text-muted); font-weight: 500; }
+
+.quick-actions{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin:0 20px; }
+.qa-btn{ display:flex; flex-direction:column; align-items:center; justify-content: center; gap:8px; padding:16px 8px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); font-size:11px; color:var(--text-secondary); font-weight:600; transition:var(--transition); }
+.qa-btn:active{ transform:scale(0.95); background:var(--bg-elevated); }
+.qa-icon{ font-size: 24px; margin-bottom: 4px; }
+.qa-btn.primary-qa { grid-column: span 2; background: linear-gradient(135deg, rgba(90, 169, 255, 0.1), rgba(124, 199, 255, 0.05)); border-color: rgba(90, 169, 255, 0.3); flex-direction: row; text-align: left; padding: 16px; justify-content: flex-start; }
+.qa-btn.primary-qa .qa-icon { color: var(--accent); margin-bottom: 0; margin-right: 8px; font-size: 28px; }
+.qa-btn.primary-qa span { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+
+.mini-card-list { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 10px; scroll-snap-type: x mandatory; }
+.mini-card { width: 120px; flex-shrink: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; scroll-snap-align: start; }
+.mini-card img { width: 100%; height: 160px; object-fit: cover; }
+.mini-card-body { padding: 8px; }
+.mini-card-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-card-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+/* ============================================================
+   ANIME UI (CARDS)
+   ============================================================ */
+.search-bar-wrap{ padding:10px 20px; position:sticky; top:65px; z-index:10; background:rgba(8, 12, 22, 0.9); backdrop-filter: blur(10px); }
+.search-bar{ display:flex; align-items:center; gap:12px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-pill); padding:12px 18px; transition: var(--transition); }
+.search-bar:focus-within { border-color: var(--accent); }
+.search-bar input{ flex:1; background:none; color:var(--text-primary); font-size:14px; border: none;}
+.search-bar i{ color:var(--text-muted); font-size: 18px; }
+
+.filter-chips{ display:flex; gap:10px; padding:0 20px 16px; overflow-x:auto; }
+.chip{ flex-shrink:0; padding:8px 16px; border-radius:var(--radius-pill); font-size:12px; font-weight:600; background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); transition:var(--transition); }
+.chip.active{ background:var(--accent); color:#000; border-color:var(--accent); box-shadow: 0 4px 10px rgba(90, 169, 255, 0.3); }
+
+/* Anime List Page Specific Filter Buttons */
+.filter-btn-group-wrapper { padding: 0 20px 16px; display:flex; flex-direction:column; gap:12px; }
+.filter-row { display:flex; align-items:center; gap:12px; overflow-x:auto; }
+.filter-label { font-size:12px; font-weight:700; color:var(--text-secondary); flex-shrink:0; }
+.filter-btn-group { display:flex; gap:6px; background:var(--bg-card); padding:4px; border-radius:var(--radius-pill); border:1px solid var(--border); }
+.filter-btn { padding:6px 14px; border-radius:var(--radius-pill); font-size:11px; font-weight:600; color:var(--text-muted); transition:var(--transition); white-space:nowrap;}
+.filter-btn.active { background:var(--bg-elevated); color:var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+
+.anime-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; padding:0 20px 20px; }
+.anime-card{ background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; transition:var(--transition); position: relative; }
+.anime-card:active{ transform:scale(0.96); }
+.anime-card-img{ width:100%; aspect-ratio:2/3; object-fit:cover; background:var(--bg-elevated); display:block; }
+.anime-card-overlay { position: absolute; top: 0; left: 0; right: 0; padding: 6px; display: flex; justify-content: flex-end; background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%); gap:4px; flex-wrap:wrap;}
+.anime-status-badge { font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: var(--radius-pill); background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+.badge-watched { color: #4ade80; border: 1px solid rgba(74, 222, 128, 0.3); }
+.badge-watching { color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.3); }
+.badge-drop { color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+.badge-marathon { color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); }
+.anime-card-body{ padding:8px; }
+.anime-card-title{ font-size:11px; font-weight:600; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.anime-card-rating { font-size: 10px; color: var(--accent); margin-top: 6px; display: flex; align-items: center; gap: 4px; font-weight: 600;}
+
+/* Loading */
+.loading-spin{ display:flex; justify-content:center; padding:40px; grid-column: 1/-1; width:100%; }
+.spinner{ width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ============================================================
-   MY ANIME PAGE
+   ANIME DETAILS MODAL
    ============================================================ */
-.tab-bar{
-  display:flex;background:var(--bg-elevated);margin:0 16px 12px;
-  border-radius:var(--radius-sm);padding:3px;gap:0;
-}
-.tab-bar-btn{
-  flex:1;padding:8px;text-align:center;font-size:12px;font-weight:700;
-  font-family:var(--font-ui);letter-spacing:.5px;
-  border-radius:6px;color:var(--text-secondary);transition:var(--transition);
-}
-.tab-bar-btn.active{background:var(--accent);color:#000;}
-.anime-list-full{display:flex;flex-direction:column;gap:10px;padding:0 16px 8px;}
-.anime-list-item{
-  display:flex;align-items:center;gap:12px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);padding:12px;
-}
-.anime-list-cover{
-  width:46px;height:64px;border-radius:8px;object-fit:cover;flex-shrink:0;
-  background:var(--bg-elevated);
-}
-.anime-list-info{flex:1;min-width:0;}
-.anime-list-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.anime-list-meta{font-size:11px;color:var(--text-secondary);margin-top:3px;font-family:var(--font-ui);}
-.anime-list-actions{display:flex;gap:6px;flex-shrink:0;}
-.icon-btn{
-  width:32px;height:32px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg-elevated);color:var(--text-secondary);
-  transition:var(--transition);
-}
-.icon-btn:active{transform:scale(.9);}
-.icon-btn.danger:active{color:#ff4d6d;}
-.marathon-item{flex-direction:column;align-items:stretch;}
-.marathon-top{display:flex;align-items:center;gap:12px;}
-.marathon-deadline{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.06);
-}
-.deadline-text{font-size:11px;color:var(--text-secondary);font-family:var(--font-ui);}
-.deadline-date{font-size:11px;font-weight:600;color:var(--rank-b);}
-.check-btn{
-  width:26px;height:26px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.15);
-  display:flex;align-items:center;justify-content:center;
-  transition:var(--transition);
-}
-.check-btn.done{background:var(--rank-d);border-color:var(--rank-d);}
-.check-btn svg{width:13px;height:13px;}
+.modal-overlay{ position:fixed; inset:0; z-index:1000; background:rgba(8, 12, 22, 0.8); backdrop-filter: blur(5px); display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition: opacity 0.3s ease; }
+.modal-overlay.open{ opacity:1; pointer-events:all; }
+.detail-modal{ width:100%; max-height: 90vh; background:var(--bg-deep); border-top:1px solid var(--border); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; transform:translateY(100%); transition:transform 0.4s cubic-bezier(0.25,1,0.5,1); }
+.modal-overlay.open .detail-modal{ transform:translateY(0); }
+.modal-drag-handle { width: 40px; height: 4px; background: var(--text-muted); border-radius: 10px; margin: 12px auto; }
+.detail-content { overflow-y: auto; padding: 0 24px 30px; display: flex; flex-direction: column; gap: 16px; }
+.detail-header { display: flex; gap: 16px; }
+.detail-cover { width: 100px; height: 140px; border-radius: var(--radius-sm); object-fit: cover; }
+.detail-info { flex: 1; }
+.detail-title { font-size: 18px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+.detail-meta { font-size: 12px; color: var(--text-secondary); display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;}
+.detail-meta span { display: flex; align-items: center; gap: 4px; background: var(--bg-card); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border);}
+.detail-synopsis { font-size: 13px; color: var(--text-secondary); line-height: 1.6; max-height: 100px; overflow-y: auto; padding: 12px; background: var(--bg-card); border-radius: var(--radius-sm); border: 1px solid var(--border);}
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.form-group select { width: 100%; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 14px; appearance: none; }
+.form-actions { display: flex; gap: 12px; margin-top: 10px; }
+.btn-secondary { flex: 1; padding: 14px; border-radius: var(--radius-sm); background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary); font-weight: 600; transition: var(--transition); text-align: center;}
+.btn-secondary:active { background: var(--bg-card); }
 
 /* ============================================================
-   GACHA PAGE
+   GACHA & RARITY
    ============================================================ */
-.gacha-banner-wrap{margin:12px 16px 0;display:flex;flex-direction:column;gap:12px;}
-.gacha-banner{
-  border-radius:var(--radius);overflow:hidden;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  position:relative;
-}
-.gacha-banner-header{
-  padding:18px 18px 14px;
-  display:flex;align-items:center;gap:14px;
-}
-.gacha-banner-icon{
-  width:50px;height:50px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;flex-shrink:0;
-}
-.gacha-banner-info{flex:1;}
-.gacha-banner-type{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:var(--font-ui);color:var(--text-secondary);margin-bottom:4px;}
-.gacha-banner-name{font-family:var(--font-display);font-size:17px;font-weight:600;}
-.gacha-banner-desc{font-size:12px;color:var(--text-secondary);margin-top:3px;line-height:1.4;}
-.gacha-preview{
-  display:flex;gap:6px;padding:0 18px 16px;overflow-x:auto;
-}
-.gacha-preview-item{
-  flex-shrink:0;
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-}
-.gacha-preview-card{
-  width:60px;height:84px;border-radius:8px;object-fit:cover;
-  background:var(--bg-elevated);border:1.5px solid rgba(255,255,255,.08);
-}
-.gacha-preview-pfp{
-  width:60px;height:60px;border-radius:50%;object-fit:cover;
-  background:var(--bg-elevated);border:2px solid rgba(255,255,255,.1);
-}
-.gacha-preview-name{font-size:9px;color:var(--text-secondary);text-align:center;max-width:64px;line-height:1.2;}
-.gacha-banner-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 18px;border-top:1px solid rgba(255,255,255,.06);
-}
-.gacha-cost{
-  display:flex;align-items:center;gap:6px;
-}
-.eris-icon{font-size:16px;}
-.gacha-cost-amount{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--accent);}
-.gacha-cost-label{font-size:11px;color:var(--text-secondary);}
-.gacha-pull-btns{display:flex;gap:8px;}
-.btn-gacha{
-  padding:8px 18px;border-radius:var(--radius-pill);
-  font-size:12px;font-weight:700;font-family:var(--font-ui);letter-spacing:.4px;
-  transition:var(--transition);
-}
-.btn-gacha:active{transform:scale(.94);}
-.btn-gacha-x1{background:var(--bg-elevated);color:var(--text-primary);border:1px solid rgba(255,255,255,.1);}
-.btn-gacha-x10{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;}
+.gacha-banners { display: flex; flex-direction: column; gap: 16px; padding: 0 20px 20px; }
+.gacha-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; position: relative; }
+.gacha-card-header { padding: 20px; display: flex; align-items: center; gap: 16px; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); border-bottom: 1px solid var(--border); }
+.gacha-icon-wrap { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 28px; background: var(--bg-elevated); box-shadow: var(--shadow-soft); }
+.gacha-info h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.gacha-info p { font-size: 12px; color: var(--text-secondary); line-height: 1.4; }
+.gacha-actions { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; }
+.gacha-price { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: var(--accent); }
+.gacha-price i { font-size: 20px; }
+.gacha-price strike { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-left: 4px; }
+.gacha-btns { display: flex; gap: 8px; }
+.btn-pull { padding: 10px 16px; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
+.btn-pull-1 { background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-primary); }
+.btn-pull-10 { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #000; box-shadow: 0 4px 15px rgba(90,169,255,0.3); }
+.btn-pull:active { transform: scale(0.95); }
+
+/* Rarity Styling */
+.rarity-UR { border: 2px solid var(--rarity-ur) !important; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); animation: pulseGlow 2s infinite; }
+.rarity-SSR { border: 2px solid var(--rarity-ssr) !important; box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+.rarity-SR { border: 2px solid var(--rarity-sr) !important; }
+.rarity-R { border: 2px solid var(--rarity-r) !important; }
+.rarity-C { border: 1px solid var(--rarity-c) !important; }
+.rarity-badge { position: absolute; top: 4px; left: 4px; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);}
+.rb-UR { color: var(--rarity-ur); } .rb-SSR { color: var(--rarity-ssr); } .rb-SR { color: var(--rarity-sr); } .rb-R { color: var(--rarity-r); } .rb-C { color: var(--rarity-c); }
 
 /* Gacha Result Modal */
-.modal-overlay{
-  position:fixed;inset:0;z-index:800;
-  background:rgba(11,18,32,.92);
-  display:flex;align-items:center;justify-content:center;
-  padding:24px;
-  opacity:0;pointer-events:none;transition:opacity .25s ease;
-}
-.modal-overlay.open{opacity:1;pointer-events:all;}
-.gacha-result-modal{
-  width:100%;max-width:380px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:28px 24px;
-  text-align:center;
-  transform:scale(.9);transition:transform .28s cubic-bezier(.4,0,.2,1);
-}
-.modal-overlay.open .gacha-result-modal{transform:scale(1);}
-.gacha-result-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:6px;}
-.gacha-result-subtitle{font-size:12px;color:var(--text-secondary);margin-bottom:22px;}
-.gacha-results-grid{
-  display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;
-}
-.gacha-result-item{display:flex;flex-direction:column;align-items:center;gap:5px;}
-.result-card{
-  width:72px;height:100px;border-radius:10px;object-fit:cover;
-  background:var(--bg-elevated);border:2px solid rgba(255,255,255,.1);
-  position:relative;
-}
-.result-pfp{
-  width:72px;height:72px;border-radius:50%;object-fit:cover;
-  background:var(--bg-elevated);border:2.5px solid rgba(255,255,255,.1);
-}
-.result-name{font-size:10px;color:var(--text-secondary);max-width:72px;text-align:center;line-height:1.3;}
-.result-dup-badge{
-  position:absolute;top:-5px;right:-5px;
-  background:var(--rank-a);border-radius:var(--radius-pill);
-  font-size:8px;font-weight:700;padding:2px 5px;color:#fff;
-  font-family:var(--font-ui);
-}
-.gacha-rp-earned{
-  background:rgba(90,169,255,.08);border:1px solid rgba(90,169,255,.2);
-  border-radius:var(--radius-sm);padding:8px 14px;margin-bottom:16px;
-  font-size:12px;color:var(--accent2);font-family:var(--font-ui);font-weight:600;
-}
-.btn-close-modal{
-  width:100%;padding:12px;border-radius:var(--radius-sm);
-  background:var(--bg-elevated);color:var(--text-primary);
-  font-size:14px;font-weight:600;
-}
+.gacha-result-content { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 30px 24px; width: 90%; max-width: 400px; text-align: center; transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.25,1,0.5,1); }
+.modal-overlay.open .gacha-result-content { transform: scale(1); }
+.gr-title { font-size: 22px; font-weight: 800; margin-bottom: 24px; color: var(--accent); }
+.gr-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 24px; }
+.gr-item { position: relative; width: 80px; display: flex; flex-direction: column; gap: 8px; align-items: center; animation: slideUp 0.5s ease backwards; }
+.gr-img { width: 70px; height: 90px; object-fit: cover; border-radius: 8px; background: var(--bg-elevated); }
+.gr-img.pfp { width: 70px; height: 70px; border-radius: 50%; }
+.gr-name { font-size: 10px; font-weight: 600; line-height: 1.2; text-align:center; }
+.gr-dup { position: absolute; top: -5px; right: -5px; background: #ef4444; color: #fff; font-size: 8px; font-weight: 800; padding: 2px 6px; border-radius: var(--radius-pill); border: 2px solid var(--bg-card); }
 
 /* ============================================================
-   COMMUNITY PAGE
+   COMMUNITY & PROFILES
    ============================================================ */
-.community-list{display:flex;flex-direction:column;gap:8px;padding:0 16px 8px;}
-.user-card{
-  display:flex;align-items:center;gap:12px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);padding:12px 14px;
-  transition:var(--transition);
-}
-.user-card:active{transform:scale(.98);}
-.user-card-rank{width:18px;text-align:center;font-size:11px;color:var(--text-muted);font-family:var(--font-ui);font-weight:700;flex-shrink:0;}
-.user-avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(255,255,255,.1);}
-.user-avatar.maou-border{border-color:var(--purple-maou);}
-.user-avatar.bangsawan-border{border-color:var(--accent2);}
-.user-card-info{flex:1;min-width:0;}
-.user-card-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.user-card-name.maou-name{color:var(--purple-maou);}
-.user-card-name.bangsawan-name{color:var(--gold-light);}
-.user-card-sub{display:flex;align-items:center;gap:6px;margin-top:3px;}
-.user-rank-badge{font-size:10px;font-weight:700;font-family:var(--font-ui);}
-.user-card-arrow{color:var(--text-muted);flex-shrink:0;}
-.user-card-arrow svg{width:16px;height:16px;}
+.community-list { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+.user-row { display: flex; align-items: center; gap: 14px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: var(--transition); }
+.user-row:active { transform: scale(0.98); }
+.user-row-rank { font-size: 14px; font-weight: 800; color: var(--text-muted); width: 24px; text-align: center; }
+.user-row-av { width: 48px; height: 48px; }
+.user-row-info { flex: 1; min-width: 0; }
+.user-row-name { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+.user-row-meta { display: flex; align-items: center; gap: 8px; }
+.marathon-badge { font-size: 9px; padding: 3px 8px; background: rgba(192, 132, 252, 0.1); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.3); border-radius: var(--radius-pill); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;}
 
-/* User Profile View */
-.profile-view{display:none;flex-direction:column;}
-.profile-view.show{display:flex;}
-.profile-header{
-  padding:24px 18px 16px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-  position:relative;
-}
-.profile-av-wrap{position:relative;}
-.profile-av{
-  width:80px;height:80px;border-radius:50%;object-fit:cover;
-  border:3px solid rgba(255,255,255,.1);
-}
-.profile-av.maou-border{border-color:var(--purple-maou);}
-.profile-av.bangsawan-border{border-color:var(--accent2);}
-.profile-rank-chip{
-  position:absolute;bottom:-2px;right:-2px;
-  padding:2px 7px;border-radius:var(--radius-pill);font-size:9px;font-weight:700;
-  font-family:var(--font-display);
-}
-.profile-name{font-family:var(--font-display);font-size:22px;font-weight:700;}
-.profile-name.maou-name{color:var(--purple-maou);}
-.profile-name.bangsawan-name{color:var(--accent2);}
-.profile-role-badge{font-size:11px;padding:3px 12px;border-radius:var(--radius-pill);}
-.profile-bio{font-size:13px;color:var(--text-secondary);text-align:center;max-width:280px;line-height:1.5;}
-.profile-stats-row{display:flex;gap:0;width:100%;margin-top:6px;}
-.profile-stat{flex:1;text-align:center;padding:10px 0;}
-.profile-stat:not(:last-child){border-right:1px solid rgba(255,255,255,.06);}
-.profile-stat-value{font-family:var(--font-display);font-size:18px;font-weight:700;}
-.profile-stat-label{font-size:10px;color:var(--text-secondary);font-family:var(--font-ui);margin-top:2px;}
-.profile-tabs{
-  display:flex;border-bottom:1px solid rgba(255,255,255,.06);
-  margin:0 16px;
-}
-.profile-tab{
-  flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;
-  font-family:var(--font-ui);letter-spacing:.5px;color:var(--text-secondary);
-  border-bottom:2px solid transparent;margin-bottom:-1px;
-  transition:var(--transition);
-}
-.profile-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.profile-tab-content{display:none;padding:16px;}
-.profile-tab-content.active{display:block;}
-.collection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.coll-card{border-radius:8px;overflow:hidden;background:var(--bg-card);border:1px solid rgba(255,255,255,.06);}
-.coll-card-img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block;background:var(--bg-elevated);}
-.coll-pfp-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:var(--bg-elevated);border-radius:50%;}
-.coll-name{font-size:9px;padding:4px 6px;text-align:center;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* Profile Page */
+.profile-hero { display: flex; flex-direction: column; align-items: center; padding: 30px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border); text-align: center; }
+.profile-av-large { width: 90px; height: 90px; margin-bottom: 16px; }
+.profile-name { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.profile-bio { font-size: 13px; color: var(--text-secondary); max-width: 80%; line-height: 1.5; margin-top: 12px; }
+.profile-stats { display: flex; width: 100%; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.p-stat { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.p-stat-val { font-size: 18px; font-weight: 700; }
+.p-stat-lbl { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;}
 
-/* ============================================================
-   PROFILE (MY PROFILE) PAGE
-   ============================================================ */
-.my-profile-hero{
-  margin:12px 16px 0;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.06);
-  border-radius:var(--radius);padding:24px 20px;
-  display:flex;flex-direction:column;align-items:center;gap:10px;
-}
-.my-av{
-  width:82px;height:82px;border-radius:50%;object-fit:cover;
-  border:3px solid var(--accent);cursor:pointer;position:relative;
-}
-.my-av-overlay{
-  position:absolute;inset:0;border-radius:50%;
-  background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:var(--transition);
-}
-.my-av-wrap:active .my-av-overlay{opacity:1;}
-.my-av-wrap{position:relative;cursor:pointer;}
-.my-name{font-family:var(--font-display);font-size:22px;font-weight:700;}
-.my-bio{font-size:13px;color:var(--text-secondary);text-align:center;max-width:260px;line-height:1.5;}
-.profile-action-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 16px 0;}
-.btn-secondary{
-  padding:11px;border-radius:var(--radius-sm);
-  background:var(--bg-elevated);border:1px solid rgba(255,255,255,.08);
-  color:var(--text-primary);font-size:13px;font-weight:600;
-  font-family:var(--font-ui);
-  transition:var(--transition);
-}
-.btn-secondary:active{transform:scale(.97);}
-.btn-topup{
-  padding:11px;border-radius:var(--radius-sm);
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#0b1220;font-size:13px;font-weight:700;
-  font-family:var(--font-ui);
-  transition:var(--transition);
-}
-.btn-topup:active{transform:scale(.97);}
-.logout-btn{
-  margin:12px 16px;padding:13px;border-radius:var(--radius-sm);
-  background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);
-  color:#ff4d6d;font-size:14px;font-weight:600;width:calc(100% - 32px);
-  transition:var(--transition);
-}
-.logout-btn:active{background:rgba(255,77,109,.2);}
+/* Profile Collections/Lists */
+.coll-tabs { display: flex; gap: 8px; padding: 20px; overflow-x: auto;}
+.coll-tab { flex: 1; min-width:80px; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; color: var(--text-secondary); transition: var(--transition); text-align:center;}
+.coll-tab.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 4px 10px rgba(90, 169, 255, 0.2);}
+.collection-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px 20px; }
+.coll-item { position: relative; border-radius: 8px; overflow: hidden; background: var(--bg-elevated); }
+.coll-item img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+.coll-item.pfp img { aspect-ratio: 1/1; border-radius: 50%; padding: 4px; }
 
-/* MAOU Admin Panel */
-.admin-panel{
-  margin:0 16px;
-  background:linear-gradient(135deg,rgba(106,47,196,.15),rgba(155,89,245,.05));
-  border:1px solid rgba(155,89,245,.3);border-radius:var(--radius);
-  padding:18px;
-}
-.admin-panel-title{
-  font-family:var(--font-display);font-size:14px;font-weight:700;
-  color:var(--purple-maou);margin-bottom:14px;
-  display:flex;align-items:center;gap:8px;
-}
-.admin-form{display:flex;flex-direction:column;gap:10px;}
-.admin-field label{font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
-.admin-field input,
-.admin-field select{
-  width:100%;padding:10px 12px;background:rgba(0,0,0,.3);
-  border:1px solid rgba(155,89,245,.25);border-radius:var(--radius-sm);
-  color:var(--text-primary);font-size:13px;
-}
-.admin-field select option{background:var(--bg-deep);}
-.btn-admin{
-  padding:11px;border-radius:var(--radius-sm);
-  background:linear-gradient(135deg,var(--purple-dark),var(--purple-maou));
-  color:#fff;font-size:13px;font-weight:700;font-family:var(--font-ui);
-  transition:var(--transition);
-}
-.btn-admin:active{transform:scale(.97);}
+/* Admin Panel (Kaisar) */
+.admin-section { margin: 20px; padding: 20px; background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius); }
+.admin-title { font-size: 14px; font-weight: 700; color: var(--role-kaisar); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.admin-grid { display: grid; gap: 12px; }
+.admin-btn { background: rgba(239, 68, 68, 0.1); color: var(--role-kaisar); border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; }
+
+/* Toast */
+#toast{ position:fixed; bottom: 90px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-pill); padding:12px 24px; font-size:13px; font-weight:600; z-index:9000; opacity:0; transition:all 0.4s cubic-bezier(0.25,1,0.5,1); pointer-events:none; box-shadow: var(--shadow-soft); display: flex; align-items: center; gap: 8px;}
+#toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.success{ border-color:rgba(74, 222, 128, 0.3); color:#4ade80; }
+#toast.error{ border-color:rgba(248, 113, 113, 0.3); color:#f87171; }
+#toast.info{ border-color:rgba(90, 169, 255, 0.3); color:var(--accent); }
 
 /* Edit Profile Modal */
-.edit-modal{
-  width:100%;max-width:380px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:24px;
-  transform:translateY(20px);transition:transform .28s cubic-bezier(.4,0,.2,1);
-}
-.modal-overlay.open .edit-modal{transform:translateY(0);}
-.edit-modal-title{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:18px;}
-.pfp-selector{
-  display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;
-}
-.pfp-option{
-  flex-shrink:0;width:56px;height:56px;border-radius:50%;
-  object-fit:cover;border:2.5px solid transparent;cursor:pointer;
-  background:var(--bg-elevated);transition:var(--transition);
-}
-.pfp-option.selected{border-color:var(--accent);}
-.edit-modal-actions{display:flex;gap:10px;margin-top:16px;}
-.edit-modal-actions .btn-secondary{flex:1;}
-.edit-modal-actions .btn-primary{flex:1;width:auto;margin-top:0;}
+.ep-pfps { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 16px; }
+.ep-pfp-opt { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid transparent; transition: var(--transition); opacity: 0.6; }
+.ep-pfp-opt.selected { border-color: var(--accent); opacity: 1; transform: scale(1.05); }
 
-/* ============================================================
-   TOAST NOTIFICATION
-   ============================================================ */
-#toast{
-  position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(20px);
-  background:var(--bg-elevated);border:1px solid rgba(255,255,255,.12);
-  border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:13px;font-weight:600;white-space:nowrap;
-  z-index:9000;opacity:0;transition:all .3s ease;
-  pointer-events:none;
-}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-#toast.success{border-color:rgba(95,240,125,.3);color:#5ff07d;}
-#toast.error{border-color:rgba(255,77,109,.3);color:#ff4d6d;}
-#toast.info{border-color:rgba(232,160,32,.3);color:var(--accent);}
-
-/* ============================================================
-   ADD TO LIST MODAL
-   ============================================================ */
-.list-modal{
-  width:100%;max-width:380px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:24px;
-}
-.list-modal-title{font-family:var(--font-display);font-size:15px;font-weight:700;margin-bottom:6px;}
-.list-modal-sub{font-size:12px;color:var(--text-secondary);margin-bottom:18px;}
-.list-modal-cover{
-  width:100%;height:140px;object-fit:cover;border-radius:var(--radius-sm);
-  margin-bottom:14px;background:var(--bg-elevated);
-}
-.list-type-btns{display:flex;gap:8px;margin-bottom:14px;}
-.list-type-btn{
-  flex:1;padding:10px;border-radius:var(--radius-sm);border:1px solid rgba(255,255,255,.1);
-  background:var(--bg-elevated);font-size:12px;font-weight:700;font-family:var(--font-ui);
-  color:var(--text-secondary);transition:var(--transition);
-}
-.list-type-btn.active{background:rgba(90,169,255,.12);border-color:var(--accent);color:var(--accent2);}
-.marathon-date-field{display:none;}
-.marathon-date-field.show{display:block;margin-bottom:12px;}
-.marathon-date-field label{font-size:11px;color:var(--text-secondary);display:block;margin-bottom:6px;font-family:var(--font-ui);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
-.marathon-date-field input[type="date"]{
-  width:100%;padding:10px 12px;background:var(--bg-elevated);
-  border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);
-  color:var(--text-primary);font-size:13px;
-}
-.list-modal-actions{display:flex;gap:8px;}
-.list-modal-actions .btn-secondary{flex:1;}
-.list-modal-actions .btn-primary{flex:1;width:auto;margin-top:0;}
-
-/* ============================================================
-   POPUP / TOPUP
-   ============================================================ */
-.topup-popup{
-  width:100%;max-width:300px;
-  background:var(--bg-card);border:1px solid rgba(255,255,255,.1);
-  border-radius:20px;padding:32px 24px;text-align:center;
-}
-.topup-icon{font-size:48px;margin-bottom:14px;}
-.topup-title{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:8px;}
-.topup-msg{font-size:13px;color:var(--text-secondary);margin-bottom:20px;line-height:1.5;}
-.topup-contact{
-  font-family:var(--font-display);font-size:16px;font-weight:700;
-  color:var(--purple-maou);padding:10px 20px;
-  background:rgba(155,89,245,.08);border:1px solid rgba(155,89,245,.2);
-  border-radius:var(--radius-sm);margin-bottom:14px;
-}
-
-/* ============================================================
-   RANK COLORS UTILITY
-   ============================================================ */
-.rank-f{color:var(--rank-f);background:rgba(136,136,136,.1);}
-.rank-e{color:var(--rank-e);background:rgba(95,184,255,.1);}
-.rank-d{color:var(--rank-d);background:rgba(95,240,125,.1);}
-.rank-c{color:var(--rank-c);background:rgba(245,224,80,.1);}
-.rank-b{color:var(--rank-b);background:rgba(255,140,66,.1);}
-.rank-a{color:var(--rank-a);background:rgba(255,77,109,.1);}
-.rank-s{color:var(--rank-s);background:rgba(199,125,255,.1);}
-.rank-ss{color:var(--rank-ss);background:rgba(248,181,0,.1);}
-.rank-mc{color:var(--rank-mc);background:rgba(255,0,110,.1);}
-
-/* ============================================================
-   RESPONSIVE & UTILS
-   ============================================================ */
-@media(min-width:430px){
-  .dash-stats{grid-template-columns:repeat(4,1fr);}
-  .anime-grid{grid-template-columns:repeat(4,1fr);}
-}
-.text-accent{color:var(--accent);}
-.text-muted{color:var(--text-muted);}
-.fw-700{font-weight:700;}
-.mt-8{margin-top:8px;}
-.mt-12{margin-top:12px;}
 </style>
 </head>
 <body>
 
-<!-- ===================== SPLASH ===================== -->
+<!-- SPLASH -->
 <div id="splash">
-  <img class="splash-logo" src="https://i.ibb.co.com/93gtj8vP/e38097d923934c9595cd26668ed062f2-webp.webp" alt="Natsunime" onerror="this.style.background='#1a1a2e';this.removeAttribute('src')"/>
+  <img class="splash-logo app-logo-img" src="" alt="Natsunime"/>
   <div class="splash-title">NATSUNIME</div>
-  <div class="splash-sub">Your Anime Universe</div>
   <div class="splash-loader"><div class="splash-loader-bar"></div></div>
 </div>
 
-<!-- ===================== AUTH ===================== -->
+<!-- AUTH -->
 <div id="auth-screen" class="hidden">
-  <!-- Brand top band -->
-  <div class="auth-brand-band">
-    <div class="auth-brand-row">
-      <img class="auth-logo" src="https://i.ibb.co.com/93gtj8vP/e38097d923934c9595cd26668ed062f2-webp.webp" alt="Logo" onerror="this.style.background='#16213a';this.removeAttribute('src')"/>
-      <div>
-        <div class="auth-app-name">Natsunime</div>
-        <div class="auth-tagline">Your Anime Universe</div>
-      </div>
-    </div>
+  <div class="auth-hero">
+    <img class="app-logo-img" src="" alt="Logo" />
+    <h1>Natsunime Universe</h1>
+    <p>Masuk ke duniamu sekarang.</p>
   </div>
-  <!-- Auth body -->
   <div class="auth-body">
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Masuk</button>
       <button class="auth-tab" onclick="switchAuthTab('register')">Daftar</button>
     </div>
-    <!-- LOGIN -->
+    
     <div class="auth-panel active" id="panel-login">
-      <div class="auth-field"><label>Username</label><input type="text" id="login-username" placeholder="username kamu"/></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="login-pass" placeholder="password"/></div>
-      <button class="btn-primary" onclick="doLogin()">Masuk</button>
+      <div class="auth-field"><label>Username</label><input type="text" id="login-username" placeholder="Masukkan username"/></div>
+      <div class="auth-field"><label>Password</label><input type="text" id="login-pass" placeholder="Masukkan password"/></div>
+      <button class="btn-primary" onclick="doLogin()">Masuk <i class="ph ph-arrow-right"></i></button>
       <div class="auth-error" id="login-err"></div>
     </div>
-    <!-- REGISTER -->
+    
     <div class="auth-panel" id="panel-register">
-      <div class="auth-field"><label>Username</label><input type="text" id="reg-name" placeholder="pilih username unikmu"/></div>
-      <div class="auth-field"><label>Password</label><input type="password" id="reg-pass" placeholder="buat password"/></div>
-      <button class="btn-primary" onclick="doRegister()">Buat Akun</button>
+      <div class="auth-field"><label>Username</label><input type="text" id="reg-name" placeholder="Pilih username unik"/></div>
+      <div class="auth-field"><label>Password</label><input type="text" id="reg-pass" placeholder="Buat password"/></div>
+      <button class="btn-primary" onclick="doRegister()">Buat Akun <i class="ph ph-user-plus"></i></button>
       <div class="auth-error" id="reg-err"></div>
     </div>
   </div>
 </div>
 
-<!-- ===================== APP SHELL ===================== -->
+<!-- APP SHELL -->
 <div id="app">
   <div id="pages">
-    <!-- ======= DASHBOARD ======= -->
-    <div class="page active" id="page-dashboard">
-      <!-- Hero -->
-      <div class="dash-hero" id="dash-hero">
+    <!-- PAGE: HOME -->
+    <div class="page active" id="page-home">
+      <div class="page-header" id="header-home">
+        <div class="page-header-title">
+          <img class="app-logo-img dash-logo-small" src="" alt="Logo"/>
+          Natsunime
+        </div>
+        <button class="page-header-back ml-auto" onclick="showTopUpPopup()"><i class="ph ph-wallet"></i></button>
+      </div>
+      
+      <div class="dash-hero">
         <div class="dash-hero-top">
-          <img class="dash-avatar" id="dash-av" src="" alt="Avatar"/>
+          <div class="avatar-wrapper">
+            <img class="dash-avatar avatar-img" id="dash-av" src="" alt="Avatar"/>
+          </div>
           <div class="dash-user-info">
-            <div class="dash-greeting">Selamat datang kembali,</div>
+            <div class="dash-greeting">Selamat datang,</div>
             <div class="dash-username" id="dash-uname">—</div>
-            <div class="dash-role-badge rakyat" id="dash-role-badge">Rakyat</div>
+            <div class="role-badge" id="dash-role-badge">Rakyat</div>
           </div>
           <div class="dash-eris">
             <div class="dash-eris-amount" id="dash-eris">0</div>
-            <div class="dash-eris-label">💰 Eris</div>
+            <div class="dash-eris-label">Eris <i class="ph ph-coins color-accent"></i></div>
           </div>
         </div>
         <div class="dash-rank-section">
           <div class="dash-rank-row">
-            <span class="dash-rank-badge rank-f" id="dash-rank-badge">F-Rank</span>
+            <span class="dash-rank-badge" id="dash-rank-badge" style="background:var(--bg-elevated)">F-Rank</span>
             <span class="dash-rank-pts" id="dash-rp-label">0 RP</span>
           </div>
           <div class="dash-rank-bar"><div class="dash-rank-fill" id="dash-rank-fill" style="width:0%"></div></div>
           <div class="dash-rank-labels"><span id="dash-rank-cur">F-Rank</span><span id="dash-rank-next">E-Rank</span></div>
         </div>
       </div>
-      <!-- Stats -->
-      <div class="dash-stats">
-        <div class="stat-card"><div class="stat-card-icon">📺</div><div class="stat-card-value" id="stat-watched">0</div><div class="stat-card-label">Watched</div></div>
-        <div class="stat-card"><div class="stat-card-icon">🏃</div><div class="stat-card-value" id="stat-marathon">0</div><div class="stat-card-label">Marathon</div></div>
-        <div class="stat-card"><div class="stat-card-icon">🃏</div><div class="stat-card-value" id="stat-cards">0</div><div class="stat-card-label">Koleksi</div></div>
-        <div class="stat-card"><div class="stat-card-icon">🖼️</div><div class="stat-card-value" id="stat-pfps">0</div><div class="stat-card-label">Avatar</div></div>
-      </div>
-      <!-- Quick Actions -->
-      <div class="section-label">Aksi Cepat</div>
+
+      <div class="section-title">Aksi Cepat</div>
       <div class="quick-actions">
-        <button class="qa-btn" onclick="navTo('add-anime')"><div class="qa-icon yellow">➕</div>Tambah</button>
-        <button class="qa-btn" onclick="navTo('gacha')"><div class="qa-icon purple">🎰</div>Gacha</button>
-        <button class="qa-btn" onclick="navTo('my-anime')"><div class="qa-icon blue">📋</div>Anime</button>
-        <button class="qa-btn" onclick="showTopUpPopup()"><div class="qa-icon yellow">💰</div>Top Up</button>
+        <button class="qa-btn primary-qa" onclick="navTo('add-anime')">
+          <i class="ph-fill ph-plus-circle qa-icon"></i>
+          <div><span>Tambah Anime</span><br><small style="font-weight:500;color:var(--text-secondary)">Cari & tambahkan</small></div>
+        </button>
+        <button class="qa-btn" onclick="navTo('gacha')"><i class="ph-fill ph-cards qa-icon" style="color:#a855f7"></i> Gacha</button>
+        <button class="qa-btn" onclick="navTo('marathon')"><i class="ph-fill ph-popcorn qa-icon" style="color:#fbbf24"></i> Marathon</button>
       </div>
-      <!-- Recent -->
-      <div class="section-label">Anime Terbaru</div>
-      <div class="anime-mini-list" id="dash-anime-list">
-        <div class="empty-state"><div class="icon">🌸</div><p>Belum ada anime. Mulai tambahkan!</p></div>
+
+      <div class="section-title">Anime Terakhir <button style="color:var(--accent);font-size:12px;font-weight:600" onclick="navTo('anime')">Lihat Semua</button></div>
+      <div class="mini-card-list" id="dash-recent-anime">
+        <!-- populated via js -->
       </div>
     </div>
 
-    <!-- ======= ADD ANIME ======= -->
+    <!-- PAGE: ADD ANIME (SEARCH) -->
     <div class="page" id="page-add-anime">
       <div class="page-header">
-        <button class="page-header-back" onclick="navTo('dashboard')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-        </button>
+        <button class="page-header-back" onclick="navTo('home')"><i class="ph ph-caret-left"></i></button>
         <div class="page-header-title">Tambah Anime</div>
       </div>
       <div class="search-bar-wrap">
         <div class="search-bar">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" id="anime-search-input" placeholder="Cari anime..." oninput="onAnimeSearch(this.value)"/>
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" id="anime-search-input" placeholder="Cari judul anime..." oninput="onAnimeSearch(this.value)"/>
         </div>
       </div>
       <div class="filter-chips" id="filter-chips">
-        <button class="chip active" data-filter="airing" onclick="setFilter('airing',this)">Airing</button>
-        <button class="chip" data-filter="upcoming" onclick="setFilter('upcoming',this)">Upcoming</button>
-        <button class="chip" data-filter="popular" onclick="setFilter('popular',this)">Popular</button>
-        <button class="chip" data-filter="top" onclick="setFilter('top',this)">Top Rated</button>
+        <button class="chip active" onclick="setSearchFilter('airing',this)">Airing</button>
+        <button class="chip" onclick="setSearchFilter('upcoming',this)">Upcoming</button>
+        <button class="chip" onclick="setSearchFilter('popular',this)">Popular</button>
+        <button class="chip" onclick="setSearchFilter('top',this)">Top Rated</button>
       </div>
-      <div id="anime-grid-wrap">
-        <div class="loading-spin"><div class="spinner"></div></div>
-      </div>
+      <div id="search-grid-wrap"><div class="loading-spin"><div class="spinner"></div></div></div>
     </div>
 
-    <!-- ======= MY ANIME ======= -->
-    <div class="page" id="page-my-anime">
+    <!-- PAGE: MY ANIME -->
+    <div class="page" id="page-anime">
       <div class="page-header">
         <div class="page-header-title">Daftar Animeku</div>
       </div>
-      <div class="tab-bar">
-        <button class="tab-bar-btn active" onclick="switchAnimeTab('watched',this)">✅ Watched</button>
-        <button class="tab-bar-btn" onclick="switchAnimeTab('marathon',this)">🏃 Marathon</button>
-      </div>
-      <div id="watched-list" class="anime-list-full"></div>
-      <div id="marathon-list" class="anime-list-full" style="display:none"></div>
-    </div>
-
-    <!-- ======= GACHA ======= -->
-    <div class="page" id="page-gacha">
-      <div class="page-header">
-        <div class="page-header-title">Gacha</div>
-        <div class="ml-auto" style="font-size:13px;color:var(--accent);font-family:var(--font-display);font-weight:700;">
-          💰 <span id="gacha-eris-display">0</span>
+      
+      <div class="filter-btn-group-wrapper">
+        <div class="filter-row">
+          <div class="filter-label">Status:</div>
+          <div class="filter-btn-group" id="my-filter-status">
+            <button class="filter-btn active" data-val="all">Semua</button>
+            <button class="filter-btn" data-val="watching">Menonton</button>
+            <button class="filter-btn" data-val="watched">Selesai</button>
+            <button class="filter-btn" data-val="drop">Drop</button>
+          </div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-label">Urutkan:</div>
+          <div class="filter-btn-group" id="my-filter-sort">
+            <button class="filter-btn active" data-val="new">Terbaru</button>
+            <button class="filter-btn" data-val="desc">Rating 📈</button>
+            <button class="filter-btn" data-val="asc">Rating 📉</button>
+          </div>
         </div>
       </div>
-      <div class="gacha-banner-wrap" id="gacha-banners"></div>
+
+      <div class="anime-grid" id="my-anime-grid"></div>
     </div>
 
-    <!-- ======= COMMUNITY ======= -->
+    <!-- PAGE: MARATHON -->
+    <div class="page" id="page-marathon">
+      <div class="page-header">
+        <div class="page-header-title">Daftar Marathon</div>
+      </div>
+      <div style="padding: 0 20px 10px; font-size:13px; color:var(--text-secondary); line-height:1.5;">
+        Ini adalah daftar tontonan (watchlist) kamu. Jika ada anime di sini, status <span class="marathon-badge"><i class="ph-fill ph-popcorn"></i> Sedang Marathon</span> akan terlihat di profilmu.
+      </div>
+      <div class="anime-grid" id="marathon-grid"></div>
+    </div>
+
+    <!-- PAGE: GACHA -->
+    <div class="page" id="page-gacha">
+      <div class="page-header">
+        <div class="page-header-title">Gacha Center</div>
+        <div class="ml-auto" style="font-size:14px; font-weight:700; color:var(--accent);">
+          <i class="ph-fill ph-coins"></i> <span id="gacha-eris-display">0</span>
+        </div>
+      </div>
+      <div class="gacha-banners" id="gacha-banners-container">
+        <!-- JS rendered -->
+      </div>
+    </div>
+
+    <!-- PAGE: COMMUNITY -->
     <div class="page" id="page-community">
       <div class="page-header">
         <div class="page-header-title">Komunitas</div>
       </div>
-      <!-- Community list view -->
-      <div id="community-main">
-        <div class="search-bar-wrap" style="padding-top:0">
-          <div class="search-bar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-            <input type="text" id="user-search-input" placeholder="Cari pengguna..." oninput="onUserSearch(this.value)"/>
-          </div>
+      <div class="search-bar-wrap" style="padding-top:0">
+        <div class="search-bar">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" placeholder="Cari petualang..." oninput="onUserSearch(this.value)"/>
         </div>
-        <div class="community-list" id="community-list"></div>
       </div>
-      <!-- Profile view -->
-      <div class="profile-view" id="profile-view">
-        <div class="page-header" style="position:sticky;top:0;z-index:10;background:var(--bg-deep)">
-          <button class="page-header-back" onclick="closeProfView()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          </button>
-          <div class="page-header-title">Profil</div>
-        </div>
-        <div class="profile-header" id="pv-header"></div>
-        <div style="background:var(--bg-card);border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);">
-          <div class="profile-stats-row" id="pv-stats"></div>
-        </div>
-        <div class="profile-tabs">
-          <button class="profile-tab active" onclick="switchProfTab('anime',this)">Anime</button>
-          <button class="profile-tab" onclick="switchProfTab('collection',this)">Koleksi</button>
-        </div>
-        <div class="profile-tab-content active" id="pvtab-anime"></div>
-        <div class="profile-tab-content" id="pvtab-collection"></div>
-      </div>
+      <div class="community-list" id="community-list"></div>
     </div>
 
-    <!-- ======= MY PROFILE ======= -->
+    <!-- PAGE: PROFILE -->
     <div class="page" id="page-profile">
-      <div class="page-header">
-        <div class="page-header-title">Profilku</div>
-      </div>
-      <div class="my-profile-hero">
-        <div class="my-av-wrap" onclick="openEditProfile()">
-          <img class="my-av" id="my-av" src="" alt="Avatar"/>
-          <div class="my-av-overlay"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
-        </div>
-        <div class="my-name" id="my-name">—</div>
-        <div class="dash-role-badge rakyat" id="my-role-badge">Rakyat</div>
-        <div class="my-bio" id="my-bio">Belum ada bio.</div>
-      </div>
-      <div class="profile-action-btns">
-        <button class="btn-secondary" onclick="openEditProfile()">✏️ Edit Profil</button>
-        <button class="btn-topup" onclick="showTopUpPopup()">💰 Top Up</button>
-      </div>
-      <!-- Maou admin panel (shown conditionally) -->
-      <div id="admin-panel-wrap" style="margin-top:14px;display:none">
-        <div class="section-label">Panel Maou</div>
-        <div class="admin-panel" style="margin:0 16px">
-          <div class="admin-panel-title">👑 Tambah ke Database</div>
-          <div class="admin-form">
-            <div class="admin-field"><label>Nama</label><input type="text" id="adm-name" placeholder="Nama karakter..."/></div>
-            <div class="admin-field"><label>URL Gambar</label><input type="url" id="adm-img" placeholder="https://..."/></div>
-            <div class="admin-field">
-              <label>Tipe</label>
-              <select id="adm-type">
-                <option value="card_waifu">Kartu — Waifu</option>
-                <option value="card_husbu">Kartu — Husbu</option>
-                <option value="pfp_waifu">PFP — Waifu</option>
-                <option value="pfp_husbu">PFP — Husbu</option>
-              </select>
-            </div>
-            <div class="admin-field"><label>Rarity (1–5 ⭐)</label><input type="number" id="adm-rarity" min="1" max="5" value="3"/></div>
-            <button class="btn-admin" onclick="adminAddCharacter()">➕ Tambahkan</button>
-          </div>
-        </div>
-      </div>
-      <div class="section-label" style="margin-top:12px">Koleksiku</div>
-      <div class="collection-grid" style="padding:0 16px" id="my-collection-grid">
-        <div class="empty-state" style="grid-column:1/-1"><div class="icon">🃏</div><p>Belum ada koleksi. Coba Gacha!</p></div>
-      </div>
-      <button class="logout-btn" onclick="doLogout()">Keluar</button>
+      <!-- Renders dynamically -->
+      <div id="profile-content-area"></div>
     </div>
+
   </div>
 
-  <!-- Bottom Nav -->
+  <!-- BOTTOM NAV -->
   <nav id="bottom-nav">
-    <button class="nav-btn active" onclick="navTo('dashboard')" id="nav-dashboard">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="nav-btn" onclick="navTo('my-anime')" id="nav-my-anime">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      <span>Anime</span>
-    </button>
-    <button class="nav-btn" onclick="navTo('gacha')" id="nav-gacha">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12l2 2 4-4"/></svg>
-      <span>Gacha</span>
-    </button>
-    <button class="nav-btn" onclick="navTo('community')" id="nav-community">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-      <span>Komunitas</span>
-    </button>
-    <button class="nav-btn" onclick="navTo('profile')" id="nav-profile">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Profil</span>
-    </button>
+    <button class="nav-btn active" onclick="navTo('home')" id="nav-home"><i class="ph ph-house"></i><span>Home</span></button>
+    <button class="nav-btn" onclick="navTo('anime')" id="nav-anime"><i class="ph ph-monitor-play"></i><span>Anime</span></button>
+    <button class="nav-btn" onclick="navTo('marathon')" id="nav-marathon"><i class="ph ph-popcorn"></i><span>Marathon</span></button>
+    <button class="nav-btn" onclick="navTo('gacha')" id="nav-gacha"><i class="ph ph-cards"></i><span>Gacha</span></button>
+    <button class="nav-btn" onclick="navTo('community')" id="nav-community"><i class="ph ph-users"></i><span>Sosial</span></button>
+    <button class="nav-btn" onclick="navTo('profile')" id="nav-profile"><i class="ph ph-user"></i><span>Profil</span></button>
   </nav>
 </div>
 
 <!-- ===================== MODALS ===================== -->
-<!-- Toast -->
-<div id="toast"></div>
+<div id="toast"><i class="ph-fill ph-info"></i> <span id="toast-msg">Pesan</span></div>
 
-<!-- Top-Up Popup -->
 <div class="modal-overlay" id="topup-modal" onclick="closeModal('topup-modal')">
-  <div class="topup-popup" onclick="event.stopPropagation()">
-    <div class="topup-icon">💰</div>
-    <div class="topup-title">Top Up Eris</div>
-    <div class="topup-msg">Untuk melakukan top-up, silakan hubungi:</div>
-    <div class="topup-contact">👑 Maou</div>
-    <button class="btn-secondary" onclick="closeModal('topup-modal')">Tutup</button>
+  <div class="gacha-result-content" onclick="event.stopPropagation()">
+    <i class="ph-fill ph-storefront" style="font-size:48px; color:var(--accent); margin-bottom:16px;"></i>
+    <h3 style="font-size:20px; font-weight:700; margin-bottom:8px;">Top Up Eris</h3>
+    <p style="font-size:13px; color:var(--text-secondary); margin-bottom:24px;">Hubungi <strong style="color:var(--role-kaisar)">Kaisar</strong> untuk melakukan top up Eris.</p>
+    <button class="btn-secondary" style="width:100%" onclick="closeModal('topup-modal')">Tutup</button>
   </div>
 </div>
 
-<!-- Gacha Result Modal -->
 <div class="modal-overlay" id="gacha-result-modal" onclick="closeModal('gacha-result-modal')">
-  <div class="gacha-result-modal" onclick="event.stopPropagation()">
-    <div class="gacha-result-title" id="gr-title">Hasil Gacha!</div>
-    <div class="gacha-result-subtitle" id="gr-sub">Kamu mendapatkan:</div>
-    <div class="gacha-results-grid" id="gr-grid"></div>
-    <div class="gacha-rp-earned" id="gr-rp" style="display:none"></div>
-    <button class="btn-close-modal" onclick="closeModal('gacha-result-modal')">Tutup</button>
+  <div class="gacha-result-content" onclick="event.stopPropagation()">
+    <div class="gr-title" id="gr-title">Gacha Berhasil!</div>
+    <div class="gr-grid" id="gr-grid"></div>
+    <div id="gr-rp" style="font-size:12px; color:var(--accent); font-weight:600; margin-bottom:20px; display:none;"></div>
+    <button class="btn-primary" onclick="closeModal('gacha-result-modal')">Selesai</button>
   </div>
 </div>
 
-<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="detail-anime-modal" onclick="closeModal('detail-anime-modal')">
+  <div class="detail-modal" onclick="event.stopPropagation()">
+    <div class="modal-drag-handle"></div>
+    <div class="detail-content" id="detail-anime-content">
+      <div style="display:flex; justify-content:center; padding: 40px;"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="edit-profile-modal" onclick="closeModal('edit-profile-modal')">
-  <div class="edit-modal" onclick="event.stopPropagation()">
-    <div class="edit-modal-title">✏️ Edit Profil</div>
-    <div class="auth-field"><label>Username</label><input type="text" id="ep-name" placeholder="Username baru"/></div>
-    <div class="auth-field"><label>Bio</label><textarea id="ep-bio" rows="3" style="width:100%;background:var(--bg-elevated);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-sm);color:var(--text-primary);font-size:13px;padding:10px 12px;resize:none;" placeholder="Ceritakan tentang dirimu..."></textarea></div>
-    <label style="font-size:11px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Pilih Avatar</label>
-    <div class="pfp-selector" id="pfp-selector-list"></div>
-    <div class="edit-modal-actions">
+  <div class="detail-modal" style="border-radius: 24px; transform: scale(0.9); transition: transform 0.3s ease; transform-origin: center; padding: 24px;" onclick="event.stopPropagation()" id="ep-box">
+    <h3 style="font-size:18px; font-weight:700; margin-bottom:20px;">Edit Profil</h3>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Username</label>
+      <input type="text" id="ep-name" style="width:100%; padding:14px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary);"/>
+    </div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Bio</label>
+      <textarea id="ep-bio" rows="3" style="width:100%; padding:14px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); resize:none;"></textarea>
+    </div>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label>Pilih Avatar (Dari Gacha PFP)</label>
+      <div class="ep-pfps" id="ep-pfps-list"></div>
+    </div>
+    <div class="form-actions">
       <button class="btn-secondary" onclick="closeModal('edit-profile-modal')">Batal</button>
-      <button class="btn-primary" onclick="saveProfile()" style="width:auto;margin-top:0">Simpan</button>
+      <button class="btn-primary" onclick="saveProfile()" style="margin-top:0;">Simpan</button>
     </div>
   </div>
 </div>
 
-<!-- Add to List Modal -->
-<div class="modal-overlay" id="add-list-modal" onclick="closeModal('add-list-modal')">
-  <div class="list-modal" onclick="event.stopPropagation()">
-    <img class="list-modal-cover" id="alm-cover" src="" alt=""/>
-    <div class="list-modal-title" id="alm-title">Judul Anime</div>
-    <div class="list-modal-sub">Tambahkan ke daftar mana?</div>
-    <div class="list-type-btns">
-      <button class="list-type-btn active" onclick="setListType('watched',this)">✅ Watched</button>
-      <button class="list-type-btn" onclick="setListType('marathon',this)">🏃 Marathon</button>
+<!-- KAISAR ADMIN MODAL -->
+<div class="modal-overlay" id="admin-modal" onclick="closeModal('admin-modal')">
+  <div class="detail-modal" style="border-radius:24px; padding:24px;" onclick="event.stopPropagation()">
+    <h3 class="admin-title" style="margin-bottom:20px;"><i class="ph-fill ph-crown"></i> Panel Kaisar</h3>
+    
+    <div style="margin-bottom: 24px;">
+      <h4 style="font-size:13px; font-weight:600; margin-bottom:10px;">Tambah Karakter Gacha</h4>
+      <div class="form-group" style="margin-bottom:10px;">
+        <input type="text" id="adm-c-name" placeholder="Nama Karakter" style="padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;"/>
+      </div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <input type="text" id="adm-c-img" placeholder="URL Gambar" style="padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;"/>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <select id="adm-c-type" style="flex:1; padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;">
+          <option value="koleksi_waifu">Koleksi Waifu</option>
+          <option value="koleksi_husbu">Koleksi Husbu</option>
+          <option value="pfp_waifu">PFP Waifu</option>
+          <option value="pfp_husbu">PFP Husbu</option>
+        </select>
+        <select id="adm-c-rarity" style="flex:1; padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;">
+          <option value="C">Common (C)</option>
+          <option value="R">Rare (R)</option>
+          <option value="SR">Super Rare (SR)</option>
+          <option value="SSR">SSR</option>
+          <option value="UR">Ultra Rare (UR)</option>
+        </select>
+      </div>
+      <button class="admin-btn" style="width:100%" onclick="adminAddChar()">Tambah Karakter</button>
     </div>
-    <div class="marathon-date-field" id="marathon-date-field">
-      <label>Tenggat Waktu</label>
-      <input type="date" id="marathon-deadline"/>
+
+    <div>
+      <h4 style="font-size:13px; font-weight:600; margin-bottom:10px;">Beri Eris ke Pengguna</h4>
+      <div class="form-group" style="margin-bottom:10px;">
+        <select id="adm-e-user" style="padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;">
+          <!-- populated via JS -->
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:10px;">
+        <input type="number" id="adm-e-amount" placeholder="Jumlah Eris" style="padding:12px; background:var(--bg-elevated); border:1px solid var(--border); border-radius:var(--radius-sm); color:white;"/>
+      </div>
+      <button class="admin-btn" style="width:100%" onclick="adminGiveEris()">Beri Eris</button>
     </div>
-    <div class="list-modal-actions">
-      <button class="btn-secondary" onclick="closeModal('add-list-modal')">Batal</button>
-      <button class="btn-primary" onclick="confirmAddToList()" style="width:auto;margin-top:0">Tambahkan</button>
-    </div>
+
+    <button class="btn-secondary" style="width:100%; margin-top:24px;" onclick="closeModal('admin-modal')">Tutup Panel</button>
   </div>
 </div>
 
 <!-- ===================== SCRIPTS ===================== -->
 <script type="module">
+import { FIREBASE_CONFIG, APP_CONFIG } from './config.js';
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {
   getFirestore, doc, getDoc, setDoc, updateDoc, collection,
-  getDocs, query, orderBy, serverTimestamp, onSnapshot,
-  addDoc, deleteDoc
+  getDocs, query, orderBy, serverTimestamp, deleteDoc, addDoc
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-/* ---- CONFIG ---- */
-const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyDkLd6zLlK5VihMLuTd3bmHO5AYVVyBFy8",
-  authDomain:"natsunime-86e9d.firebaseapp.com",
-  projectId:"natsunime-86e9d",
-  storageBucket:"natsunime-86e9d.firebasestorage.app",
-  messagingSenderId:"804368157744",
-  appId:"1:804368157744:web:6c5760431f530accf3f1f5",
-  measurementId:"G-DZTTZTP027"
-};
-const LOGO_URL = "https://i.ibb.co.com/93gtj8vP/e38097d923934c9595cd26668ed062f2-webp.webp";
-const DEFAULT_AVATAR = "https://i.ibb.co.com/Kz6fKRpr/51c359defeb3cbae892c5cdada9ab747-webp.webp";
-
-const RANKS = [
-  {name:'F-Rank',cls:'rank-f',min:0,max:100},
-  {name:'E-Rank',cls:'rank-e',min:100,max:250},
-  {name:'D-Rank',cls:'rank-d',min:250,max:500},
-  {name:'C-Rank',cls:'rank-c',min:500,max:900},
-  {name:'B-Rank',cls:'rank-b',min:900,max:1500},
-  {name:'A-Rank',cls:'rank-a',min:1500,max:2500},
-  {name:'S-Rank',cls:'rank-s',min:2500,max:4000},
-  {name:'SS-Rank',cls:'rank-ss',min:4000,max:6000},
-  {name:'MC',cls:'rank-mc',min:6000,max:6000},
-];
-
-const GACHA_COST_X1 = 150;
-const GACHA_COST_X10 = 1350;
-const DUP_RP = 30;
-
-/* ---- FIREBASE INIT (Firestore only) ---- */
+/* ---- FIREBASE INIT ---- */
 const app = initializeApp(FIREBASE_CONFIG);
 const db = getFirestore(app);
 
-/* ---- LOCAL AUTH HELPERS ---- */
-// Users stored in localStorage as: natsu_users = { username: { password, uid } }
-// Session stored as: natsu_session = { uid, username }
-
-function getLocalUsers(){
-  try{ return JSON.parse(localStorage.getItem('natsu_users')||'{}'); }
-  catch{ return {}; }
-}
-function saveLocalUsers(users){ localStorage.setItem('natsu_users',JSON.stringify(users)); }
-function getSession(){ try{ return JSON.parse(localStorage.getItem('natsu_session')||'null'); }catch{ return null; } }
-function setSession(s){ localStorage.setItem('natsu_session',JSON.stringify(s)); }
-function clearSession(){ localStorage.removeItem('natsu_session'); }
-
 /* ---- STATE ---- */
-let currentUser = null; // { uid, username }
+let currentUser = null; 
 let userData = null;
-let animeListType = 'watched';
-let pendingAnimeForList = null;
+let allUsers = [];
+let gachaItems = [];
+let viewingProfileUid = null; 
+let currentSearchFilter = 'airing';
+let searchTimeout = null;
+
+const RANKS = [
+  {name:'F-Rank', min:0}, {name:'E-Rank', min:100}, {name:'D-Rank', min:250},
+  {name:'C-Rank', min:500}, {name:'B-Rank', min:900}, {name:'A-Rank', min:1500},
+  {name:'S-Rank', min:2500}, {name:'SS-Rank', min:4000}, {name:'MC', min:6000}
+];
+const RATINGS = { 1:'Jelek', 2:'Mid', 3:'Bagus', 4:'Bagus Banget!', 5:'PEAK', 6:'MASTERPIECE' };
+const STATUSES = { 'watching': 'Sedang Menonton', 'watched': 'Selesai', 'drop': 'Di-drop' };
+
+function setLogos(){
+  document.querySelectorAll('.app-logo-img').forEach(img => {
+    img.src = APP_CONFIG.LOGO_URL;
+  });
+}
+
+function getSession(){ try{ return JSON.parse(localStorage.getItem('natsu_session_v3')||'null'); }catch{ return null; } }
+function setSession(s){ localStorage.setItem('natsu_session_v3',JSON.stringify(s)); }
+function generateUid(uname) { return uname.toLowerCase().replace(/[^a-z0-9_]/g, '') + '_' + Date.now().toString(36); }
+function sanitizeUsernameForId(uname) { return uname.toLowerCase().replace(/[^a-z0-9_]/g, ''); }
 
 /* ================================================================
-   SPLASH
+   INIT & AUTH
    ================================================================ */
-setTimeout(()=>{
-  document.getElementById('splash').classList.add('hide');
-  setTimeout(()=>document.getElementById('splash').remove(),600);
-},2400);
-
-/* ================================================================
-   AUTH INIT — check session on load
-   ================================================================ */
+setLogos();
 setTimeout(async ()=>{
   const session = getSession();
   if(session && session.uid){
@@ -1226,9 +733,10 @@ setTimeout(async ()=>{
     await loadUserData();
     showApp();
   }else{
-    showAuth();
+    document.getElementById('splash').classList.add('hide');
+    document.getElementById('auth-screen').classList.remove('hidden');
   }
-}, 2500); // after splash
+}, 2400);
 
 async function loadUserData(){
   const ref = doc(db,'users',currentUser.uid);
@@ -1236,40 +744,18 @@ async function loadUserData(){
   if(snap.exists()){
     userData = snap.data();
   }else{
-    userData = {
-      uid:currentUser.uid,
-      username:currentUser.username,
-      bio:'',
-      role:'rakyat',
-      eris:0,
-      rankPoints:0,
-      avatar:DEFAULT_AVATAR,
-      collection:[],
-      pfpCollection:[DEFAULT_AVATAR],
-      createdAt:serverTimestamp()
-    };
-    await setDoc(ref,userData);
+    doLogout(); // Invalid session
   }
 }
 
-function showAuth(){
-  document.getElementById('auth-screen').classList.remove('hidden');
-  document.getElementById('app').classList.remove('visible');
-}
-
 function showApp(){
+  document.getElementById('splash').classList.add('hide');
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('visible');
-  renderDashboard();
-  renderMyProfile();
-  renderGacha();
-  loadCommunity();
-  renderMyAnime();
+  loadGachaItems();
+  navTo('home');
 }
 
-/* ================================================================
-   AUTH ACTIONS — plain text localStorage
-   ================================================================ */
 window.switchAuthTab = function(tab){
   document.querySelectorAll('.auth-tab').forEach((b,i)=>b.classList.toggle('active',i===(tab==='login'?0:1)));
   document.getElementById('panel-login').classList.toggle('active',tab==='login');
@@ -1277,67 +763,59 @@ window.switchAuthTab = function(tab){
 };
 
 window.doLogin = async function(){
-  const username = document.getElementById('login-username').value.trim();
-  const pass  = document.getElementById('login-pass').value;
-  const err   = document.getElementById('login-err');
-  err.classList.remove('show');
-
-  if(!username||!pass){ err.textContent='Isi username dan password.'; err.classList.add('show'); return; }
-
-  const users = getLocalUsers();
-  const key = username.toLowerCase();
-  if(!users[key]){ err.textContent='Username tidak ditemukan.'; err.classList.add('show'); return; }
-  if(users[key].password !== pass){ err.textContent='Password salah.'; err.classList.add('show'); return; }
-
-  currentUser = { uid: users[key].uid, username };
+  const u = document.getElementById('login-username').value.trim();
+  const p = document.getElementById('login-pass').value; // plain text as requested
+  const e = document.getElementById('login-err');
+  e.classList.remove('show');
+  if(!u||!p){ e.textContent='Isi username dan password.'; e.classList.add('show'); return; }
+  
+  const uid = sanitizeUsernameForId(u);
+  const ref = doc(db, 'users', uid);
+  const snap = await getDoc(ref);
+  
+  if(!snap.exists() || snap.data().password !== p){ 
+    e.textContent='Username atau Password salah.'; e.classList.add('show'); return; 
+  }
+  
+  currentUser = { uid, username: snap.data().username };
   setSession(currentUser);
   await loadUserData();
   showApp();
 };
 
 window.doRegister = async function(){
-  const name  = document.getElementById('reg-name').value.trim();
-  const pass  = document.getElementById('reg-pass').value;
-  const err   = document.getElementById('reg-err');
-  err.classList.remove('show');
-
-  if(!name||!pass){ err.textContent='Isi username dan password.'; err.classList.add('show'); return; }
-  if(name.length < 3){ err.textContent='Username minimal 3 karakter.'; err.classList.add('show'); return; }
-  if(pass.length < 4){ err.textContent='Password minimal 4 karakter.'; err.classList.add('show'); return; }
-
-  const users = getLocalUsers();
-  const key = name.toLowerCase();
-  if(users[key]){ err.textContent='Username sudah dipakai.'; err.classList.add('show'); return; }
-
-  // Generate simple UID
-  const uid = 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-  users[key] = { password: pass, uid };
-  saveLocalUsers(users);
-
-  currentUser = { uid, username: name };
-  setSession(currentUser);
-
-  // Create Firestore user doc
-  const ref = doc(db,'users',uid);
-  userData = {
-    uid, username:name, bio:'', role:'rakyat',
-    eris:0, rankPoints:0, avatar:DEFAULT_AVATAR,
-    collection:[], pfpCollection:[DEFAULT_AVATAR],
-    createdAt:serverTimestamp()
+  const u = document.getElementById('reg-name').value.trim();
+  const p = document.getElementById('reg-pass').value; // plain text as requested
+  const e = document.getElementById('reg-err');
+  e.classList.remove('show');
+  if(!u||!p){ e.textContent='Isi username dan password.'; e.classList.add('show'); return; }
+  if(u.length<3 || p.length<4){ e.textContent='Username min 3, Password min 4 karakter.'; e.classList.add('show'); return; }
+  
+  const uid = sanitizeUsernameForId(u);
+  const ref = doc(db, 'users', uid);
+  const snap = await getDoc(ref);
+  
+  if(snap.exists()){ e.textContent='Username sudah dipakai.'; e.classList.add('show'); return; }
+  
+  userData = { 
+    uid, username:u, password:p, bio:'', role:'rakyat', eris:0, rankPoints:0, 
+    avatar:APP_CONFIG.DEFAULT_AVATAR, collection:[], pfpCollection:[APP_CONFIG.DEFAULT_AVATAR], 
+    isHidden:false, createdAt:serverTimestamp() 
   };
   await setDoc(ref, userData);
+  
+  currentUser = { uid, username: u };
+  setSession(currentUser);
   showApp();
 };
 
 window.doLogout = function(){
-  clearSession();
-  currentUser = null;
-  userData = null;
-  showAuth();
+  localStorage.removeItem('natsu_session_v3');
+  location.reload();
 };
 
 /* ================================================================
-   NAVIGATION
+   ROUTING
    ================================================================ */
 window.navTo = function(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -1346,629 +824,795 @@ window.navTo = function(page){
   if(pg) pg.classList.add('active');
   const nb = document.getElementById('nav-'+page);
   if(nb) nb.classList.add('active');
+  
+  if(page==='home') renderHome();
   if(page==='add-anime') loadAnimeAPI('airing');
-  if(page==='my-anime') renderMyAnime();
-  if(page==='profile') renderMyProfile();
+  if(page==='anime') renderMyAnime();
+  if(page==='marathon') renderMarathon();
+  if(page==='gacha') renderGacha();
   if(page==='community') loadCommunity();
-  if(page==='gacha') document.getElementById('gacha-eris-display').textContent=(userData?.eris||0);
+  if(page==='profile'){ viewingProfileUid = null; renderProfilePage(); }
 };
 
 /* ================================================================
-   RANK SYSTEM
+   UTILITIES
    ================================================================ */
+function esc(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function roleData(r){
+  if(r==='kaisar') return {lbl:'Kaisar', cls:'theme-kaisar', av:'av-kaisar', icon:'ph-fill ph-crown', disc:1};
+  if(r==='raja') return {lbl:'Raja', cls:'theme-raja', av:'av-raja', icon:'ph-fill ph-sketch-logo', disc:0.5};
+  if(r==='bangsawan') return {lbl:'Bangsawan', cls:'theme-bangsawan', av:'av-bangsawan', icon:'ph-fill ph-medal', disc:0.8};
+  return {lbl:'Rakyat', cls:'theme-rakyat', av:'av-rakyat', icon:'ph-fill ph-user', disc:1};
+}
+function roleValue(r){
+  if(r==='kaisar') return 4;
+  if(r==='raja') return 3;
+  if(r==='bangsawan') return 2;
+  return 1;
+}
 function getRankInfo(rp){
   let idx=0;
-  for(let i=0;i<RANKS.length-1;i++){if(rp>=RANKS[i+1].min) idx=i+1;}
-  return {rank:RANKS[idx],idx,next:RANKS[Math.min(idx+1,RANKS.length-1)]};
+  for(let i=0; i<RANKS.length-1; i++){ if(rp >= RANKS[i+1].min) idx = i+1; }
+  return { rank: RANKS[idx], idx, next: RANKS[Math.min(idx+1, RANKS.length-1)] };
 }
-
-function updateRankBadge(el,rankObj){
-  el.className='dash-role-badge '+rankObj.cls;
-  // just display text
-}
-
-async function maybeUpgradeRank(){
+async function checkRankUp(){
   const rp = userData.rankPoints||0;
-  const {rank,idx} = getRankInfo(rp);
-  userData.rank = rank.name;
-  await updateDoc(doc(db,'users',currentUser.uid),{rank:rank.name,rankPoints:rp});
+  await updateDoc(doc(db,'users',currentUser.uid), {rankPoints:rp});
 }
 
 /* ================================================================
-   DASHBOARD
+   HOME / DASHBOARD
    ================================================================ */
-async function renderDashboard(){
+async function renderHome(){
   if(!userData) return;
   const av = document.getElementById('dash-av');
-  av.src = userData.avatar||DEFAULT_AVATAR;
-  av.onerror=()=>av.src=DEFAULT_AVATAR;
-  document.getElementById('dash-uname').textContent = userData.username||'Adventurer';
+  const rd = roleData(userData.role);
+  
+  av.src = userData.avatar || APP_CONFIG.DEFAULT_AVATAR;
+  av.className = `dash-avatar avatar-img ${rd.av}`;
+  document.getElementById('dash-uname').textContent = userData.username;
   document.getElementById('dash-eris').textContent = (userData.eris||0).toLocaleString();
+  
+  const rb = document.getElementById('dash-role-badge');
+  rb.className = `role-badge ${rd.cls}`;
+  rb.innerHTML = `<i class="${rd.icon}"></i> ${rd.lbl}`;
 
-  const roleBadge = document.getElementById('dash-role-badge');
-  const roleMap = {maou:'maou 👑 Maou',bangsawan:'bangsawan 🏆 Bangsawan',rakyat:'rakyat 👤 Rakyat'};
-  const rk = roleMap[userData.role]||'rakyat 👤 Rakyat';
-  roleBadge.className='dash-role-badge '+(rk.split(' ')[0]);
-  roleBadge.textContent=rk.split(' ').slice(1).join(' ');
-
-  // Rank bar
-  const rp = userData.rankPoints||0;
-  const {rank,idx,next} = getRankInfo(rp);
-  const rankBadge = document.getElementById('dash-rank-badge');
-  rankBadge.className='dash-rank-badge '+rank.cls;
-  rankBadge.textContent=rank.name;
-  document.getElementById('dash-rp-label').textContent = rp+' RP';
+  const {rank, idx, next} = getRankInfo(userData.rankPoints||0);
+  document.getElementById('dash-rank-badge').textContent = rank.name;
+  document.getElementById('dash-rp-label').textContent = (userData.rankPoints||0) + ' RP';
   document.getElementById('dash-rank-cur').textContent = rank.name;
   document.getElementById('dash-rank-next').textContent = next.name;
-  const pct = idx<RANKS.length-1 ? Math.min(100,((rp-rank.min)/(next.min-rank.min))*100) : 100;
-  setTimeout(()=>document.getElementById('dash-rank-fill').style.width=pct+'%',100);
+  const pct = idx < RANKS.length-1 ? Math.min(100, ((userData.rankPoints-rank.min)/(next.min-rank.min))*100) : 100;
+  setTimeout(()=> document.getElementById('dash-rank-fill').style.width = pct+'%', 100);
 
-  // Stats
-  const watchedSnap = await getDocs(collection(db,'users',currentUser.uid,'anime_watched'));
-  const marathonSnap = await getDocs(collection(db,'users',currentUser.uid,'anime_marathon'));
-  document.getElementById('stat-watched').textContent = watchedSnap.size;
-  document.getElementById('stat-marathon').textContent = marathonSnap.size;
-  const cards = (userData.collection||[]).filter(c=>c.type?.startsWith('card'));
-  const pfps = (userData.pfpCollection||[DEFAULT_AVATAR]).length;
-  document.getElementById('stat-cards').textContent = cards.length;
-  document.getElementById('stat-pfps').textContent = pfps;
-
-  // Recent anime list
-  const listEl = document.getElementById('dash-anime-list');
-  const allAnime = [...watchedSnap.docs.map(d=>({...d.data(),listType:'watched'})),
-                   ...marathonSnap.docs.map(d=>({...d.data(),listType:'marathon'}))];
-  if(!allAnime.length){
-    listEl.innerHTML='<div class="empty-state"><div class="icon">🌸</div><p>Belum ada anime. Mulai tambahkan!</p></div>';
-    return;
-  }
-  listEl.innerHTML = allAnime.slice(0,5).map(a=>`
-    <div class="anime-mini-item">
-      <img class="anime-mini-cover" src="${a.image||''}" alt="" onerror="this.style.opacity='.3'"/>
-      <div class="anime-mini-info">
-        <div class="anime-mini-title">${escHtml(a.title||'Untitled')}</div>
-        <div class="anime-mini-status">${a.episodes?a.episodes+' ep':''}</div>
+  const snap = await getDocs(collection(db,'users',currentUser.uid,'anime_list'));
+  const animes = snap.docs.map(d=>d.data()).sort((a,b)=> (b.updatedAt?.toMillis()||0) - (a.updatedAt?.toMillis()||0)).slice(0,5);
+  const rc = document.getElementById('dash-recent-anime');
+  if(!animes.length){
+    rc.innerHTML = `<div class="empty-state" style="width:100%"><i class="ph ph-monitor-play"></i><p>Belum ada anime.</p></div>`;
+  } else {
+    rc.innerHTML = animes.map(a=>`
+      <div class="mini-card" onclick="openAnimeDetail(${a.malId})">
+        <div style="position:relative">
+          <img src="${a.image}" alt=""/>
+          <div class="anime-card-overlay"><span class="anime-status-badge badge-${a.status}">${STATUSES[a.status]}</span></div>
+        </div>
+        <div class="mini-card-body">
+          <div class="mini-card-title">${esc(a.title)}</div>
+          <div class="mini-card-sub"><i class="ph-fill ph-star" style="color:var(--accent)"></i> ${RATINGS[a.rating]||'-'}</div>
+        </div>
       </div>
-      <div class="anime-mini-tag ${a.listType==='watched'?'tag-watched':'tag-marathon'}">${a.listType==='watched'?'Watched':'Marathon'}</div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 }
 
 /* ================================================================
-   ANIME API (JIKAN)
+   ANIME API (JIKAN) & SEARCH
    ================================================================ */
-let currentFilter='airing';
-let searchTimeout=null;
-
-window.setFilter = function(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+window.setSearchFilter = function(f, btn){
+  currentSearchFilter = f;
+  document.querySelectorAll('#filter-chips .chip').forEach(c=>c.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('anime-search-input').value='';
+  document.getElementById('anime-search-input').value = '';
   loadAnimeAPI(f);
 };
-
-window.onAnimeSearch = function(val){
+window.onAnimeSearch = function(v){
   clearTimeout(searchTimeout);
-  if(!val.trim()){loadAnimeAPI(currentFilter);return;}
-  searchTimeout=setTimeout(()=>searchAnime(val.trim()),500);
+  if(!v.trim()){ loadAnimeAPI(currentSearchFilter); return; }
+  searchTimeout = setTimeout(()=> searchAnimeAPI(v.trim()), 600);
 };
-
 async function loadAnimeAPI(filter){
-  showAnimeLoading();
-  const endpoints={
-    airing:'https://api.jikan.moe/v4/seasons/now?limit=18',
-    upcoming:'https://api.jikan.moe/v4/seasons/upcoming?limit=18',
-    popular:'https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=18',
-    top:'https://api.jikan.moe/v4/top/anime?limit=18'
+  const wr = document.getElementById('search-grid-wrap');
+  wr.innerHTML = '<div class="loading-spin"><div class="spinner"></div></div>';
+  const urls = {
+    airing: 'https://api.jikan.moe/v4/seasons/now?limit=15',
+    upcoming: 'https://api.jikan.moe/v4/seasons/upcoming?limit=15',
+    popular: 'https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=15',
+    top: 'https://api.jikan.moe/v4/top/anime?limit=15'
   };
   try{
-    const r=await fetch(endpoints[filter]);
-    const d=await r.json();
-    renderAnimeGrid(d.data||[]);
-  }catch{ renderAnimeGrid([]); }
+    const res = await fetch(urls[filter]); const data = await res.json();
+    renderSearchGrid(data.data||[]);
+  }catch(e){ wr.innerHTML = '<div class="empty-state"><i class="ph ph-warning-circle"></i><p>Gagal memuat data.</p></div>'; }
 }
-
-async function searchAnime(q){
-  showAnimeLoading();
+async function searchAnimeAPI(q){
+  const wr = document.getElementById('search-grid-wrap');
+  wr.innerHTML = '<div class="loading-spin"><div class="spinner"></div></div>';
   try{
-    const r=await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=18`);
-    const d=await r.json();
-    renderAnimeGrid(d.data||[]);
-  }catch{ renderAnimeGrid([]); }
+    const res = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(q)}&limit=15`);
+    const data = await res.json();
+    renderSearchGrid(data.data||[]);
+  }catch(e){ wr.innerHTML = '<div class="empty-state"><i class="ph ph-warning-circle"></i><p>Gagal mencari.</p></div>'; }
 }
-
-function showAnimeLoading(){
-  document.getElementById('anime-grid-wrap').innerHTML='<div class="loading-spin"><div class="spinner"></div></div>';
-}
-
-function renderAnimeGrid(animes){
-  if(!animes.length){
-    document.getElementById('anime-grid-wrap').innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>Tidak ada hasil ditemukan.</p></div>';
-    return;
-  }
-  document.getElementById('anime-grid-wrap').innerHTML=`
-    <div class="anime-grid">
-      ${animes.map(a=>`
-        <div class="anime-card" onclick="openAddToList(${a.mal_id},'${escHtml(a.title||'').replace(/'/g,"\\'")}','${a.images?.jpg?.image_url||''}','${a.episodes||0}')">
-          <img class="anime-card-img" src="${a.images?.jpg?.image_url||''}" alt="" loading="lazy" onerror="this.style.opacity='.3'"/>
-          <div class="anime-card-body">
-            <div class="anime-card-title">${escHtml(a.title||'')}</div>
-            <div class="anime-card-score">⭐ ${a.score||'N/A'}</div>
-          </div>
-          <button class="anime-card-btn">+ Tambah</button>
+function renderSearchGrid(animes){
+  const wr = document.getElementById('search-grid-wrap');
+  if(!animes.length) { wr.innerHTML = '<div class="empty-state"><i class="ph ph-magnifying-glass"></i><p>Tidak ada hasil.</p></div>'; return; }
+  wr.innerHTML = `<div class="anime-grid">
+    ${animes.map(a=>`
+      <div class="anime-card" onclick="openAnimeDetail(${a.mal_id})">
+        <img class="anime-card-img" src="${a.images?.jpg?.image_url}" alt=""/>
+        <div class="anime-card-overlay"><span class="anime-status-badge" style="background:rgba(0,0,0,0.8);color:#fff"><i class="ph-fill ph-star" style="color:var(--accent)"></i> ${a.score||'N/A'}</span></div>
+        <div class="anime-card-body">
+          <div class="anime-card-title">${esc(a.title)}</div>
         </div>
-      `).join('')}
-    </div>
-  `;
+      </div>
+    `).join('')}
+  </div>`;
 }
 
 /* ================================================================
-   ADD TO LIST MODAL
+   ANIME DETAILS
    ================================================================ */
-window.openAddToList = function(malId,title,image,episodes){
-  pendingAnimeForList = {malId,title,image,episodes,listType:'watched',deadline:null};
-  document.getElementById('alm-title').textContent = title;
-  const cov = document.getElementById('alm-cover');
-  cov.src=image; cov.onerror=()=>cov.style.display='none';
-  document.querySelectorAll('.list-type-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  document.getElementById('marathon-date-field').classList.remove('show');
-  openModal('add-list-modal');
-};
+let currentDetailAnime = null;
 
-window.setListType = function(t,btn){
-  if(!pendingAnimeForList) return;
-  pendingAnimeForList.listType=t;
-  document.querySelectorAll('.list-type-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('marathon-date-field').classList.toggle('show',t==='marathon');
-};
+window.openAnimeDetail = async function(malId){
+  currentDetailAnime = null;
+  const mod = document.getElementById('detail-anime-modal');
+  const cont = document.getElementById('detail-anime-content');
+  cont.innerHTML = '<div style="display:flex; justify-content:center; padding: 40px;"><div class="spinner"></div></div>';
+  mod.classList.add('open');
 
-window.confirmAddToList = async function(){
-  if(!pendingAnimeForList||!currentUser) return;
-  const {malId,title,image,episodes,listType} = pendingAnimeForList;
-  const deadline = listType==='marathon'?document.getElementById('marathon-deadline').value:null;
-  const colName = listType==='watched'?'anime_watched':'anime_marathon';
   try{
-    const ref = doc(db,'users',currentUser.uid,colName,String(malId));
-    await setDoc(ref,{malId,title,image,episodes,listType,deadline:deadline||null,completed:false,addedAt:serverTimestamp()});
-    closeModal('add-list-modal');
-    showToast('Anime berhasil ditambahkan!','success');
+    const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}/full`);
+    const data = (await res.json()).data;
+    if(!data) throw new Error();
+    currentDetailAnime = {
+      malId: data.mal_id, title: data.title, image: data.images.jpg.image_url,
+      episodes: data.episodes, score: data.score
+    };
+
+    let uStatus = 'none', uRating = 1;
+    let isMarathon = false;
+    const listSnap = await getDoc(doc(db,'users',currentUser.uid,'anime_list',String(malId)));
+    if(listSnap.exists()){ uStatus = listSnap.data().status; uRating = listSnap.data().rating; }
+    const marSnap = await getDoc(doc(db,'users',currentUser.uid,'anime_marathon',String(malId)));
+    if(marSnap.exists()){ isMarathon = true; }
+
+    cont.innerHTML = `
+      <div class="detail-header">
+        <img src="${data.images.jpg.image_url}" class="detail-cover"/>
+        <div class="detail-info">
+          <div class="detail-title">${esc(data.title)}</div>
+          <div class="detail-meta">
+            <span><i class="ph-fill ph-star" style="color:var(--accent)"></i> ${data.score||'-'}</span>
+            <span><i class="ph-fill ph-monitor-play"></i> ${data.episodes?data.episodes+' eps':'? eps'}</span>
+            <span>${data.type}</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); line-height:1.4;">
+            ${(data.genres||[]).map(g=>g.name).join(', ')}
+          </div>
+        </div>
+      </div>
+      <div class="detail-synopsis">${esc(data.synopsis||'Tidak ada sinopsis.')}</div>
+      
+      <div style="padding: 16px; background:var(--bg-elevated); border-radius:var(--radius-sm); border:1px solid var(--border);">
+        <h4 style="font-size:13px; margin-bottom:12px; font-weight:700;">Kelola Anime</h4>
+        
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>Status Tontonan</label>
+          <select id="det-status">
+            <option value="none" ${uStatus==='none'?'selected':''}>-- Belum Ditambahkan --</option>
+            <option value="watching" ${uStatus==='watching'?'selected':''}>Sedang Menonton</option>
+            <option value="watched" ${uStatus==='watched'?'selected':''}>Selesai</option>
+            <option value="drop" ${uStatus==='drop'?'selected':''}>Di-drop</option>
+          </select>
+        </div>
+        
+        <div class="form-group" style="margin-bottom:16px;">
+          <label>Penilaian (Rating)</label>
+          <select id="det-rating">
+            <option value="1" ${uRating==1?'selected':''}>Jelek 🗑️</option>
+            <option value="2" ${uRating==2?'selected':''}>Mid 😐</option>
+            <option value="3" ${uRating==3?'selected':''}>Bagus 👍</option>
+            <option value="4" ${uRating==4?'selected':''}>Bagus Banget! 🔥</option>
+            <option value="5" ${uRating==5?'selected':''}>PEAK ✨</option>
+            <option value="6" ${uRating==6?'selected':''}>MASTERPIECE 👑</option>
+          </select>
+        </div>
+        
+        <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text-primary); cursor:pointer;">
+          <input type="checkbox" id="det-marathon" ${isMarathon?'checked':''} style="width:18px;height:18px;accent-color:var(--accent);"/>
+          Tambahkan ke Daftar Marathon
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-secondary" onclick="closeModal('detail-anime-modal')">Batal</button>
+        <button class="btn-primary" style="margin-top:0;" onclick="saveAnimeDetail()">Simpan Perubahan</button>
+      </div>
+    `;
+  }catch(e){
+    cont.innerHTML = '<div class="empty-state"><i class="ph ph-warning-circle"></i><p>Gagal memuat detail anime.</p><button class="btn-secondary" onclick="closeModal(\'detail-anime-modal\')" style="margin-top:10px;">Tutup</button></div>';
+  }
+};
+
+window.saveAnimeDetail = async function(){
+  if(!currentDetailAnime) return;
+  const stat = document.getElementById('det-status').value;
+  const rat = parseInt(document.getElementById('det-rating').value)||1;
+  const isMar = document.getElementById('det-marathon').checked;
+  const {malId, title, image, episodes} = currentDetailAnime;
+
+  const refList = doc(db,'users',currentUser.uid,'anime_list',String(malId));
+  const refMar = doc(db,'users',currentUser.uid,'anime_marathon',String(malId));
+
+  try {
+    if(stat === 'none') { await deleteDoc(refList); } 
+    else { await setDoc(refList, {malId, title, image, episodes, status:stat, rating:rat, updatedAt:serverTimestamp()}); }
+    
+    if(isMar) { await setDoc(refMar, {malId, title, image, episodes, addedAt:serverTimestamp()}); } 
+    else { await deleteDoc(refMar); }
+
+    showToast('Berhasil disimpan!', 'success');
+    closeModal('detail-anime-modal');
+    
+    if(document.getElementById('page-anime').classList.contains('active')) renderMyAnime();
+    if(document.getElementById('page-marathon').classList.contains('active')) renderMarathon();
+    if(document.getElementById('page-home').classList.contains('active')) renderHome();
+    if(document.getElementById('page-profile').classList.contains('active')) renderProfilePage();
+  }catch(e){ showToast('Gagal menyimpan.','error'); }
+};
+
+/* ================================================================
+   MY ANIME & MARATHON LISTS (WITH BUTTON FILTERS)
+   ================================================================ */
+let myAnimeState = { status: 'all', sort: 'new' };
+
+document.querySelectorAll('#my-filter-status .filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#my-filter-status .filter-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    myAnimeState.status = this.dataset.val;
     renderMyAnime();
-    renderDashboard();
-  }catch(e){ showToast('Gagal menambahkan.','error'); }
+  });
+});
+
+document.querySelectorAll('#my-filter-sort .filter-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#my-filter-sort .filter-btn').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+    myAnimeState.sort = this.dataset.val;
+    renderMyAnime();
+  });
+});
+
+window.renderMyAnime = async function(){
+  const grid = document.getElementById('my-anime-grid');
+  grid.innerHTML = '<div class="loading-spin"><div class="spinner"></div></div>';
+
+  const snap = await getDocs(collection(db,'users',currentUser.uid,'anime_list'));
+  const marathonSnap = await getDocs(collection(db,'users',currentUser.uid,'anime_marathon'));
+  const marathonIds = new Set(marathonSnap.docs.map(d=>d.data().malId));
+
+  let animes = snap.docs.map(d=>d.data());
+
+  if(myAnimeState.status !== 'all') animes = animes.filter(a=>a.status === myAnimeState.status);
+
+  animes.sort((a,b)=>{
+    if(myAnimeState.sort === 'desc') return b.rating - a.rating;
+    if(myAnimeState.sort === 'asc') return a.rating - b.rating;
+    return (b.updatedAt?.toMillis()||0) - (a.updatedAt?.toMillis()||0); 
+  });
+
+  if(!animes.length){ grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="ph ph-monitor-play"></i><p>Tidak ada anime di daftar ini.</p></div>'; return; }
+  
+  grid.innerHTML = animes.map(a=>`
+    <div class="anime-card" onclick="openAnimeDetail(${a.malId})">
+      <img class="anime-card-img" src="${a.image}" alt=""/>
+      <div class="anime-card-overlay">
+        <span class="anime-status-badge badge-${a.status}">${STATUSES[a.status]}</span>
+        ${marathonIds.has(a.malId) ? '<span class="anime-status-badge badge-marathon"><i class="ph-fill ph-popcorn"></i></span>' : ''}
+      </div>
+      <div class="anime-card-body">
+        <div class="anime-card-title">${esc(a.title)}</div>
+        <div class="anime-card-rating"><i class="ph-fill ph-star"></i> ${RATINGS[a.rating]}</div>
+      </div>
+    </div>
+  `).join('');
+};
+
+window.renderMarathon = async function(){
+  const grid = document.getElementById('marathon-grid');
+  grid.innerHTML = '<div class="loading-spin"><div class="spinner"></div></div>';
+  const snap = await getDocs(collection(db,'users',currentUser.uid,'anime_marathon'));
+  const animes = snap.docs.map(d=>d.data());
+  
+  if(!animes.length){ grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><i class="ph ph-popcorn"></i><p>Tidak ada anime yang sedang dimarathon.</p></div>'; return; }
+  
+  grid.innerHTML = animes.map(a=>`
+    <div class="anime-card" onclick="openAnimeDetail(${a.malId})">
+      <img class="anime-card-img" src="${a.image}" alt=""/>
+      <div class="anime-card-overlay"><span class="anime-status-badge badge-marathon"><i class="ph-fill ph-popcorn"></i> Marathon</span></div>
+      <div class="anime-card-body">
+        <div class="anime-card-title">${esc(a.title)}</div>
+      </div>
+    </div>
+  `).join('');
 };
 
 /* ================================================================
-   MY ANIME
+   GACHA SYSTEM
    ================================================================ */
-async function renderMyAnime(){
-  if(!currentUser) return;
-  const wSnap = await getDocs(collection(db,'users',currentUser.uid,'anime_watched'));
-  const mSnap = await getDocs(collection(db,'users',currentUser.uid,'anime_marathon'));
-
-  const wList = document.getElementById('watched-list');
-  const mList = document.getElementById('marathon-list');
-
-  if(!wSnap.size){
-    wList.innerHTML='<div class="empty-state"><div class="icon">📺</div><p>Belum ada anime yang ditonton.</p></div>';
-  }else{
-    wList.innerHTML = wSnap.docs.map(d=>d.data()).map(a=>`
-      <div class="anime-list-item">
-        <img class="anime-list-cover" src="${a.image}" alt="" onerror="this.style.opacity='.3'"/>
-        <div class="anime-list-info">
-          <div class="anime-list-title">${escHtml(a.title)}</div>
-          <div class="anime-list-meta">${a.episodes?a.episodes+' ep':'—'}</div>
-        </div>
-        <div class="anime-list-actions">
-          <button class="icon-btn danger" onclick="removeAnime('watched','${a.malId}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  if(!mSnap.size){
-    mList.innerHTML='<div class="empty-state"><div class="icon">🏃</div><p>Belum ada marathon list.</p></div>';
-  }else{
-    mList.innerHTML = mSnap.docs.map(d=>d.data()).map(a=>`
-      <div class="anime-list-item marathon-item">
-        <div class="marathon-top">
-          <img class="anime-list-cover" src="${a.image}" alt="" onerror="this.style.opacity='.3'"/>
-          <div class="anime-list-info">
-            <div class="anime-list-title">${escHtml(a.title)}</div>
-            <div class="anime-list-meta">${a.episodes?a.episodes+' ep':'—'}</div>
-          </div>
-          <div class="anime-list-actions">
-            <button class="icon-btn danger" onclick="removeAnime('marathon','${a.malId}')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-            </button>
-          </div>
-        </div>
-        <div class="marathon-deadline">
-          <div>
-            <div class="deadline-text">Tenggat:</div>
-            <div class="deadline-date">${a.deadline||'Tidak ditentukan'}</div>
-          </div>
-          <button class="check-btn ${a.completed?'done':''}" onclick="toggleMarathon('${a.malId}',${!a.completed})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-}
-
-window.switchAnimeTab = function(tab,btn){
-  document.querySelectorAll('.tab-bar-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('watched-list').style.display = tab==='watched'?'flex':'none';
-  document.getElementById('marathon-list').style.display = tab==='marathon'?'flex':'none';
-};
-
-window.removeAnime = async function(type,malId){
-  const colName = type==='watched'?'anime_watched':'anime_marathon';
-  await deleteDoc(doc(db,'users',currentUser.uid,colName,String(malId)));
-  renderMyAnime(); renderDashboard();
-  showToast('Dihapus.','info');
-};
-
-window.toggleMarathon = async function(malId,done){
-  await updateDoc(doc(db,'users',currentUser.uid,'anime_marathon',String(malId)),{completed:done});
-  renderMyAnime();
-};
-
-/* ================================================================
-   GACHA
-   ================================================================ */
-let gachaItems = [];
-
 async function loadGachaItems(){
   const snap = await getDocs(collection(db,'gacha_items'));
   gachaItems = snap.docs.map(d=>d.data());
 }
 
-async function renderGacha(){
+window.renderGacha = async function(){
   await loadGachaItems();
-  document.getElementById('gacha-eris-display').textContent=(userData?.eris||0).toLocaleString();
+  document.getElementById('gacha-eris-display').textContent = (userData.eris||0).toLocaleString();
+  const cont = document.getElementById('gacha-banners-container');
+  
+  const disc = roleData(userData.role).disc;
+  const cost1 = Math.floor(APP_CONFIG.GACHA_COST_X1 * disc);
+  const cost10 = Math.floor(APP_CONFIG.GACHA_COST_X10 * disc);
 
-  const cardItems = gachaItems.filter(i=>i.type?.startsWith('card'));
-  const pfpItems  = gachaItems.filter(i=>i.type?.startsWith('pfp'));
-
-  const previewCards = c=>c.slice(0,4).map(i=>
-    i.type?.startsWith('pfp')
-      ? `<div class="gacha-preview-item"><img class="gacha-preview-pfp" src="${i.image}" alt="" onerror="this.src=''" /><div class="gacha-preview-name">${escHtml(i.name||'')}</div></div>`
-      : `<div class="gacha-preview-item"><img class="gacha-preview-card" src="${i.image}" alt="" onerror="this.src=''" /><div class="gacha-preview-name">${escHtml(i.name||'')}</div></div>`
-  ).join('')||'<div class="text-muted" style="font-size:12px;padding:8px 0">Belum ada karakter.</div>';
-
-  const vipDisc = userData?.role==='bangsawan';
-  const disc = vipDisc?0.9:1;
-
-  document.getElementById('gacha-banners').innerHTML=`
-    <div class="gacha-banner">
-      <div class="gacha-banner-header">
-        <div class="gacha-banner-icon">🃏</div>
-        <div class="gacha-banner-info">
-          <div class="gacha-banner-type">Gacha Koleksi</div>
-          <div class="gacha-banner-name">Koleksi Kartu</div>
-          <div class="gacha-banner-desc">Dapatkan kartu waifu & husbu eksklusif berbentuk potret elegan.</div>
+  const makeBanner = (type, title, icon, desc, color) => `
+    <div class="gacha-card">
+      <div class="gacha-card-header">
+        <div class="gacha-icon-wrap" style="color:${color}"><i class="ph-fill ${icon}"></i></div>
+        <div class="gacha-info">
+          <h3>${title}</h3>
+          <p>${desc}</p>
         </div>
       </div>
-      <div class="gacha-preview">${previewCards(cardItems)}</div>
-      <div class="gacha-banner-footer">
-        <div class="gacha-cost"><span class="eris-icon">💰</span><div><div class="gacha-cost-amount">${Math.floor(GACHA_COST_X1*disc)}</div><div class="gacha-cost-label">per gacha</div></div></div>
-        <div class="gacha-pull-btns">
-          <button class="btn-gacha btn-gacha-x1" onclick="doGacha('card',1)">×1</button>
-          <button class="btn-gacha btn-gacha-x10" onclick="doGacha('card',10)">×10 (${Math.floor(GACHA_COST_X10*disc)})</button>
+      <div class="gacha-actions">
+        <div class="gacha-price">
+          <i class="ph-fill ph-coins"></i> 
+          <div>
+            ${cost1} ${disc < 1 ? `<strike>${APP_CONFIG.GACHA_COST_X1}</strike>` : ''}
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="gacha-banner">
-      <div class="gacha-banner-header">
-        <div class="gacha-banner-icon">🖼️</div>
-        <div class="gacha-banner-info">
-          <div class="gacha-banner-type">Gacha Avatar</div>
-          <div class="gacha-banner-name">Koleksi PFP</div>
-          <div class="gacha-banner-desc">Dapatkan avatar eksklusif berbingkai bulat untuk profilmu.</div>
-        </div>
-      </div>
-      <div class="gacha-preview">${previewCards(pfpItems)}</div>
-      <div class="gacha-banner-footer">
-        <div class="gacha-cost"><span class="eris-icon">💰</span><div><div class="gacha-cost-amount">${Math.floor(GACHA_COST_X1*disc)}</div><div class="gacha-cost-label">per gacha</div></div></div>
-        <div class="gacha-pull-btns">
-          <button class="btn-gacha btn-gacha-x1" onclick="doGacha('pfp',1)">×1</button>
-          <button class="btn-gacha btn-gacha-x10" onclick="doGacha('pfp',10)">×10 (${Math.floor(GACHA_COST_X10*disc)})</button>
+        <div class="gacha-btns">
+          <button class="btn-pull btn-pull-1" onclick="doGacha('${type}', 1, ${cost1})">1x Pull</button>
+          <button class="btn-pull btn-pull-10" onclick="doGacha('${type}', 10, ${cost10})">10x Pull</button>
         </div>
       </div>
     </div>
   `;
-}
 
-window.doGacha = async function(type,count){
-  if(!userData||!currentUser) return;
-  const vipDisc = userData?.role==='bangsawan'?0.9:1;
-  const cost = Math.floor((count===1?GACHA_COST_X1:GACHA_COST_X10)*vipDisc);
-  if((userData.eris||0)<cost){ showToast('Eris tidak cukup! Top up dulu.','error'); return; }
-
-  const pool = gachaItems.filter(i=>i.type?.startsWith(type));
-  if(!pool.length){ showToast('Pool gacha kosong. Tunggu Maou mengisi!','info'); return; }
-
-  const owned = type==='card'?(userData.collection||[]):(userData.pfpCollection||[]);
-  const results=[]; let bonusRP=0;
-
-  for(let i=0;i<count;i++){
-    const item = pool[Math.floor(Math.random()*pool.length)];
-    const isDup = type==='card'
-      ? owned.some(o=>o.id===item.id||o.name===item.name)
-      : owned.includes(item.image);
-    results.push({...item,isDup});
-    if(isDup){ bonusRP+=DUP_RP; }
-  }
-
-  // Update user data
-  const newEris = (userData.eris||0) - cost;
-  let newCollection = [...(userData.collection||[])];
-  let newPfpColl = [...(userData.pfpCollection||[DEFAULT_AVATAR])];
-  let newRP = (userData.rankPoints||0)+bonusRP;
-
-  results.forEach(r=>{
-    if(!r.isDup){
-      if(type==='card') newCollection.push({id:r.id,name:r.name,image:r.image,type:r.type,rarity:r.rarity});
-      else if(!newPfpColl.includes(r.image)) newPfpColl.push(r.image);
-    }
-  });
-
-  const updateData = {eris:newEris,rankPoints:newRP};
-  if(type==='card') updateData.collection=newCollection;
-  else updateData.pfpCollection=newPfpColl;
-  await updateDoc(doc(db,'users',currentUser.uid),updateData);
-  userData = {...userData,...updateData};
-
-  await maybeUpgradeRank();
-  renderDashboard();
-  document.getElementById('gacha-eris-display').textContent=userData.eris;
-  showGachaResult(results,type,bonusRP);
+  cont.innerHTML = 
+    makeBanner('koleksi_waifu', 'Koleksi Waifu', 'ph-heart', 'Dapatkan kartu waifu idamanmu. C ~ UR Rarity.', '#f43f5e') +
+    makeBanner('koleksi_husbu', 'Koleksi Husbu', 'ph-sword', 'Koleksi husbu terbaik di universe ini.', '#3b82f6') +
+    makeBanner('pfp_waifu', 'Avatar Waifu', 'ph-user-circle', 'Avatar profil waifu eksklusif.', '#a855f7') +
+    makeBanner('pfp_husbu', 'Avatar Husbu', 'ph-user-square', 'Avatar profil husbu yang elegan.', '#fbbf24');
 };
 
-function showGachaResult(results,type,bonusRP){
+function rollRarity(){
+  const r = Math.random() * 100;
+  if(r <= 2) return 'UR';
+  if(r <= 10) return 'SSR';
+  if(r <= 30) return 'SR';
+  if(r <= 60) return 'R';
+  return 'C';
+}
+
+window.doGacha = async function(type, count, cost){
+  if((userData.eris||0) < cost) { showToast('Eris tidak cukup!','error'); return; }
+  
+  let pool = gachaItems.filter(i=>i.type === type);
+  if(!pool.length) { showToast('Banner kosong! Tunggu Kaisar menambahkannya.','info'); return; }
+
+  const results = [];
+  let bonusRP = 0;
+  const isPfp = type.startsWith('pfp_');
+  const owned = isPfp ? (userData.pfpCollection||[]) : (userData.collection||[]);
+
+  for(let i=0; i<count; i++){
+    const rarity = rollRarity();
+    let rPool = pool.filter(p=>p.rarity === rarity);
+    if(!rPool.length) rPool = pool; 
+    const item = rPool[Math.floor(Math.random() * rPool.length)];
+    
+    let isDup = false;
+    if(isPfp) isDup = owned.includes(item.image);
+    else isDup = owned.some(o=> o.id === item.id);
+
+    results.push({...item, isDup});
+    if(isDup) bonusRP += (rarity==='UR'?100 : rarity==='SSR'?50 : rarity==='SR'?20 : rarity==='R'?10 : 5);
+  }
+
+  userData.eris -= cost;
+  userData.rankPoints = (userData.rankPoints||0) + bonusRP;
+  if(isPfp){
+    results.forEach(r=> { if(!r.isDup) userData.pfpCollection.push(r.image); });
+  } else {
+    results.forEach(r=> { if(!r.isDup) userData.collection.push({id:r.id, name:r.name, image:r.image, type:r.type, rarity:r.rarity}); });
+  }
+
+  await updateDoc(doc(db,'users',currentUser.uid), {
+    eris: userData.eris, rankPoints: userData.rankPoints,
+    collection: userData.collection, pfpCollection: userData.pfpCollection
+  });
+  await checkRankUp();
+  document.getElementById('gacha-eris-display').textContent = userData.eris.toLocaleString();
+  
   const grid = document.getElementById('gr-grid');
-  grid.innerHTML = results.map(r=>{
-    const isCard=type==='card';
-    const imgEl=isCard
-      ? `<img class="result-card" src="${r.image}" alt="" onerror="this.style.opacity='.3'"/>`
-      : `<img class="result-pfp" src="${r.image}" alt="" onerror="this.style.opacity='.3'"/>`;
-    const dup=r.isDup?'<span class="result-dup-badge">DUP</span>':'';
-    return `<div class="gacha-result-item"><div style="position:relative">${imgEl}${dup}</div><div class="result-name">${escHtml(r.name||'')}</div></div>`;
-  }).join('');
+  grid.innerHTML = results.map((r,i) => `
+    <div class="gr-item" style="animation-delay: ${i*0.05}s">
+      <div style="position:relative">
+        <img class="gr-img ${isPfp?'pfp':''} rarity-${r.rarity}" src="${r.image}"/>
+        ${!isPfp ? `<span class="rarity-badge rb-${r.rarity}">${r.rarity}</span>` : ''}
+        ${r.isDup ? '<span class="gr-dup">DUP</span>' : ''}
+      </div>
+      <div class="gr-name">${esc(r.name)}</div>
+    </div>
+  `).join('');
 
   const rpEl = document.getElementById('gr-rp');
-  if(bonusRP>0){ rpEl.style.display='block'; rpEl.textContent=`+${bonusRP} Rank Points dari duplikat!`; }
-  else rpEl.style.display='none';
+  if(bonusRP > 0) { rpEl.style.display = 'block'; rpEl.innerHTML = `<i class="ph-fill ph-sparkle"></i> +${bonusRP} RP dari Duplikat`; }
+  else rpEl.style.display = 'none';
 
-  document.getElementById('gr-title').textContent = type==='card'?'🃏 Kartu Didapat!':'🖼️ Avatar Didapat!';
+  document.getElementById('gr-title').textContent = isPfp?'🎉 Avatar Didapat!':'🎉 Karakter Didapat!';
   openModal('gacha-result-modal');
-}
+};
 
 /* ================================================================
-   COMMUNITY
+   COMMUNITY & PROFILES
    ================================================================ */
-let allUsers=[];
-
 async function loadCommunity(){
-  document.getElementById('community-main').style.display='block';
-  document.getElementById('profile-view').classList.remove('show');
+  const list = document.getElementById('community-list');
+  list.innerHTML = '<div class="loading-spin"><div class="spinner"></div></div>';
+  
   const snap = await getDocs(collection(db,'users'));
-  const roleOrder={maou:0,bangsawan:1,rakyat:2};
-  allUsers = snap.docs.map(d=>d.data()).sort((a,b)=>{
-    const ro=(roleOrder[a.role]||2)-(roleOrder[b.role]||2);
-    if(ro!==0) return ro;
-    const ri=getRankInfo(b.rankPoints||0).idx-getRankInfo(a.rankPoints||0).idx;
-    if(ri!==0) return ri;
-    return (a.username||'').localeCompare(b.username||'');
-  });
-  renderUserList(allUsers);
+  
+  allUsers = snap.docs.map(d=>d.data())
+    .filter(u => !u.isHidden || u.uid === currentUser.uid)
+    .sort((a,b)=> {
+      if(roleValue(a.role) !== roleValue(b.role)) return roleValue(b.role) - roleValue(a.role); // Role First
+      return (b.rankPoints||0) - (a.rankPoints||0); // RankPoints Second
+    });
+
+  renderCommunityList(allUsers);
 }
 
-function renderUserList(users){
-  const list=document.getElementById('community-list');
-  if(!users.length){list.innerHTML='<div class="empty-state"><div class="icon">👥</div><p>Tidak ada pengguna ditemukan.</p></div>';return;}
-  list.innerHTML = users.map((u,i)=>{
-    const isMaou=u.role==='maou', isBang=u.role==='bangsawan';
-    const ri=getRankInfo(u.rankPoints||0);
+function renderCommunityList(users){
+  const list = document.getElementById('community-list');
+  if(!users.length) { list.innerHTML = '<div class="empty-state"><i class="ph ph-users"></i><p>Tidak ada petualang.</p></div>'; return; }
+  
+  list.innerHTML = users.map((u,i) => {
+    const rd = roleData(u.role);
+    const rnk = getRankInfo(u.rankPoints||0).rank;
+    
     return `
-      <div class="user-card" onclick="viewUserProfile('${u.uid}')">
-        <div class="user-card-rank">${i+1}</div>
-        <img class="user-avatar ${isMaou?'maou-border':isBang?'bangsawan-border':''}" src="${u.avatar||DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'"/>
-        <div class="user-card-info">
-          <div class="user-card-name ${isMaou?'maou-name':isBang?'bangsawan-name':''}">${escHtml(u.username||'?')}</div>
-          <div class="user-card-sub">
-            <span class="user-rank-badge ${ri.rank.cls}">${ri.rank.name}</span>
-            <span style="font-size:10px;color:var(--text-muted)">·</span>
-            <span style="font-size:10px;color:var(--text-muted);font-family:var(--font-ui)">${roleLabel(u.role)}</span>
+      <div class="user-row" onclick="openProfile('${u.uid}')">
+        <div class="user-row-rank">#${i+1}</div>
+        <div class="avatar-wrapper">
+          <img class="user-row-av avatar-img ${rd.av}" src="${u.avatar || APP_CONFIG.DEFAULT_AVATAR}"/>
+        </div>
+        <div class="user-row-info">
+          <div class="user-row-name" style="color:var(--role-${u.role})">${esc(u.username)}</div>
+          <div class="user-row-meta">
+            <span class="role-badge ${rd.cls}" style="padding: 2px 6px; font-size:9px"><i class="${rd.icon}"></i> ${rd.lbl}</span>
+            <span style="font-size:10px; font-weight:700; color:var(--text-muted)">${rnk.name}</span>
           </div>
         </div>
-        <div class="user-card-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></div>
+        <i class="ph ph-caret-right" style="color:var(--text-muted)"></i>
       </div>
     `;
   }).join('');
 }
 
-function roleLabel(r){return r==='maou'?'Maou':r==='bangsawan'?'Bangsawan':'Rakyat';}
-
-window.onUserSearch = function(val){
-  if(!val.trim()){renderUserList(allUsers);return;}
-  renderUserList(allUsers.filter(u=>(u.username||'').toLowerCase().includes(val.toLowerCase())));
+window.onUserSearch = function(v){
+  const q = v.toLowerCase().trim();
+  renderCommunityList(allUsers.filter(u => u.username.toLowerCase().includes(q)));
 };
 
-window.viewUserProfile = async function(uid){
-  const u = allUsers.find(x=>x.uid===uid);
-  if(!u) return;
-  document.getElementById('community-main').style.display='none';
-  document.getElementById('profile-view').classList.add('show');
+window.openProfile = function(uid){
+  viewingProfileUid = uid;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-profile').classList.add('active');
+  renderProfilePage();
+};
 
-  const isMaou=u.role==='maou', isBang=u.role==='bangsawan';
-  const ri=getRankInfo(u.rankPoints||0);
+window.renderProfilePage = async function(){
+  const isMe = !viewingProfileUid || viewingProfileUid === currentUser.uid;
+  const targetUid = isMe ? currentUser.uid : viewingProfileUid;
+  
+  const area = document.getElementById('profile-content-area');
+  area.innerHTML = '<div class="loading-spin" style="margin-top:100px"><div class="spinner"></div></div>';
 
-  // Header
-  document.getElementById('pv-header').innerHTML=`
-    <img class="profile-av ${isMaou?'maou-border':isBang?'bangsawan-border':''}" src="${u.avatar||DEFAULT_AVATAR}" alt="" onerror="this.src='${DEFAULT_AVATAR}'"/>
-    <div class="profile-name ${isMaou?'maou-name':isBang?'bangsawan-name':''}">${escHtml(u.username||'?')}</div>
-    <div class="dash-role-badge ${u.role||'rakyat'}">${roleLabel(u.role)}</div>
-    <div class="my-bio">${escHtml(u.bio||'Tidak ada bio.')}</div>
+  let uData = userData;
+  if(!isMe){
+    const snap = await getDoc(doc(db,'users',targetUid));
+    if(!snap.exists()) { area.innerHTML = '<div class="empty-state"><i class="ph ph-warning"></i><p>User tidak ditemukan.</p></div>'; return; }
+    uData = snap.data();
+  }
+
+  const listSnap = await getDocs(collection(db,'users',targetUid,'anime_list'));
+  const marSnap = await getDocs(collection(db,'users',targetUid,'anime_marathon'));
+  
+  const userAnimes = listSnap.docs.map(d=>d.data());
+  const marathonIds = new Set(marSnap.docs.map(d=>d.data().malId));
+  const isMarathoning = marathonIds.size > 0;
+  
+  const rd = roleData(uData.role);
+  const rnk = getRankInfo(uData.rankPoints||0).rank;
+  const isKaisar = isMe && uData.role === 'kaisar';
+
+  let html = `
+    ${!isMe ? `<div class="page-header"><button class="page-header-back" onclick="navTo('community')"><i class="ph ph-caret-left"></i></button><div class="page-header-title">Profil</div></div>` : '<div class="page-header"><div class="page-header-title">Profilku</div><button class="page-header-back ml-auto" onclick="doLogout()"><i class="ph ph-sign-out" style="color:#ef4444"></i></button></div>'}
+    
+    <div class="profile-hero">
+      <div class="avatar-wrapper" ${isMe?'onclick="openEditProfileModal()" style="cursor:pointer"':''}>
+        <img class="profile-av-large avatar-img ${rd.av}" src="${uData.avatar || APP_CONFIG.DEFAULT_AVATAR}"/>
+        ${isMe ? '<div style="position:absolute; bottom:10px; right:-5px; background:var(--bg-elevated); padding:6px; border-radius:50%; border:1px solid var(--border)"><i class="ph-fill ph-pencil-simple" style="color:var(--text-primary); font-size:14px;"></i></div>' : ''}
+      </div>
+      <div class="profile-name" style="color:var(--role-${uData.role})">${esc(uData.username)}</div>
+      <div style="display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap">
+        <span class="role-badge ${rd.cls}"><i class="${rd.icon}"></i> ${rd.lbl}</span>
+        <span class="role-badge" style="background:var(--bg-elevated); color:var(--text-primary); border:1px solid var(--border)">${rnk.name}</span>
+        ${isMarathoning ? `<span class="marathon-badge"><i class="ph-fill ph-popcorn"></i> Sedang Marathon</span>` : ''}
+      </div>
+      <div class="profile-bio">${esc(uData.bio || (isMe?'Belum ada bio. Tambahkan yuk!':'Tidak ada bio.'))}</div>
+      
+      <div class="profile-stats">
+        <div class="p-stat"><span class="p-stat-val text-accent">${userAnimes.length}</span><span class="p-stat-lbl">Anime</span></div>
+        <div class="p-stat"><span class="p-stat-val" style="color:#fbbf24">${marathonIds.size}</span><span class="p-stat-lbl">Marathon</span></div>
+        <div class="p-stat"><span class="p-stat-val" style="color:#a855f7">${(uData.collection||[]).length}</span><span class="p-stat-lbl">Koleksi</span></div>
+      </div>
+    </div>
   `;
 
-  // Stats
-  const wSnap = await getDocs(collection(db,'users',uid,'anime_watched'));
-  const mSnap = await getDocs(collection(db,'users',uid,'anime_marathon'));
-  document.getElementById('pv-stats').innerHTML=`
-    <div class="profile-stat"><div class="profile-stat-value">${wSnap.size}</div><div class="profile-stat-label">Watched</div></div>
-    <div class="profile-stat"><div class="profile-stat-value">${mSnap.size}</div><div class="profile-stat-label">Marathon</div></div>
-    <div class="profile-stat"><div class="profile-stat-value">${(u.collection||[]).length}</div><div class="profile-stat-label">Koleksi</div></div>
-    <div class="profile-stat"><div class="profile-stat-value">${ri.rank.name}</div><div class="profile-stat-label">Rank</div></div>
+  if(isKaisar){
+    html += `
+      <div class="admin-section">
+        <div class="admin-title"><i class="ph-fill ph-crown"></i> Otoritas Kaisar</div>
+        <div class="admin-grid">
+          <button class="admin-btn" onclick="openAdminModal()">Buka Panel Admin</button>
+          <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-secondary)">
+            <input type="checkbox" id="kaisar-hide-acc" ${uData.isHidden?'checked':''} onchange="toggleHideAcc(this.checked)" style="accent-color:var(--role-kaisar)"> Sembunyikan akun dari Komunitas
+          </label>
+        </div>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="coll-tabs">
+      <button class="coll-tab active" onclick="switchProfTab('waifu', this)">Waifu</button>
+      <button class="coll-tab" onclick="switchProfTab('husbu', this)">Husbu</button>
+      <button class="coll-tab" onclick="switchProfTab('avatar', this)">Avatar</button>
+      <button class="coll-tab" onclick="switchProfTab('anime', this)">Anime List</button>
+    </div>
+    <div id="prof-content-container"></div>
   `;
 
-  // Anime tab
-  const allA = [...wSnap.docs.map(d=>({...d.data(),lt:'watched'})),...mSnap.docs.map(d=>({...d.data(),lt:'marathon'}))];
-  document.getElementById('pvtab-anime').innerHTML = allA.length
-    ? allA.map(a=>`
-        <div class="anime-mini-item" style="margin-bottom:8px">
-          <img class="anime-mini-cover" src="${a.image}" alt="" onerror="this.style.opacity='.3'"/>
-          <div class="anime-mini-info"><div class="anime-mini-title">${escHtml(a.title||'')}</div><div class="anime-mini-status">${a.episodes?a.episodes+' ep':''}</div></div>
-          <div class="anime-mini-tag ${a.lt==='watched'?'tag-watched':'tag-marathon'}">${a.lt==='watched'?'Watched':'Marathon'}</div>
-        </div>`).join('')
-    : '<div class="empty-state"><div class="icon">📺</div><p>Belum ada anime.</p></div>';
-
-  // Collection tab
-  const coll = u.collection||[];
-  document.getElementById('pvtab-collection').innerHTML = coll.length
-    ? `<div class="collection-grid">${coll.map(c=>`
-        <div class="coll-card">
-          <img class="${c.type?.startsWith('pfp')?'coll-pfp-img':'coll-card-img'}" src="${c.image}" alt="" onerror="this.style.opacity='.3'"/>
-          <div class="coll-name">${escHtml(c.name||'')}</div>
-        </div>`).join('')}</div>`
-    : '<div class="empty-state"><div class="icon">🃏</div><p>Belum ada koleksi.</p></div>';
+  area.innerHTML = html;
+  
+  window._currentProfileData = uData;
+  window._currentProfileAnimes = userAnimes;
+  window._currentProfileMarathons = marathonIds;
+  window._profAnimeState = { status: 'all', sort: 'new' };
+  
+  window.switchProfTab('waifu', document.querySelector('.coll-tab.active'));
 };
 
-window.closeProfView = function(){
-  document.getElementById('community-main').style.display='block';
-  document.getElementById('profile-view').classList.remove('show');
+window.switchProfTab = function(type, btn){
+  document.querySelectorAll('.coll-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const container = document.getElementById('prof-content-container');
+  const d = window._currentProfileData;
+  if(!d) return;
+
+  if(type === 'anime'){
+    renderProfAnimeTab();
+  } else if(type === 'avatar'){
+    const pfps = d.pfpCollection || [];
+    if(!pfps.length){ container.innerHTML = '<div class="empty-state"><i class="ph ph-image-broken"></i><p>Tidak ada avatar.</p></div>'; return; }
+    container.innerHTML = `<div class="collection-grid">${pfps.map(p=>`<div class="coll-item pfp"><img src="${p}" onerror="this.style.display='none'"/></div>`).join('')}</div>`;
+  } else {
+    // Type is waifu or husbu
+    const coll = (d.collection||[]).filter(c=>c.type === `koleksi_${type}`);
+    if(!coll.length){ container.innerHTML = `<div class="empty-state"><i class="ph ph-cards"></i><p>Tidak ada koleksi ${type}.</p></div>`; return; }
+    container.innerHTML = `<div class="collection-grid">${coll.map(c=>`
+      <div class="coll-item">
+        <img class="rarity-${c.rarity}" src="${c.image}" style="border-width:2px;border-style:solid;" onerror="this.style.display='none'"/>
+        <span class="rarity-badge rb-${c.rarity}">${c.rarity}</span>
+      </div>
+    `).join('')}</div>`;
+  }
 };
 
-window.switchProfTab = function(tab,btn){
-  document.querySelectorAll('.profile-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.profile-tab-content').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('pvtab-'+tab).classList.add('active');
-};
+function renderProfAnimeTab() {
+  const container = document.getElementById('prof-content-container');
+  const animes = window._currentProfileAnimes;
+  const marathonIds = window._currentProfileMarathons;
+  const st = window._profAnimeState;
 
-/* ================================================================
-   MY PROFILE
-   ================================================================ */
-async function renderMyProfile(){
-  if(!userData) return;
-  const av=document.getElementById('my-av');
-  av.src=userData.avatar||DEFAULT_AVATAR;
-  av.onerror=()=>av.src=DEFAULT_AVATAR;
-  document.getElementById('my-name').textContent=userData.username||'Adventurer';
-  document.getElementById('my-bio').textContent=userData.bio||'Belum ada bio.';
+  let filtered = animes;
+  if(st.status !== 'all') filtered = filtered.filter(a => a.status === st.status);
 
-  const isMaou=userData.role==='maou', isBang=userData.role==='bangsawan';
-  const rb=document.getElementById('my-role-badge');
-  rb.className='dash-role-badge '+(isMaou?'maou':isBang?'bangsawan':'rakyat');
-  rb.textContent=roleLabel(userData.role);
+  filtered.sort((a,b)=>{
+    if(st.sort === 'desc') return b.rating - a.rating;
+    if(st.sort === 'asc') return a.rating - b.rating;
+    return (b.updatedAt?.toMillis()||0) - (a.updatedAt?.toMillis()||0); 
+  });
 
-  // Admin panel
-  document.getElementById('admin-panel-wrap').style.display=isMaou?'block':'none';
+  const filterHTML = `
+    <div class="filter-btn-group-wrapper" style="padding-top:10px;">
+      <div class="filter-row">
+        <div class="filter-label">Status:</div>
+        <div class="filter-btn-group">
+          <button class="filter-btn ${st.status==='all'?'active':''}" onclick="setProfAnimeFilter('status','all')">Semua</button>
+          <button class="filter-btn ${st.status==='watching'?'active':''}" onclick="setProfAnimeFilter('status','watching')">Menonton</button>
+          <button class="filter-btn ${st.status==='watched'?'active':''}" onclick="setProfAnimeFilter('status','watched')">Selesai</button>
+          <button class="filter-btn ${st.status==='drop'?'active':''}" onclick="setProfAnimeFilter('status','drop')">Drop</button>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-label">Urutkan:</div>
+        <div class="filter-btn-group">
+          <button class="filter-btn ${st.sort==='new'?'active':''}" onclick="setProfAnimeFilter('sort','new')">Terbaru</button>
+          <button class="filter-btn ${st.sort==='desc'?'active':''}" onclick="setProfAnimeFilter('sort','desc')">Rating 📈</button>
+          <button class="filter-btn ${st.sort==='asc'?'active':''}" onclick="setProfAnimeFilter('sort','asc')">Rating 📉</button>
+        </div>
+      </div>
+    </div>
+  `;
 
-  // My collection
-  const coll=userData.collection||[];
-  const grid=document.getElementById('my-collection-grid');
-  grid.innerHTML=coll.length
-    ? coll.map(c=>`
-        <div class="coll-card">
-          <img class="${c.type?.startsWith('pfp')?'coll-pfp-img':'coll-card-img'}" src="${c.image}" alt="" onerror="this.style.opacity='.3'"/>
-          <div class="coll-name">${escHtml(c.name||'')}</div>
-        </div>`).join('')
-    : '<div class="empty-state" style="grid-column:1/-1"><div class="icon">🃏</div><p>Belum ada koleksi. Coba Gacha!</p></div>';
+  let gridHTML = '<div class="empty-state"><i class="ph ph-monitor-play"></i><p>Tidak ada anime.</p></div>';
+  
+  if(filtered.length > 0) {
+    gridHTML = `<div class="anime-grid">
+      ${filtered.map(a=>`
+        <div class="anime-card" onclick="openAnimeDetail(${a.malId})">
+          <img class="anime-card-img" src="${a.image}" alt=""/>
+          <div class="anime-card-overlay">
+            <span class="anime-status-badge badge-${a.status}">${STATUSES[a.status]}</span>
+            ${marathonIds.has(a.malId) ? '<span class="anime-status-badge badge-marathon"><i class="ph-fill ph-popcorn"></i></span>' : ''}
+          </div>
+          <div class="anime-card-body">
+            <div class="anime-card-title">${esc(a.title)}</div>
+            <div class="anime-card-rating"><i class="ph-fill ph-star"></i> ${RATINGS[a.rating]}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+  }
+
+  container.innerHTML = filterHTML + gridHTML;
 }
 
-/* ================================================================
-   EDIT PROFILE
-   ================================================================ */
-window.openEditProfile = function(){
-  document.getElementById('ep-name').value=userData?.username||'';
-  document.getElementById('ep-bio').value=userData?.bio||'';
+window.setProfAnimeFilter = function(type, val) {
+  window._profAnimeState[type] = val;
+  renderProfAnimeTab();
+};
 
-  const sel=document.getElementById('pfp-selector-list');
-  const pfps=[DEFAULT_AVATAR,...(userData?.pfpCollection||[])].filter((v,i,a)=>a.indexOf(v)===i);
-  sel.innerHTML=pfps.map(p=>`
-    <img class="pfp-option ${p===(userData?.avatar||DEFAULT_AVATAR)?'selected':''}" src="${p}" alt="" onclick="selectPfp(this,'${p}')" onerror="this.style.display='none'"/>
+window.openEditProfileModal = function(){
+  document.getElementById('ep-name').value = userData.username;
+  document.getElementById('ep-bio').value = userData.bio || '';
+  
+  const pfps = [...new Set([APP_CONFIG.DEFAULT_AVATAR, ...(userData.pfpCollection||[])])];
+  const list = document.getElementById('ep-pfps-list');
+  list.innerHTML = pfps.map(p=>`
+    <img class="ep-pfp-opt ${p === userData.avatar ? 'selected':''}" src="${p}" onclick="selectEpPfp(this, '${p}')"/>
   `).join('');
+  
   openModal('edit-profile-modal');
 };
 
-window.selectPfp = function(el,src){
-  document.querySelectorAll('.pfp-option').forEach(i=>i.classList.remove('selected'));
+window.selectEpPfp = function(el, src){
+  document.querySelectorAll('.ep-pfp-opt').forEach(i=>i.classList.remove('selected'));
   el.classList.add('selected');
-  el.dataset.selected=src;
+  el.dataset.src = src;
 };
 
 window.saveProfile = async function(){
-  const name=document.getElementById('ep-name').value.trim();
-  const bio=document.getElementById('ep-bio').value.trim();
-  if(!name){showToast('Username tidak boleh kosong.','error');return;}
-  const selImg=document.querySelector('.pfp-option.selected');
-  const av=selImg?selImg.src:(userData?.avatar||DEFAULT_AVATAR);
-  await updateDoc(doc(db,'users',currentUser.uid),{username:name,bio,avatar:av});
-  userData={...userData,username:name,bio,avatar:av};
-  // Update local session username too
-  const session = {uid:currentUser.uid, username:name};
-  currentUser = session;
-  setSession(session);
+  const name = document.getElementById('ep-name').value.trim();
+  const bio = document.getElementById('ep-bio').value.trim();
+  const sel = document.querySelector('.ep-pfp-opt.selected');
+  const av = sel ? sel.dataset.src : userData.avatar;
+  
+  if(!name){ showToast('Username tidak boleh kosong','error'); return; }
+  
+  await updateDoc(doc(db,'users',currentUser.uid), {username:name, bio:bio, avatar:av});
+  userData.username = name; userData.bio = bio; userData.avatar = av;
+  
+  const sess = {uid:currentUser.uid, username:name};
+  currentUser = sess; setSession(sess);
+  
   closeModal('edit-profile-modal');
-  renderMyProfile(); renderDashboard();
   showToast('Profil diperbarui!','success');
+  renderProfilePage();
+};
+
+window.toggleHideAcc = async function(val){
+  await updateDoc(doc(db,'users',currentUser.uid), {isHidden: val});
+  userData.isHidden = val;
+  showToast(val ? 'Akun disembunyikan.' : 'Akun publik.', 'info');
 };
 
 /* ================================================================
-   MAOU ADMIN
+   KAISAR ADMIN
    ================================================================ */
-window.adminAddCharacter = async function(){
-  const name=document.getElementById('adm-name').value.trim();
-  const img=document.getElementById('adm-img').value.trim();
-  const type=document.getElementById('adm-type').value;
-  const rarity=parseInt(document.getElementById('adm-rarity').value)||3;
-  if(!name||!img){showToast('Isi nama dan URL gambar.','error');return;}
-  const id=name.toLowerCase().replace(/\s+/g,'_')+'_'+Date.now();
-  await addDoc(collection(db,'gacha_items'),{id,name,image:img,type,rarity,addedAt:serverTimestamp()});
-  showToast(`${name} ditambahkan ke database!`,'success');
-  document.getElementById('adm-name').value='';
-  document.getElementById('adm-img').value='';
-  await loadGachaItems();
-  renderGacha();
+window.openAdminModal = async function(){
+  const sel = document.getElementById('adm-e-user');
+  sel.innerHTML = '<option>Loading...</option>';
+  openModal('admin-modal');
+  
+  const snap = await getDocs(collection(db,'users'));
+  const users = snap.docs.map(d=>d.data()).sort((a,b)=>a.username.localeCompare(b.username));
+  sel.innerHTML = users.map(u=>`<option value="${u.uid}">${esc(u.username)} (${u.role})</option>`).join('');
+};
+
+window.adminAddChar = async function(){
+  const n = document.getElementById('adm-c-name').value.trim();
+  const img = document.getElementById('adm-c-img').value.trim();
+  const type = document.getElementById('adm-c-type').value;
+  const rarity = document.getElementById('adm-c-rarity').value;
+  
+  if(!n || !img) { showToast('Isi nama dan gambar!','error'); return; }
+  const id = n.toLowerCase().replace(/\s+/g,'_') + '_' + Date.now();
+  
+  await addDoc(collection(db,'gacha_items'), {id, name:n, image:img, type, rarity, addedAt:serverTimestamp()});
+  showToast(`${n} ditambahkan!`, 'success');
+  document.getElementById('adm-c-name').value = ''; document.getElementById('adm-c-img').value = '';
+};
+
+window.adminGiveEris = async function(){
+  const uid = document.getElementById('adm-e-user').value;
+  const amt = parseInt(document.getElementById('adm-e-amount').value);
+  if(!uid || !amt || amt<=0){ showToast('Pilih user dan jumlah valid!','error'); return; }
+  
+  const ref = doc(db,'users',uid);
+  const snap = await getDoc(ref);
+  if(!snap.exists()) return;
+  const u = snap.data();
+  await updateDoc(ref, {eris: (u.eris||0) + amt});
+  showToast(`Berhasil mengirim ${amt} Eris!`, 'success');
+  document.getElementById('adm-e-amount').value = '';
+  
+  if(uid === currentUser.uid) { userData.eris += amt; renderProfilePage(); }
 };
 
 /* ================================================================
-   MODALS & TOAST
+   GLOBAL MODAL / TOAST
    ================================================================ */
-window.openModal=function(id){document.getElementById(id).classList.add('open');};
-window.closeModal=function(id){document.getElementById(id).classList.remove('open');};
-window.showTopUpPopup=function(){openModal('topup-modal');};
+window.openModal = function(id){ document.getElementById(id).classList.add('open'); };
+window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
+window.showTopUpPopup = function(){ openModal('topup-modal'); };
 
-let toastTimeout=null;
-window.showToast=function(msg,type='info'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='show '+type;
+let toastTimeout = null;
+window.showToast = function(msg, type='info'){
+  const t = document.getElementById('toast');
+  const icons = {info:'ph-info', success:'ph-check-circle', error:'ph-warning-circle'};
+  t.innerHTML = `<i class="ph-fill ${icons[type]}"></i> <span>${msg}</span>`;
+  t.className = 'show ' + type;
   clearTimeout(toastTimeout);
-  toastTimeout=setTimeout(()=>t.className='',2800);
+  toastTimeout = setTimeout(()=> t.className = '', 3000);
 };
 
-/* ================================================================
-   UTILS
-   ================================================================ */
-function escHtml(str){
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+document.querySelectorAll('.page').forEach(page => {
+  page.addEventListener('scroll', (e) => {
+    const header = page.querySelector('.page-header');
+    if(header) {
+      if(e.target.scrollTop > 10) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    }
+  });
+});
+
 </script>
 </body>
 </html>
